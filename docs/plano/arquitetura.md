@@ -45,17 +45,18 @@ flowchart LR
 }
 ```
 
-Implementada em 12/11/2026, em [`consulta/especificacao.js`](../../consulta/especificacao.js), ainda sem ligação com as páginas; fica fora de `web/` até lá, porque o build publica tudo o que está nessa pasta.
+Implementada em 12/11/2026, em [`consulta/especificacao.js`](../../consulta/especificacao.js), ainda sem ligação com as páginas. `consulta/` é o lugar provisório até a ligação (decidido em 12/11/2026): o build publica tudo o que está em `web/`, e o arquivo só vai para lá quando uma página o usar.
 
 - **Versão desde a primeira.** `v` vem antes de tudo. Uma pergunta ou um gráfico é um estado de um painel; um dashboard, de até 12.
 - **O município tem papel.** `territorio.papel` é `residencia` ou `hospital`, com até 10 municípios por painel. Sem o papel, a resposta da validação é a pergunta, com as duas opções já validadas; não há padrão.
 - **Filtrar e detalhar.** `filtros` escolhe valores de uma dimensão; `detalhar` mostra todos. As duas listas, mais o município e o tempo, formam o grão. O tempo sai do formato do período: `2025`, `2025-T1` ou `2025-03`.
 - **Sem texto livre** (decidido em 12/11/2026). Todo campo é identificador do catálogo, código do IBGE ou período, e campo desconhecido invalida o estado. Os títulos saem da própria especificação: um link não consegue exibir uma frase de quem o montou.
-- **Gráfico:** `linha`, `barras` ou `tabela`.
+- **Gráfico:** `linha`, `barras`, `tabela` ou `numero`, o valor único em destaque. O `numero` só vale quando o painel resolve para uma célula: um município, um período, nada detalhado e um valor em cada filtro. Fora disso é recusado, com a mesma consulta em tabela como sugestão.
+- **Mapa fica para depois da v1** (decidido em 12/11/2026): a superfície não tem margens de UF nem do Brasil, e um mapa pede o país ou o estado inteiro de uma vez.
 
 A validação liga cada painel a **um cruzamento pré-calculado, no grão exato**. O navegador nunca soma células de uma tabela suprimida para chegar a outro grão: somar por cima de células ocultas daria um total errado e silencioso. Internações só por sexo, por exemplo, é recusada, embora a tabela de faixa de idade e sexo exista. Vale o que está publicado: a base precisa ir para o site (`publicacao.site`), e, quando ela declara uma superfície, o cruzamento e a medida precisam estar nela. Se o cruzamento pedido não existe, a resposta é uma recusa com o motivo e até três sugestões, cada uma conferida pela mesma validação antes de sair. O que a validação aceita são os parâmetros de uma consulta de modelo (cruzamento, municípios, filtros, período), nunca um número.
 
-Com o catálogo de 12/11/2026, **toda especificação é recusada**: o SIH está com `publicacao.site: false`, e a população não tem cruzamento declarado. Com o SIH ligado numa cópia do catálogo, passam as cinco tabelas da superfície, só nas medidas que ela mostra. O próprio exemplo acima seria recusado, porque capítulo por trimestre não está na superfície, com a sugestão do mesmo capítulo por ano.
+Com o catálogo de 12/11/2026, **toda especificação é recusada**: o SIH está com `publicacao.site: false`, e a população não tem cruzamento declarado. O cruzamento de população por município e ano entra no catálogo na etapa seguinte, depois do `Publicar` de domingo, 15/11/2026, e passa a ser a primeira consulta que valida. Com o SIH ligado numa cópia do catálogo, passam as cinco tabelas da superfície, só nas medidas que ela mostra. O próprio exemplo acima seria recusado, porque capítulo por trimestre não está na superfície, com a sugestão do mesmo capítulo por ano.
 
 **Na URL.** O estado vai depois do `#`, que não chega ao servidor, num texto legível e sempre igual para o mesmo estado:
 

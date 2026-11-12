@@ -18,7 +18,8 @@ const Especificacao = (() => {
   const SIGLA_DO_PAPEL = { residencia: 'r', hospital: 'h' };
   const PAPEL_DA_SIGLA = { r: 'residencia', h: 'hospital' };
   const ROTULO_DO_PAPEL = { residencia: 'município de residência', hospital: 'município do hospital' };
-  const GRAFICOS = ['linha', 'barras', 'tabela'];
+  // "numero" é o valor único em destaque: só vale quando o painel resolve para uma célula.
+  const GRAFICOS = ['linha', 'barras', 'tabela', 'numero'];
   const TEMPOS = ['mes', 'tri', 'ano'];
   const ROTULO_DO_TEMPO = { mes: 'por mês', tri: 'por trimestre', ano: 'por ano' };
 
@@ -33,6 +34,10 @@ const Especificacao = (() => {
   const sobras = (x, chaves) => Object.keys(x).filter((k) => !chaves.includes(k));
 
   const tempoDe = (periodo) => TEMPOS.find((t) => PERIODO[t].test(periodo)) || null;
+
+  // Um município, um período, nada detalhado e um valor por filtro: o painel é uma célula do cruzamento.
+  const umaCelula = (p) => p.territorio.municipios.length === 1 && p.periodo.de === p.periodo.ate
+    && !p.detalhar.length && Object.values(p.filtros).every((valores) => valores.length === 1);
 
   // ---------------------------------------------------------------- formato
 
@@ -182,7 +187,7 @@ const Especificacao = (() => {
       const valores = painel.filtros[d].filter((v) => !aceitos || aceitos.includes(v));
       if (valores.length) filtros[d] = valores;
     }
-    return {
+    const adaptado = {
       metrica,
       territorio: { papel: papelDoCruzamento(c), municipios: [...painel.territorio.municipios] },
       filtros,
@@ -190,6 +195,9 @@ const Especificacao = (() => {
       periodo: converterPeriodo(painel.periodo, c.tempo),
       grafico: painel.grafico,
     };
+    // O número em destaque não sobrevive a um grão com mais de uma célula: a sugestão vira tabela.
+    if (adaptado.grafico === 'numero' && !umaCelula(adaptado)) adaptado.grafico = 'tabela';
+    return adaptado;
   };
 
   const distancia = (painel, c) => {
@@ -289,6 +297,11 @@ const Especificacao = (() => {
     if (!cruzamento) {
       // Nunca chega a este grão somando outro: células ocultas dariam um total errado e silencioso.
       return recusa('grao_indisponivel', `${descrever(catalogo, painel)}: este cruzamento não está publicado.`, [painel.metrica]);
+    }
+    if (painel.grafico === 'numero' && !umaCelula(painel)) {
+      // Mostrar um número só exigiria somar ou escolher entre células; a sugestão é a mesma consulta em tabela.
+      return recusa('numero_pede_uma_celula', 'O número em destaque mostra uma célula só: um município, um período, '
+        + 'nada detalhado e um valor em cada filtro.', [painel.metrica]);
     }
     return {
       ok: true,

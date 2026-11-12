@@ -194,6 +194,53 @@ recusa(base({ filtros: { capitulo_cid: ['23'] } }), 'valor_desconhecido', 'sih_r
   assert.deepEqual(r.sugestoes[0].painel.filtros, { sexo: ['F'] });
 }
 assert.equal(E.validar(ligado, base({ tema: 'saude' })).ok, true);
+// Número em destaque: só quando o painel é uma célula. Um município, um período, nada detalhado e um
+// valor por filtro. Fora disso, a recusa sugere a mesma consulta em tabela, no mesmo cruzamento.
+{
+  const celula = base({ grafico: 'numero', periodo: { de: '2025', ate: '2025' } });
+  const r = E.validar(ligado, celula);
+  assert.equal(r.ok, true);
+  assert.equal(r.cruzamento, 'sih_res_ano');
+  assert.equal(r.painel.grafico, 'numero');
+  assert.equal(E.validar(ligado, { ...celula, filtros: { capitulo_cid: ['10'] } }).cruzamento, 'sih_res_ano_capitulo');
+  assert.equal(E.validar(ligado, { ...celula, filtros: { sexo: ['F'], faixa_12: ['80+'] } }).cruzamento, 'sih_res_ano_faixa12_sexo');
+  assert.equal(E.validar(ligado, { ...celula, metrica: 'obitos' }).ok, true);
+  assert.equal(E.validar(ligado, { ...celula, periodo: { de: '2025-03', ate: '2025-03' } }).cruzamento, 'sih_res_mes');
+  const variasCelulas = {
+    'dois municípios': { territorio: { papel: 'residencia', municipios: ['3548500', '3550308'] } },
+    'dois períodos': { periodo: { de: '2024', ate: '2025' } },
+    'dimensão detalhada': { detalhar: ['capitulo_cid'] },
+    'dois valores no filtro': { filtros: { capitulo_cid: ['9', '10'] } },
+    'um filtro de um valor e outro detalhado': { filtros: { sexo: ['F'] }, detalhar: ['faixa_12'] },
+  };
+  for (const [caso, mudanca] of Object.entries(variasCelulas)) {
+    const pedido = { ...celula, ...mudanca };
+    const aceito = E.validar(ligado, { ...pedido, grafico: 'tabela' });
+    assert.equal(aceito.ok, true, caso);
+    const recusado = recusa(pedido, 'numero_pede_uma_celula', aceito.cruzamento);
+    assert.deepEqual(recusado.sugestoes[0].painel, aceito.painel, caso);
+    assert.match(recusado.mensagem, /^O número em destaque mostra uma célula só/);
+  }
+  // O grão que não existe vem antes: a sugestão troca o grão e, se sobrar mais de uma célula, vira tabela.
+  const semGrao = recusa({ ...celula, filtros: { sexo: ['F'] } }, 'grao_indisponivel', 'sih_res_ano_faixa12_sexo');
+  assert.equal(semGrao.sugestoes[0].painel.grafico, 'tabela');
+  assert.ok(semGrao.sugestoes.some((s) => s.cruzamento === 'sih_res_ano' && s.painel.grafico === 'numero'));
+  const trimestre = recusa({ ...celula, periodo: { de: '2025-T2', ate: '2025-T2' } }, 'grao_indisponivel');
+  assert.deepEqual(trimestre.sugestoes.slice(0, 2).map((s) => [s.cruzamento, s.painel.grafico]),
+    [['sih_res_mes', 'tabela'], ['sih_res_ano', 'numero']]);
+  // Sem o papel, cada opção é validada com a mesma regra; e o número vai e volta pela URL.
+  const semPapel = E.validar(ligado, { ...celula, territorio: { municipios: ['3548500'] } });
+  assert.deepEqual(semPapel.opcoes.map((o) => o.validacao.cruzamento), ['sih_res_ano', 'sih_hosp_ano']);
+  const texto = E.serializar({ v: 1, paineis: [celula] }).texto;
+  assert.equal(texto, 'v=1&p=m:internacoes;t:r,3548500;p:2025;g:numero');
+  assert.deepEqual(E.abrir(ligado, texto).paineis[0], r);
+  // Um link com número e dois municípios é lido, e o painel vira recusa com mensagem, não um número errado.
+  const largo = E.abrir(ligado, 'v=1&p=m:internacoes;t:r,3548500,3550308;p:2025;g:numero');
+  assert.equal(largo.ok, true);
+  assert.equal(largo.paineis[0].motivo, 'numero_pede_uma_celula');
+  // Com o catálogo de hoje, continua recusado como tudo o mais.
+  assert.equal(E.validar(real, celula).motivo, 'nao_publicada');
+}
 // População e taxa continuam de fora: não há cruzamento delas no catálogo.
 recusa(base({ metrica: 'populacao_estimada' }), 'sem_cruzamento');
 recusa(base({ metrica: 'taxa_internacao' }), 'sem_cruzamento');

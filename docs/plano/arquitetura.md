@@ -32,15 +32,40 @@ flowchart LR
 
 ```json
 {
-  "tema": "saude",
-  "metrica": "internacoes",
-  "filtros": { "municipio_residencia": ["3548500"], "capitulo_cid": ["10"] },
-  "periodo": { "de": "2025-T1", "ate": "2025-T4" },
-  "grafico": "linha"
+  "v": 1,
+  "paineis": [{
+    "tema": "saude",
+    "metrica": "internacoes",
+    "territorio": { "papel": "residencia", "municipios": ["3548500"] },
+    "filtros": { "capitulo_cid": ["10"] },
+    "detalhar": [],
+    "periodo": { "de": "2025-T1", "ate": "2025-T4" },
+    "grafico": "linha"
+  }]
 }
 ```
 
-A validação liga a especificação a **um cruzamento pré-calculado, no grão exato**. O navegador nunca soma células de uma tabela suprimida para chegar a outro grão: somar por cima de células ocultas daria um total errado e silencioso. Se o cruzamento pedido não existe, a resposta é uma recusa com sugestões.
+Implementada em 12/11/2026, em [`consulta/especificacao.js`](../../consulta/especificacao.js), ainda sem ligação com as páginas; fica fora de `web/` até lá, porque o build publica tudo o que está nessa pasta.
+
+- **Versão desde a primeira.** `v` vem antes de tudo. Uma pergunta ou um gráfico é um estado de um painel; um dashboard, de até 12.
+- **O município tem papel.** `territorio.papel` é `residencia` ou `hospital`, com até 10 municípios por painel. Sem o papel, a resposta da validação é a pergunta, com as duas opções já validadas; não há padrão.
+- **Filtrar e detalhar.** `filtros` escolhe valores de uma dimensão; `detalhar` mostra todos. As duas listas, mais o município e o tempo, formam o grão. O tempo sai do formato do período: `2025`, `2025-T1` ou `2025-03`.
+- **Sem texto livre** (decidido em 12/11/2026). Todo campo é identificador do catálogo, código do IBGE ou período, e campo desconhecido invalida o estado. Os títulos saem da própria especificação: um link não consegue exibir uma frase de quem o montou.
+- **Gráfico:** `linha`, `barras` ou `tabela`.
+
+A validação liga cada painel a **um cruzamento pré-calculado, no grão exato**. O navegador nunca soma células de uma tabela suprimida para chegar a outro grão: somar por cima de células ocultas daria um total errado e silencioso. Internações só por sexo, por exemplo, é recusada, embora a tabela de faixa de idade e sexo exista. Vale o que está publicado: a base precisa ir para o site (`publicacao.site`), e, quando ela declara uma superfície, o cruzamento e a medida precisam estar nela. Se o cruzamento pedido não existe, a resposta é uma recusa com o motivo e até três sugestões, cada uma conferida pela mesma validação antes de sair. O que a validação aceita são os parâmetros de uma consulta de modelo (cruzamento, municípios, filtros, período), nunca um número.
+
+Com o catálogo de 12/11/2026, **toda especificação é recusada**: o SIH está com `publicacao.site: false`, e a população não tem cruzamento declarado. Com o SIH ligado numa cópia do catálogo, passam as cinco tabelas da superfície, só nas medidas que ela mostra. O próprio exemplo acima seria recusado, porque capítulo por trimestre não está na superfície, com a sugestão do mesmo capítulo por ano.
+
+**Na URL.** O estado vai depois do `#`, que não chega ao servidor, num texto legível e sempre igual para o mesmo estado:
+
+```
+v=1&p=m:internacoes;k:saude;t:r,3548500;f:capitulo_cid=10;p:2025-T1,2025-T4;g:linha
+```
+
+O limite é de 1.800 caracteres para o estado, que com 200 de endereço dá um link de até 2.000. Medido em 12/11/2026, com 12 painéis: 579 caracteres com 1 município em cada; 1.239 com 5 municípios e 3 capítulos; 1.443 com 10 municípios; e 2.559 no pior painel que o formato aceita (10 municípios, sexo e as 13 faixas de idade), do qual cabem 8. Acima do limite não sai link nenhum, nem truncado: a serialização devolve o tamanho e o limite, para a tela bloquear o painel novo (decidido em 12/11/2026). Link maior que o limite também não é lido.
+
+Link que não abre vira mensagem, não gráfico vazio. Versão antiga sem conversão, versão mais nova que a do site aberto e texto ilegível têm cada um a sua. Painel cujo cruzamento saiu do catálogo ou da superfície volta como recusa, com as sugestões, e os outros painéis do mesmo link continuam.
 
 ### Por que leitor em JavaScript, e não motor
 

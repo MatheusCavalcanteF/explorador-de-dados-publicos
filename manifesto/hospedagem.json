@@ -1,7 +1,7 @@
 {
- "conferido_em": "2026-11-08T03:23:01Z",
+ "conferido_em": "2026-11-15T07:14:49Z",
  "site": "https://matheuscavalcantef.github.io/explorador-de-dados-publicos/",
- "execucao": "42442355751-1",
+ "execucao": "43688982146-1",
  "segundos_ate_a_versao_nova": 0.1,
  "parquet_bytes_reais": 225932,
  "testes": {
@@ -53,10 +53,10 @@
   "pagina": {
    "status": 200,
    "content_encoding": "gzip",
-   "content_length": "3038",
+   "content_length": "3040",
    "content_range": null,
    "cache_control": "max-age=600",
-   "bytes_recebidos": 3038,
+   "bytes_recebidos": 3040,
    "esperado": "200 em gzip, igual ao HTML do build",
    "bate_com_o_plano": true
   },

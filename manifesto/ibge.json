@@ -1,5 +1,5 @@
 {
- "coletado_em": "2026-11-08T03:21:57Z",
+ "coletado_em": "2026-11-15T07:13:44Z",
  "fontes": {
   "dtb": {
    "base": "ibge_dtb",
@@ -7,7 +7,7 @@
    "periodo": "2025",
    "data_base": "2025-12-31",
    "planilha": "RELATORIO_DTB_BRASIL_2025_MUNICIPIOS.ods",
-   "coletado_em": "2026-11-08T03:21:57Z",
+   "coletado_em": "2026-11-15T07:13:44Z",
    "bytes": 1635600,
    "sha256": "d077a0e48c36cf18bcc96268b4a436200c014c6b8522c1a62d894acaf39dad27",
    "last_modified": "Thu, 26 Mar 2026 21:07:36 GMT",
@@ -19,7 +19,7 @@
   },
   "estimativa": {
    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/last%201",
-   "coletado_em": "2026-11-08T03:21:57Z",
+   "coletado_em": "2026-11-15T07:13:44Z",
    "bytes": 1508656,
    "sha256": "2af3c54c40389e6aa25a347ae4ac023e9b1c0b5d7da7eccf76ccd85fd6716a73",
    "base": "ibge_estimativa",
@@ -42,7 +42,7 @@
    "sha256_valores": "0d8985b36b749500f5e8cd0c546b0eb6edc0a2067f0a9bd9936977bab3aed4cb",
    "origem": "release",
    "sha256_release": "2993aea87e42b2066e8c8a873dc87bfeafef285b9cec30c2c18bfd29341b081d",
-   "conferido_com_a_fonte_em": "2026-11-08T03:21:57Z",
+   "conferido_com_a_fonte_em": "2026-11-15T07:13:44Z",
    "ausentes": [
     "5101837"
    ],

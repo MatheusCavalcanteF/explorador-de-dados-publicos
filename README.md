@@ -29,7 +29,7 @@ Publicado em 08/11/2026 pela execução manual [42442355751](https://github.com/
 
 Conferido no site publicado. O CI pediu ao site, em Python e Node, o Parquet da população, a página de Santos e o sitemap: endereço, gzip, `Range`, `HEAD`, sitemap e leitor bateram com o plano, e 30 links exatos sorteados por métrica devolveram o valor publicado. Depois, fora do CI, o sitemap trouxe exatamente as páginas esperadas pela lista de municípios, e o JSON-LD de Santos passou no validador do pipeline com os mesmos valores do Parquet ([`endereco_e_buscadores.json`](docs/medicoes/resultados/endereco_e_buscadores.json)). Em 07/11/2026, ainda no endereço anterior, Chrome 157, Firefox 159 e WebKit 27.2 receberam o Parquet de 225.932 bytes com 116.787 em gzip e o mesmo SHA-256 do build, `Range` voltou `206` com bytes crus, e o leitor em JavaScript leu as 5.571 linhas sem divergência da coleta; esse teste nos navegadores não foi refeito no endereço novo. O build do site tem 5.608 arquivos e 58,1 MB. A página de município tem mediana de 10,1 KB, 3,7 KB deles de JSON-LD; servida em gzip, 3,0 KB numa amostra de 25 páginas.
 
-A publicação semanal foi religada em 07/11/2026, aos domingos às 00:47 UTC. A primeira execução agendada ainda não aconteceu.
+A publicação semanal foi religada em 07/11/2026, aos domingos às 00:47 UTC. A primeira execução agendada, a [43688982146](https://github.com/MatheusCavalcanteF/explorador-de-dados-publicos/actions/runs/43688982146), de 15/11/2026, coletou, publicou e conferiu sozinha. Ela começou às 07:13 UTC, 6 h 26 min depois da hora marcada: o horário do agendamento não é garantido, e nada no projeto depende dele.
 
 ## Como funciona
 

@@ -16,7 +16,12 @@ A divisão proposta (deploy e CI; SIH e catálogo; educação e IBGE) foi mantid
 - Repetir no site real os testes de `Range`, `HEAD`, gzip e leitor. Feito em 07/11/2026, nos três navegadores; ver [Hospedagem](arquitetura.md#hospedagem-github-pages).
 - **Fechamento, em 08/11/2026:** repositório renomeado, endereço numa configuração única, sitemap, link canônico, Open Graph e JSON-LD em cada página, suporte ao arquivo do Search Console, revisão da estimativa marcada na página, e o teste diário do INEP. Ver [Endereço e buscadores](arquitetura.md#endereço-e-buscadores) e [Riscos](escopo-e-riscos.md#riscos).
 
-*Pronto quando:* o workflow agendado publica sozinho, as fontes respondem do runner e os testes de hospedagem batem com este plano. Se o runner não alcançar os FTPs, parar e avisar: é o que mais pode mudar o plano. Em 08/11/2026, só falta a primeira execução agendada, em 15/11.
+*Pronto quando:* o workflow agendado publica sozinho, as fontes respondem do runner e os testes de hospedagem batem com este plano. Se o runner não alcançar os FTPs, parar e avisar: é o que mais pode mudar o plano.
+
+**Fechada em 15/11/2026.** A primeira execução agendada do `Publicar`, a [43688982146](https://github.com/MatheusCavalcanteF/explorador-de-dados-publicos/actions/runs/43688982146), coletou, publicou e conferiu sozinha. DTB, estimativa e Censo vieram iguais aos da coleta anterior; DATASUS, CAGED e Siconfi responderam do runner; endereço, gzip, `Range`, `HEAD`, página e sitemap bateram com o plano; o leitor em JavaScript leu as 5.571 linhas sem divergência; e nenhum link oficial estava quebrado. O manifesto dela é o commit `519479d`.
+
+- **O horário do agendamento não é garantido.** Marcada para 00:47 UTC, a execução começou às 07:13 UTC, 6 h 26 min depois. As 7 execuções do `INEP diário`, marcadas para 14:23 UTC, começaram entre 18:53 e 23:28 UTC: de 4 h 30 min a 9 h 05 min depois. Nenhuma das 8 começou a menos de 4 horas da hora marcada. Nada no projeto pode depender do horário em que um workflow agendado roda, nem da ordem entre dois agendados: só de que ele roda depois da hora marcada. O que precisa de ordem fica no mesmo workflow, em jobs encadeados, como a coleta, a publicação e a conferência do `Publicar`.
+- **INEP: o runner não o alcançou em nenhum dos 7 dias.** De 08 a 14/11/2026, o `INEP diário` fez um pedido por dia, sem nova tentativa. Nos 7, o DNS respondeu, a conexão abriu e o servidor a derrubou no TLS (`Connection reset by peer`). Com as 3 execuções do diagnóstico de 07/11, são 10 tentativas em 8 dias, nenhuma com resposta. Um pedido por dia não é excesso de pedidos: a hipótese de bloqueio por volume caiu. A F1c não começa por espaçar pedidos, e sim por outra origem oficial dos mesmos arquivos. O workflow se desligou depois do dia 14, e os 7 artefatos ficam guardados por 90 dias.
 
 **F1b. SIH do Brasil, com catálogo e supressão**
 - **As 27 UFs**, partições por ano no runner, janela aberta recalculada. **O público é só a superfície** que o site mostra, publicada com ele; nada do SIH em Releases (decidido em 10/11/2026).
@@ -34,7 +39,7 @@ A divisão proposta (deploy e CI; SIH e catálogo; educação e IBGE) foi mantid
 - Contrato: nos 76,1 milhões de AIHs das competências 2101 a 2608, nenhuma linha violou as regras (competência, IDENT, UF do hospital, municípios na DTB, datas, defasagem de até 5 meses, CID, dicionários, chave única). O sexo 4, novo e sem definição em documento oficial, vai para "Ignorado", como no TabWin.
 
 **F1c. Educação e o restante do IBGE**
-- **Antes de tudo, uma rota do runner até o INEP**, que recusou a conexão em 07/11/2026. Se a hipótese de bloqueio por excesso de pedidos não se confirmar, procurar outra origem oficial dos mesmos arquivos. Sem rota, a educação não entra.
+- **Antes de tudo, uma rota do runner até o INEP**, que recusou o runner em 07/11/2026 e nos 7 dias do teste diário, de 08 a 14/11/2026. A hipótese de bloqueio por excesso de pedidos caiu (ver o fechamento da F1a): a rota a procurar é outra origem oficial dos mesmos arquivos. Sem rota, a educação não entra.
 - **Censo Escolar e IDEB**, PIB, amostra conferida com as ferramentas do INEP e do SIDRA.
 - O teste de dedução passa a cobrir as tabelas novas.
 

@@ -407,9 +407,21 @@ cruzamentos_da_origem:
     # ressalva acompanha toda consulta que atravessa a quebra, e o arquivo traz, em cada linha, desde que
     # ano o valor é comparável. Nas 9 passagens comuns de 2013 em diante, de 5 a 35 municípios mudam mais
     # de 5% ao ano, e de 1.364 a 2.083 caem; em 2017-2018 são 374 e 2.934, e em 2021-2024, 952 e 3.002.
+    # A causa da quebra de 2018 está em documento do IBGE (docs/medicoes/resultados/quebra_2018.json, de
+    # 16/11/2026): as notas das estimativas de 2017 e de 2018 no Diário Oficial comparam os totais das UFs com
+    # projeções diferentes (2013 e 2018), e o esclarecimento da Diretoria de Pesquisas de 2021 diz que essas
+    # projeções são o insumo das estimativas municipais e foram revistas em 2018. Nenhum documento lido mede o
+    # efeito por município; isso vem dos dados. `documentos` vai junto da ressalva, com o link de cada um.
     quebras:
       - a_partir_de: 2018
-        ressalva: "A série muda de patamar entre 2017 e 2018: 2.934 dos 5.570 municípios têm em 2018 estimativa menor que a de 2017, contra 1.364 a 1.595 nas outras passagens de um ano entre 2013 e 2021 (medido em 15/11/2026). Os valores de 2018 em diante não são diretamente comparáveis com os anteriores."
+        ressalva: "A série muda de patamar entre 2017 e 2018, quando o IBGE trocou a projeção que dá o total de cada UF, que o método das estimativas reparte entre os municípios. Até 2017, as estimativas partem da Projeção da População de 2013; de 2018 em diante, da revisão de 2018, que atualizou a fecundidade até 2016 com os registros de nascimento desde 2010. A troca está nas notas das estimativas publicadas no Diário Oficial em 2017 e em 2018 e no esclarecimento da Diretoria de Pesquisas do IBGE de 27/08/2021. De 2017 para 2018, 9 das 27 UFs e 2.934 dos 5.570 municípios têm estimativa menor; nas outras passagens de um ano entre 2013 e 2021, caem de 1.364 a 1.595 municípios (medido em 15 e 16/11/2026). Os valores de 2018 em diante não são diretamente comparáveis com os anteriores."
+        documentos:
+          - titulo: "IBGE, estimativas de 2017 publicadas no Diário Oficial (notas com a Projeção da População de 2013)"
+            url: "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2017/estimativa_dou_2017.pdf"
+          - titulo: "IBGE, estimativas de 2018 publicadas no Diário Oficial (notas com a Projeção da População de 2018)"
+            url: "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2018/estimativa_dou_2018_20181019.pdf"
+          - titulo: "IBGE, Diretoria de Pesquisas: esclarecimentos sobre as Estimativas da População dos Municípios, 27/08/2021"
+            url: "https://www.ibge.gov.br/np_download/novoportal/documentos_institucionais/Esclarecimentos_prestados_pela_DPE_estimativas_das_populacoes_municipais_20210827.pdf"
       - a_partir_de: 2024
         ressalva: "As estimativas de 2024 em diante partem do Censo 2022, e as de 2021 para trás, do Censo 2010. Não são comparáveis: a diferença entre 2021 e 2024 mistura a mudança da população com a troca da base. Em 3.002 dos 5.570 municípios, a estimativa de 2024 é menor que a de 2021 (medido em 15/11/2026)."
     # Ressalvas de alguns municípios em alguns anos, que acompanham a consulta que os inclui. Medido em
@@ -423,6 +435,17 @@ cruzamentos_da_origem:
     # Uma passagem fora da lista acima em que mais municípios do que isto mudem mais do que o percentual,
     # ao ano, para a coleta: é uma quebra que a tela ainda não avisa.
     quebra_nao_declarada: { variacao_anual_pct: 5, municipios_max: 150 }
+
+# Bases que reprovam sozinhas (pipeline/isoladas.py; decidido em 16/11/2026). Se uma delas reprovar no contrato,
+# ou a fonte dela não responder, o resto do site é publicado, e ela fica com os arquivos que estão no ar,
+# baixados do site e conferidos pelo SHA-256 de manifesto/publicado.json; sem versão anterior, ou com cópia
+# que não confere, ela sai do site. A execução termina vermelha, com o motivo. `arquivos` são todos os que a
+# base põe no site. A lista de municípios, a estimativa e o Censo ficam fora: todas as páginas saem deles, e
+# a falha de um deles mantém o site inteiro. O SIH entra aqui, com o arquivo da superfície, quando for ao site.
+isoladas:
+  ibge_pop_ano:
+    rotulo: População por município e ano
+    arquivos: [dados/ibge/populacao_por_ano.parquet, dados/ibge/populacao_por_ano.json]
 
 # Somas que a supressão e o teste de dedução de cada versão tratam como publicadas, além dos cruzamentos:
 # UF e Brasil. Cada uma é uma lista de colunas; a vazia é o total do Brasil no ano. A superfície de hoje

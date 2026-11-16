@@ -1,0 +1,167 @@
+{
+ "medido_em": "2026-11-16T17:39:19Z",
+ "documentos": [
+  {
+   "titulo": "IBGE, Estimativas da população residente com data de referência em 1º de julho de 2017, como publicadas no Diário Oficial",
+   "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2017/estimativa_dou_2017.pdf",
+   "bytes": 2822951,
+   "sha256": "c78d35f50e30af59fa357dbfd73d1b2b589f34377fe8b5015569399616763335",
+   "trechos": [
+    {
+     "trecho": "com relação a Projeção da População para o Brasil e Unidades da Federação 2013, para o ano de 2017",
+     "encontrado": true
+    }
+   ]
+  },
+  {
+   "titulo": "IBGE, Estimativas da população residente com data de referência em 1º de julho de 2018, como publicadas no Diário Oficial",
+   "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2018/estimativa_dou_2018_20181019.pdf",
+   "bytes": 2755618,
+   "sha256": "d40e56bcc2ec6124d77988aeae75d3fedf24d1ca7a45f8b22c7abc0b2d41205b",
+   "trechos": [
+    {
+     "trecho": "com relação a Projeção da População para o Brasil e Unidades da Federação 2018, para o ano de 2018",
+     "encontrado": true
+    }
+   ]
+  },
+  {
+   "titulo": "IBGE, Diretoria de Pesquisas: esclarecimentos sobre as Estimativas da População dos Municípios, de 27/08/2021",
+   "url": "https://www.ibge.gov.br/np_download/novoportal/documentos_institucionais/Esclarecimentos_prestados_pela_DPE_estimativas_das_populacoes_municipais_20210827.pdf",
+   "bytes": 493232,
+   "sha256": "c31659f19fa3f2b11fc8ac01e2e808ed474b7a65ec8b29af5753d6800c861913",
+   "trechos": [
+    {
+     "trecho": "Esse método utiliza como insumos básicos as populações obtidas das Projeções da População para o Brasil e Unidades da Federação mais recentes",
+     "encontrado": true
+    },
+    {
+     "trecho": "As Projeções da População das Unidades da Federação, insumo básico para cálculo das Estimativas da População dos Municípios, foram revisadas e publicadas em 2018, com a atualização da componente fecundidade até o ano de 2016",
+     "encontrado": true
+    },
+    {
+     "trecho": "Foi a primeira vez que as Projeções da População foram atualizadas a partir dos registros de nascimentos observados (e ajustados) desde 2010",
+     "encontrado": true
+    }
+   ]
+  }
+ ],
+ "sidra": {
+  "url_ufs": "https://apisidra.ibge.gov.br/values/t/6579/n3/all/v/9324/p/2017,2018",
+  "url_municipios": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2017,2018",
+  "ufs": 27,
+  "ufs_com_2018_menor": 9,
+  "totais_das_ufs": {
+   "11": {
+    "2017": 1805788,
+    "2018": 1757589
+   },
+   "12": {
+    "2017": 829619,
+    "2018": 869265
+   },
+   "13": {
+    "2017": 4063614,
+    "2018": 4080611
+   },
+   "14": {
+    "2017": 522636,
+    "2018": 576568
+   },
+   "15": {
+    "2017": 8366628,
+    "2018": 8513497
+   },
+   "16": {
+    "2017": 797722,
+    "2018": 829494
+   },
+   "17": {
+    "2017": 1550194,
+    "2018": 1555229
+   },
+   "21": {
+    "2017": 7000229,
+    "2018": 7035055
+   },
+   "22": {
+    "2017": 3219257,
+    "2018": 3264531
+   },
+   "23": {
+    "2017": 9020460,
+    "2018": 9075649
+   },
+   "24": {
+    "2017": 3507003,
+    "2018": 3479010
+   },
+   "25": {
+    "2017": 4025558,
+    "2018": 3996496
+   },
+   "26": {
+    "2017": 9473266,
+    "2018": 9496294
+   },
+   "27": {
+    "2017": 3375823,
+    "2018": 3322820
+   },
+   "28": {
+    "2017": 2288116,
+    "2018": 2278308
+   },
+   "29": {
+    "2017": 15344447,
+    "2018": 14812617
+   },
+   "31": {
+    "2017": 21119536,
+    "2018": 21040662
+   },
+   "32": {
+    "2017": 4016356,
+    "2018": 3972388
+   },
+   "33": {
+    "2017": 16718956,
+    "2018": 17159960
+   },
+   "35": {
+    "2017": 45094866,
+    "2018": 45538936
+   },
+   "41": {
+    "2017": 11320892,
+    "2018": 11348937
+   },
+   "42": {
+    "2017": 7001161,
+    "2018": 7075494
+   },
+   "43": {
+    "2017": 11322895,
+    "2018": 11329605
+   },
+   "50": {
+    "2017": 2713147,
+    "2018": 2748023
+   },
+   "51": {
+    "2017": 3344544,
+    "2018": 3441998
+   },
+   "52": {
+    "2017": 6778772,
+    "2018": 6921161
+   },
+   "53": {
+    "2017": 3039444,
+    "2018": 2974703
+   }
+  },
+  "municipios_com_os_dois_anos": 5570,
+  "municipios_com_2018_menor": 2934
+ }
+}

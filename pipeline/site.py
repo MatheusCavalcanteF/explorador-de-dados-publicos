@@ -17,7 +17,7 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from . import buscadores, projeto
+from . import buscadores, isoladas, projeto
 
 WEB = Path(__file__).resolve().parent.parent / "web"
 NOME = projeto.NOME
@@ -468,7 +468,9 @@ def populacao_por_ano(coleta: dict, catalogo: dict, saida: Path) -> list[str]:
                        "municipios_sem_valor": len(serie["anos"][ano]["ausentes"]),
                        "comparavel_desde": serie["anos"][ano]["comparavel_desde"]} for ano in anos},
         "sem_dado": {"anos": cruzamento["anos"].get("sem_dado") or [], "ressalva": cruzamento["anos"].get("sem_dado_ressalva")},
-        "quebras": [{"a_partir_de": q["a_partir_de"], "ressalva": q["ressalva"]} for q in cruzamento.get("quebras") or []],
+        "quebras": [{"a_partir_de": q["a_partir_de"], "ressalva": q["ressalva"]}
+                    | ({"documentos": q["documentos"]} if q.get("documentos") else {})
+                    for q in cruzamento.get("quebras") or []],
         "notas": [{"anos": n["anos"], "municipios": n["municipios"], "ressalva": n["ressalva"]} for n in cruzamento.get("notas") or []],
         "supressao": {"aplica": False, "motivo": base["supressao"]["motivo"]},
     }
@@ -525,9 +527,13 @@ def conferir_limites(saida: Path, limites: dict) -> dict:
 
 
 def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = None, execucao: str = "local",
-              google: str | None = projeto.GOOGLE_SEARCH_CONSOLE, sih_local: Path | None = None) -> dict:
+              google: str | None = projeto.GOOGLE_SEARCH_CONSOLE, sih_local: Path | None = None,
+              reprovadas: dict | None = None, mantidos: Path | None = None) -> dict:
     """O site inteiro. `sih_local` é a pasta de partições de uma execução local do SIH, só para conferir no
-    navegador enquanto o catálogo não manda publicar: não muda o catálogo e para com erro no CI."""
+    navegador enquanto o catálogo não manda publicar: não muda o catálogo e para com erro no CI.
+
+    `reprovadas` são as bases isoladas que reprovaram nesta execução, e `mantidos`, a pasta com a versão no
+    ar delas (isoladas.manter). O resultado traz, em `isoladas`, o que foi ao ar de cada uma."""
     sih = None
     if sih_local is not None:
         exigir_build_local()
@@ -568,9 +574,11 @@ def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = No
                                                ensure_ascii=False, separators=(",", ":")))
     parquet(municipios, saida / PARQUET)
     populacao_por_ano(coleta, catalogo, saida)
+    # Depois de tudo construído: a base que reprovou entra com a versão no ar, conferida, ou fica de fora.
+    publicado = isoladas.aplicar(saida, catalogo, coleta["coletado_em"], execucao, reprovadas or {}, mantidos)
     versao = {"execucao": execucao, "coletado_em": coleta["coletado_em"], "municipios": len(municipios)}
     if sih is not None:
         versao["sih"] = "build local, fora do catálogo publicado"
     gravar("versao.json", json.dumps(versao, ensure_ascii=False))
     # Por último, para que nenhum arquivo escape da conferência. Passou do limite, o build falha.
-    return versao | {"tamanho": conferir_limites(saida, catalogo["limites"])}
+    return versao | {"tamanho": conferir_limites(saida, catalogo["limites"]), "isoladas": publicado}

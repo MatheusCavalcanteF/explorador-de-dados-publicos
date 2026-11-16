@@ -189,7 +189,10 @@ const Especificacao = (() => {
     const ate = Number(painel.periodo.ate);
     for (const q of c.quebras || []) {
       if (de < q.a_partir_de && q.a_partir_de <= ate) {
-        saida.push({ tipo: 'quebra_de_serie', a_partir_de: String(q.a_partir_de), texto: q.ressalva });
+        // O documento que explica a quebra vai junto, com o link, para a tela citar a fonte da ressalva.
+        const documentos = (q.documentos || []).map((d) => ({ titulo: d.titulo, url: d.url }));
+        saida.push({ tipo: 'quebra_de_serie', a_partir_de: String(q.a_partir_de), texto: q.ressalva,
+          ...(documentos.length ? { documentos } : {}) });
       }
     }
     const faltam = (c.anos.sem_dado || []).filter((ano) => ano >= de && ano <= ate);

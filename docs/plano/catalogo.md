@@ -119,11 +119,16 @@ cruzamentos_da_origem:   # já vêm agregados da fonte oficial: sem supressão, 
     arquivo: dados/ibge/populacao_por_ano.parquet
     anos: { primeiro: 2013, sem_dado: [2022, 2023], sem_dado_ressalva: "..." }
     quebras:                # o valor de a_partir_de em diante não se compara com o de antes
-      - { a_partir_de: 2018, ressalva: "..." }
+      - { a_partir_de: 2018, ressalva: "...", documentos: [{ titulo: "...", url: "https://..." }] }   # projeção de 2013 para a de 2018
       - { a_partir_de: 2024, ressalva: "..." }   # Censo 2010 para Censo 2022
     notas:                  # um município num ano
       - { anos: [2024], municipios: ["5107925"], ressalva: "..." }
-    quebra_nao_declarada: { variacao_anual_pct: 5, municipios_max: 150 }   # acima disso, a coleta para
+    quebra_nao_declarada: { variacao_anual_pct: 5, municipios_max: 150 }   # acima disso, a série reprova
+
+isoladas:                  # reprovam sozinhas: o resto do site é publicado (ver CI e histórico)
+  ibge_pop_ano:
+    rotulo: População por município e ano
+    arquivos: [dados/ibge/populacao_por_ano.parquet, dados/ibge/populacao_por_ano.json]
 
 cruzamentos:
   - id: sih_res_mes

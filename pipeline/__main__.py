@@ -7,7 +7,10 @@
     python -m pipeline alcance    --saida build/coleta
     python -m pipeline diagnostico --saida build/diagnostico [--resumo arquivo.md] [--pular inep ...]
     python -m pipeline inep       --saida build/inep [--resumo arquivo.md]
+    python -m pipeline manter     --coleta build/coleta --manifesto manifesto/publicado.json --destino build/mantidos
+                                  (das bases isoladas que reprovaram, a versão no site, conferida com o manifesto)
     python -m pipeline construir  --coleta build/coleta --saida build/site [--links manifesto/links.json] [--execucao ID]
+                                  [--mantidos build/mantidos]  (grava build/coleta/publicado.json)
                                   [--sih-local PASTA]  (só local: SIH nas páginas sem mudar o catálogo; para no CI)
     python -m pipeline hospedagem --coleta build/coleta --site build/site --url URL --execucao ID
     python -m pipeline links      --coleta build/coleta
@@ -31,8 +34,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import (alcance, catalogo, diagnostico, hospedagem, ibge, links, manifesto, populacao_por_ano, projeto, rede,
-               release, site)
+from . import (alcance, catalogo, diagnostico, hospedagem, ibge, isoladas, links, manifesto, populacao_por_ano, projeto,
+               rede, release, site)
 
 
 def _estimativa_no_site():
@@ -84,11 +87,17 @@ def main(argv=None) -> int:
     p = sub.add_parser("inep")
     p.add_argument("--saida", type=Path, required=True)
     p.add_argument("--resumo", type=Path)
+    p = sub.add_parser("manter")
+    p.add_argument("--coleta", type=Path, required=True)
+    p.add_argument("--manifesto", type=Path, required=True)
+    p.add_argument("--destino", type=Path, required=True)
     p = sub.add_parser("construir")
     p.add_argument("--coleta", type=Path, required=True)
     p.add_argument("--saida", type=Path, required=True)
     p.add_argument("--links", type=Path)
     p.add_argument("--execucao", default="local")
+    # A pasta de `manter`. Com ela, toda base isolada precisa ter sido construída ou ter passado por `manter`.
+    p.add_argument("--mantidos", type=Path)
     # Partições de uma execução local do SIH (trabalho/particoes). Só para conferir no navegador: não muda o
     # catálogo, que segue com publicacao.site: false, e para com erro no CI.
     p.add_argument("--sih-local", type=Path)
@@ -152,14 +161,19 @@ def main(argv=None) -> int:
               f"Censo 2022 da {fontes['censo']['origem']}")
         for nome, fonte in fontes.items():
             print(f"{nome}: em relação à coleta anterior, {fonte['em_relacao_a_coleta_anterior']}")
-        serie = resultado["populacao_por_ano"]
-        print(f"População por ano: {len(serie['anos'])} anos, de {min(serie['anos'])} a {max(serie['anos'])}, "
-              f"um pedido à SIDRA por ano")
-        # Um ano já coletado que muda é revisão do IBGE: fica no manifesto, com a data, e vira aviso aqui.
-        for ano, item in serie["anos"].items():
-            if item["em_relacao_a_coleta_anterior"] == "valores_mudaram":
-                print(f"::warning title=População por ano revisada pelo IBGE::Os valores de {ano} mudaram desde a "
-                      f"coleta anterior; o manifesto registra a data")
+        serie = resultado.get("populacao_por_ano")
+        if serie is not None:
+            print(f"População por ano: {len(serie['anos'])} anos, de {min(serie['anos'])} a {max(serie['anos'])}, "
+                  f"um pedido à SIDRA por ano")
+            # Um ano já coletado que muda é revisão do IBGE: fica no manifesto, com a data, e vira aviso aqui.
+            for ano, item in serie["anos"].items():
+                if item["em_relacao_a_coleta_anterior"] == "valores_mudaram":
+                    print(f"::warning title=População por ano revisada pelo IBGE::Os valores de {ano} mudaram desde a "
+                          f"coleta anterior; o manifesto registra a data")
+        # A base isolada que reprova não para a coleta: o aviso sai aqui, e a execução fica vermelha no fim.
+        for base, item in isoladas.ler_reprovadas(args.saida, cat, exigir=True).items():
+            print(f"::warning title=Base reprovada: {base}::{item['motivo']} A coleta segue sem ela; o passo seguinte "
+                  f"tenta manter a versão que está no site, e a execução termina vermelha.")
         # Revisão não bloqueia: aparece como aviso no workflow, além da ressalva na página.
         limite = cat["bases"]["ibge_estimativa"]["revisao"]["aviso_variacao_pct"]
         nomes = {m["codigo"]: m["nome"] for m in resultado["municipios"]}
@@ -181,13 +195,27 @@ def main(argv=None) -> int:
         _diagnostico(diagnostico.executar(alvos), args.saida, "diagnostico", args.resumo)
     elif args.comando == "inep":
         _diagnostico(diagnostico.inep_uma_vez(), args.saida, "inep", args.resumo)
+    elif args.comando == "manter":
+        resultado = isoladas.manter(args.coleta, cat, args.manifesto, args.destino)
+        if not resultado:
+            print("Bases isoladas: nenhuma reprovou; nada foi pedido ao site")
+        for base, item in resultado.items():
+            texto = ("versão do site mantida, conferida com o manifesto" if item["situacao"] == "mantida"
+                     else f"sai do site: {item['porque']}")
+            print(f"::warning title=Base reprovada: {base}::{texto}")
     elif args.comando == "construir":
         anteriores = _ler(args.links) if args.links and args.links.exists() else None
-        versao = site.construir(_ler(args.coleta / "ibge.json"), cat, args.saida, anteriores, args.execucao,
-                                sih_local=args.sih_local)
+        coleta = _ler(args.coleta / "ibge.json")
+        versao = site.construir(coleta, cat, args.saida, anteriores, args.execucao, sih_local=args.sih_local,
+                                reprovadas=isoladas.ler_reprovadas(args.coleta, cat), mantidos=args.mantidos)
         tamanho = versao["tamanho"]
         print(f"Site: {versao['municipios']} páginas de município em {args.saida}. Maior página: "
               f"{tamanho['maior_pagina']}, {tamanho['maior_pagina_bytes']} bytes, limite {tamanho['limite_pagina_bytes']}")
+        # O que foi ao ar de cada base isolada: vai com a coleta para o job seguinte, e de lá para o manifesto.
+        _gravar(args.coleta / isoladas.PUBLICADO, {"execucao": args.execucao, "coletado_em": coleta["coletado_em"],
+                                                   "bases": versao["isoladas"]})
+        for base, item in versao["isoladas"].items():
+            print(f"{base}: {item['situacao']}" + (f" ({item['porque']})" if item["situacao"] == "fora" else ""))
     elif args.comando == "hospedagem":
         resultado = hospedagem.conferir(args.url, args.site, args.execucao)
         _gravar(args.coleta / "hospedagem.json", resultado)

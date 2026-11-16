@@ -126,9 +126,11 @@ def test_falhas_deixam_a_execucao_vermelha(tmp_path):
     def gravar(nome, valor):
         (tmp_path / f"{nome}.json").write_text(json.dumps(valor), encoding="utf-8")
     assert manifesto.falhas(tmp_path) == ["Teste de alcance não rodou", "Testes de hospedagem não rodaram",
-                                          "Leitor em JavaScript não rodou"]
+                                          "Leitor em JavaScript não rodou",
+                                          "O build não registrou o que foi ao ar de cada base isolada (publicado.json)"]
     gravar("alcance", {"fontes": {"datasus_ftp": {"ok": False, "erro": "timeout"}, "inep": {"ok": True}}})
     gravar("hospedagem", {"testes": {"range": {"bate_com_o_plano": False}, "range_pedindo_gzip": {"bate_com_o_plano": None}}})
     gravar("leitor", {"ok": False})
+    gravar("publicado", {"execucao": "1", "coletado_em": "2026-11-22T07:13:00Z", "bases": {}})
     assert manifesto.falhas(tmp_path) == ["Alcance: datasus_ftp falhou (timeout)", "Hospedagem: range não bate com o plano",
                                           "Leitor em JavaScript divergiu da coleta"]

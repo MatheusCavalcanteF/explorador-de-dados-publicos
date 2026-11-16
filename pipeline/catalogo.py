@@ -125,6 +125,35 @@ def validar(catalogo: dict) -> None:
         for nome, base in bases.items():
             if "superficie" in base:
                 _validar_superficie(nome, base["superficie"], catalogo)
+    if "isoladas" in catalogo:
+        _validar_isoladas(catalogo)
+
+
+def _validar_isoladas(catalogo: dict) -> None:
+    """Bases que reprovam sozinhas (pipeline/isoladas.py): uma base ou um cruzamento da origem, com o rótulo da
+    mensagem e todos os arquivos que põe no site, sem arquivo de outra. O cruzamento da origem lista o Parquet e
+    a ficha ao lado dele: um arquivo esquecido ficaria sem a conferência do manifesto."""
+    isoladas = catalogo["isoladas"]
+    if not isinstance(isoladas, dict) or not isoladas:
+        raise ErroDeCatalogo("isoladas: um mapa de bases, com rotulo e arquivos")
+    da_origem = {c["id"]: c for c in catalogo.get("cruzamentos_da_origem") or []}
+    vistos: set[str] = set()
+    for nome, regra in isoladas.items():
+        onde = f"isoladas.{nome}"
+        if nome not in (catalogo.get("bases") or {}) and nome not in da_origem:
+            raise ErroDeCatalogo(f"{onde}: não é base nem cruzamento da origem do catálogo")
+        arquivos = (regra or {}).get("arquivos")
+        if (not isinstance(regra, dict) or set(regra) != {"rotulo", "arquivos"} or not str(regra["rotulo"] or "").strip()
+                or not isinstance(arquivos, list) or not arquivos
+                or not all(isinstance(a, str) and _caminho_no_site(a, "") and a for a in arquivos)):
+            raise ErroDeCatalogo(f"{onde}: só rotulo e arquivos, cada um um caminho relativo dentro do site")
+        if len(set(arquivos)) != len(arquivos) or vistos & set(arquivos):
+            raise ErroDeCatalogo(f"{onde}: arquivo repetido, na própria base ou em outra")
+        vistos |= set(arquivos)
+        if nome in da_origem:
+            parquet = da_origem[nome]["arquivo"]
+            if sorted(arquivos) != sorted([parquet, parquet.removesuffix(".parquet") + ".json"]):
+                raise ErroDeCatalogo(f"{onde}: o cruzamento da origem põe no site {parquet} e a ficha .json ao lado")
 
 
 TEMPOS = ("mes", "tri", "ano")
@@ -203,6 +232,15 @@ def _validar_cruzamentos_da_origem(catalogo: dict) -> None:
                 or not all(str(q.get("ressalva") or "").strip() for q in quebras)):
             raise ErroDeCatalogo(f"{onde}: cada quebra tem a_partir_de, um ano com dado depois do primeiro, em ordem, "
                                  "e a ressalva que a tela mostra")
+        for q in quebras:
+            documentos = q.get("documentos", [])
+            # O documento que explica a quebra vai junto da ressalva: título e link https.
+            if (set(q) - {"a_partir_de", "ressalva", "documentos"} or not isinstance(documentos, list)
+                    or ("documentos" in q and not documentos)
+                    or not all(isinstance(d, dict) and set(d) == {"titulo", "url"} and str(d["titulo"] or "").strip()
+                               and str(d["url"] or "").startswith("https://") for d in documentos)):
+                raise ErroDeCatalogo(f"{onde}: a quebra de {q['a_partir_de']} só aceita a_partir_de, ressalva e documentos, "
+                                     "cada documento com titulo e url https")
         for nota in c.get("notas") or []:
             municipios, anos_da_nota = nota.get("municipios") or [], nota.get("anos") or []
             if (not municipios or not all(isinstance(m, str) and len(m) == 7 and m.isdigit() for m in municipios)

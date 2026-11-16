@@ -5,7 +5,7 @@ cada ano. Depois, cada ano é um pedido com todos os municípios, com a própria
 própria data de coleta. Nada é suprimido: é um agregado oficial que o IBGE já publica, e o motivo fica no
 catálogo (bases.ibge_estimativa.supressao).
 
-O contrato para a coleta quando:
+A série reprova (pipeline/isoladas.py) quando:
 - a tabela ganha um ano que o catálogo declara sem dado, ou perde um que ele espera;
 - o último ano da tabela não é o da estimativa que a página mostra, ou os valores dos dois diferem;
 - um valor não é contagem positiva nem o sinal de ausência "...", ou um município está fora da DTB;
@@ -71,18 +71,18 @@ def conferir_anos(na_tabela: list[int], anos: dict, periodo_da_estimativa: str) 
     ultimo = max(na_tabela)
     if str(ultimo) != periodo_da_estimativa:
         raise ErroDeContrato(f"{onde}: o último ano da tabela é {ultimo}, e a estimativa que a página mostra é de "
-                             f"{periodo_da_estimativa}. As duas respostas da SIDRA se contradizem; nada foi publicado.")
+                             f"{periodo_da_estimativa}. As duas respostas da SIDRA se contradizem.")
     presentes = {a for a in na_tabela if a >= primeiro}
     apareceram = sorted(presentes & sem_dado)
     if apareceram:
         raise ErroDeContrato(
-            f"{onde}: a tabela passou a ter {apareceram}, que o catálogo declara sem dado. Nada foi publicado. "
+            f"{onde}: a tabela passou a ter {apareceram}, que o catálogo declara sem dado. "
             f"Tire o ano de anos.sem_dado e veja se ele pede uma quebra nova antes de publicar.")
     esperados = [a for a in range(primeiro, ultimo + 1) if a not in sem_dado]
     faltam = sorted(set(esperados) - presentes)
     if faltam:
         raise ErroDeContrato(
-            f"{onde}: a tabela não tem {faltam}, que o catálogo espera. Nada foi publicado. Se o IBGE não publicou "
+            f"{onde}: a tabela não tem {faltam}, que o catálogo espera. Se o IBGE não publicou "
             f"estimativa nesse ano, declare-o em anos.sem_dado, com a ressalva.")
     return esperados
 
@@ -108,7 +108,7 @@ def conferir_quebras(valores: dict[int, dict[str, int]], regra_da_serie: dict) -
             raise ErroDeContrato(
                 f"{ONDE}: de {antes} para {depois}, {mudaram} municípios mudam mais de {limite['variacao_anual_pct']}% ao "
                 f"ano, acima do máximo de {limite['municipios_max']} de uma passagem comum. Parece uma quebra de série "
-                f"que o catálogo não declara. Nada foi publicado: confira na SIDRA e, se for quebra, declare-a em "
+                f"que o catálogo não declara. Confira na SIDRA e, se for quebra, declare-a em "
                 f"cruzamentos_da_origem.{CRUZAMENTO}.quebras, com a ressalva.")
     return passagens
 
@@ -130,11 +130,11 @@ def coletar(regra_da_serie: dict, codigos: set[str], lista: str, periodo_da_esti
         periodo, numeros, _ = ibge.ler_sidra_com_ausencia(r.corpo, VARIAVEL, onde, (SINAL_DE_AUSENCIA,))
         if periodo != str(ano):
             raise ErroDeContrato(f"{onde}: a resposta é do período {periodo}")
-        ausentes = ibge.conferir_cobertura(codigos, numeros, onde, lista)
+        ausentes = ibge.conferir_cobertura(codigos, numeros, onde, lista, consequencia="")
         soma = sum(numeros.values())
         if soma != totais[ano]:
             raise ErroDeContrato(f"{onde}: a soma dos municípios ({soma}) difere do total do Brasil da própria tabela "
-                                 f"({totais[ano]}). Nada foi publicado.")
+                                 f"({totais[ano]}).")
         valores[ano] = numeros
         hash_valores, velho = sha256_valores(numeros), antes.get(str(ano)) or {}
         if not velho.get("sha256_valores"):
@@ -148,7 +148,7 @@ def coletar(regra_da_serie: dict, codigos: set[str], lista: str, periodo_da_esti
             "valores_desde": (velho.get("valores_desde") or velho["coletado_em"]) if relacao == "igual" else coletado_em}
     if valores[anos[-1]] != estimativa:
         raise ErroDeContrato(f"{ONDE}, {anos[-1]}: os valores da série diferem da estimativa que a página mostra, pedida "
-                             f"minutos antes. A SIDRA pode estar no meio de uma atualização; nada foi publicado.")
+                             f"minutos antes. A SIDRA pode estar no meio de uma atualização.")
     return {"base": regra_da_serie["base"], "cruzamento": CRUZAMENTO, "coletado_em": coletado_em,
             "periodos": ibge.origem(URL_PERIODOS, resposta, coletado_em) | {"na_tabela": sorted(totais)},
             "anos": por_ano, "passagens": conferir_quebras(valores, regra_da_serie),

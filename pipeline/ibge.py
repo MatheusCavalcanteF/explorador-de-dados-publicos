@@ -85,13 +85,15 @@ def ler_sidra_com_ausencia(corpo: bytes, variavel: int, onde: str,
     return periodo, valores, sorted(ausentes)
 
 
-def conferir_cobertura(codigos: set[str], valores: dict[str, int], onde: str, lista: str = "DTB") -> list[str]:
+def conferir_cobertura(codigos: set[str], valores: dict[str, int], onde: str, lista: str = "DTB",
+                       consequencia: str = "Nada foi publicado, e o site anterior continua no ar. ") -> list[str]:
+    """`consequencia` diz o que a falha faz com o site; a série por ano, base isolada, não para o site."""
     desconhecidos = sorted(set(valores) - codigos)
     if desconhecidos:
         # Decisão do projeto: parar, em vez de publicar um número sem município na lista oficial.
         raise ErroDeContrato(
             f"{onde}: {len(desconhecidos)} município(s) na SIDRA fora da lista da {lista}: {desconhecidos[:5]}. "
-            f"Nada foi publicado, e o site anterior continua no ar. Um município novo só entra quando a DTB seguinte "
+            f"{consequencia}Um município novo só entra quando a DTB seguinte "
             f"o incluir; confira o código na SIDRA e a pasta de edições da DTB no geoftp.")
     ausentes = sorted(codigos - set(valores))
     if len(ausentes) > MAX_AUSENTES:
@@ -210,7 +212,11 @@ def coletar(saida: Path, release_censo: Path | None = None, anterior: dict | Non
     """`anterior` são as fontes do manifesto da última coleta, para dizer o que mudou desde ela.
     `publicados` lê a estimativa do site no ar; só é chamado quando a estimativa mudou no mesmo período.
     `serie` é a regra da população por ano (populacao_por_ano.regra); sem ela, a série não é coletada.
-    `anterior_da_serie` é o que o manifesto da última coleta guardou sobre ela."""
+    `anterior_da_serie` é o que o manifesto da última coleta guardou sobre ela.
+
+    A série é uma base isolada (pipeline/isoladas.py): se ela reprovar no contrato, ou a SIDRA não responder
+    para ela, a coleta segue sem ela, e o motivo vai para reprovadas.json. Lista, estimativa e Censo não: se
+    um deles falhar, a coleta para."""
     coletado_em = (agora or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")
     fonte_dtb, municipios = dtb.coletar(pedir, coletado_em)
     codigos = {m["codigo"] for m in municipios}
@@ -244,12 +250,16 @@ def coletar(saida: Path, release_censo: Path | None = None, anterior: dict | Non
         m["populacao_estimada"] = estimativa.get(m["codigo"])
         m["populacao_censo"] = valores_censo.get(m["codigo"])
     resultado = {"coletado_em": coletado_em, "fontes": fontes, "municipios": municipios}
+    saida.mkdir(parents=True, exist_ok=True)
     if serie is not None:
         # Fora de `fontes`: as páginas de hoje não mostram a série, e a data de alteração delas não muda com ela.
-        from . import populacao_por_ano
-        resultado["populacao_por_ano"] = populacao_por_ano.coletar(
-            serie, codigos, lista, periodo, estimativa, anterior_da_serie, pedir, coletado_em)
-    saida.mkdir(parents=True, exist_ok=True)
+        from . import isoladas, populacao_por_ano
+        coletada, reprovacao = isoladas.tentar(lambda: populacao_por_ano.coletar(
+            serie, codigos, lista, periodo, estimativa, anterior_da_serie, pedir, coletado_em))
+        if coletada is not None:
+            resultado["populacao_por_ano"] = coletada
+        isoladas.registrar(saida, "coleta", {populacao_por_ano.CRUZAMENTO: reprovacao} if reprovacao else {},
+                           coletado_em)
     (saida / "ibge.json").write_text(json.dumps(resultado, ensure_ascii=False, indent=1), encoding="utf-8")
     if novo is not None:
         (saida / "censo-2022.json").write_text(json.dumps(novo, ensure_ascii=False, indent=1), encoding="utf-8")

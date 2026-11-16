@@ -314,11 +314,14 @@ for (const catalogo of [real, ligado]) {
   // A série inteira atravessa as duas quebras e os dois anos sem estimativa: as três ressalvas vêm junto,
   // com o texto do catálogo, e a do Censo 2022 diz que os valores não são comparáveis.
   assert.deepEqual(r.ressalvas, [
-    { tipo: 'quebra_de_serie', a_partir_de: '2018', texto: serie.quebras[0].ressalva },
+    { tipo: 'quebra_de_serie', a_partir_de: '2018', texto: serie.quebras[0].ressalva, documentos: serie.quebras[0].documentos },
     { tipo: 'quebra_de_serie', a_partir_de: '2024', texto: serie.quebras[1].ressalva },
     { tipo: 'sem_dado', periodos: ['2022', '2023'], texto: serie.anos.sem_dado_ressalva },
   ]);
   assert.match(r.ressalvas[1].texto, /Censo 2022.*Não são comparáveis/);
+  // A quebra de 2018 cita os documentos do IBGE que explicam a troca da projeção, com o link de cada um.
+  assert.match(r.ressalvas[0].texto, /Projeção da População de 2013.*revisão de 2018/);
+  assert.deepEqual(r.ressalvas[0].documentos.map((d) => new URL(d.url).hostname), ['ftp.ibge.gov.br', 'ftp.ibge.gov.br', 'www.ibge.gov.br']);
   semNumero(r);
   assert.equal(E.validar(catalogo, populacao({ tema: 'populacao' })).ok, true);
   assert.equal(E.validar(catalogo, populacao({ territorio: { municipios: ['3548500', '3550308', '1100015'] }, grafico: 'tabela' })).ok, true);

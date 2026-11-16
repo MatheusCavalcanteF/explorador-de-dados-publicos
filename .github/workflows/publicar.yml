@@ -1,5 +1,8 @@
 # Coleta do IBGE, alcance das fontes, publicação no GitHub Pages e conferências no site publicado.
-# Se a coleta ou o contrato falharem, nada é publicado e o site anterior continua no ar.
+# Se a lista de municípios, a estimativa ou o Censo falharem, nada é publicado e o site anterior continua no
+# ar: todas as páginas saem deles. Uma base isolada (catálogo, isoladas) que reprova não para o site: ela fica
+# com a versão que está no ar, conferida pelo manifesto, ou sai do site, e a execução termina vermelha.
+# Problema do próprio build, como os testes sem rede, continua parando tudo.
 name: Publicar
 
 on:
@@ -51,7 +54,8 @@ jobs:
       # a coleta lê o Parquet do site no ar para achar os municípios revisados; variação acima do
       # limite do catálogo vira aviso nesta execução, sem bloquear.
       # A população por ano vem junto: um pedido à SIDRA por ano da série, com contrato próprio
-      # (pipeline/populacao_por_ano.py). Se ele falhar, nada é publicado.
+      # (pipeline/populacao_por_ano.py). Ela é base isolada: se reprovar, ou a SIDRA não responder para ela,
+      # a coleta segue sem ela e grava o motivo em build/coleta/reprovadas.json.
       - name: Coleta do IBGE
         run: >
           python -m pipeline coletar --saida build/coleta --censo-release build/release/censo-2022.json
@@ -85,9 +89,18 @@ jobs:
           python -m pipeline sih --coleta build/coleta --trabalho build/sih --saida build/sih-medicao
           --no-ar build/no-ar
 
+      # Base isolada que reprovou: os arquivos dela que estão no site, baixados de lá e conferidos pelo SHA-256
+      # de manifesto/publicado.json. Sem versão anterior no manifesto, com cópia que não confere, ou com o site
+      # sem responder, ela sai do site. Sem reprovação, nada é pedido. Fica logo antes do site, depois de toda
+      # etapa que possa reprovar uma base. Erro aqui é do build, e para tudo.
+      - name: Versão no ar das bases reprovadas
+        run: python -m pipeline manter --coleta build/coleta --manifesto manifesto/publicado.json --destino build/mantidos
+
+      # Grava build/coleta/publicado.json: o que foi ao ar de cada base isolada, com o SHA-256 de cada arquivo.
+      # O manifesto o guarda, e a execução seguinte confere com ele a cópia do site.
       - name: Site
         run: |
-          python -m pipeline construir --coleta build/coleta --saida build/site --links manifesto/links.json --execucao "$EXECUCAO"
+          python -m pipeline construir --coleta build/coleta --saida build/site --links manifesto/links.json --execucao "$EXECUCAO" --mantidos build/mantidos
           # Os arquivos que a conferência compara byte a byte com o que o site servir
           mkdir -p build/coleta/site/dados/ibge build/coleta/site/municipio/3548500
           cp build/site/dados/ibge/populacao.parquet build/coleta/site/dados/ibge/
@@ -189,5 +202,6 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
-      - name: Falhas de alcance, hospedagem ou leitor
+      # Também a base isolada que reprovou: o que reprovou, por quê, e o que foi ao ar no lugar dela.
+      - name: Falhas de alcance, hospedagem, leitor ou base isolada
         run: python -m pipeline exigir --coleta build/coleta

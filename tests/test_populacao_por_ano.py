@@ -173,6 +173,12 @@ def test_catalogo_aponta_para_onde_a_serie_e_coletada():
     assert (regra["anos"]["primeiro"], regra["anos"]["sem_dado"]) == (2013, [2022, 2023])
     assert [q["a_partir_de"] for q in regra["quebras"]] == [2018, 2024]
     assert "Censo 2022" in regra["quebras"][1]["ressalva"] and "Não são comparáveis" in regra["quebras"][1]["ressalva"]
+    # A causa da quebra de 2018 está em documento do IBGE, que a ressalva cita e o catálogo liga.
+    assert "Projeção da População de 2013" in regra["quebras"][0]["ressalva"]
+    assert [d["url"].rsplit("/", 1)[1] for d in regra["quebras"][0]["documentos"]] == [
+        "estimativa_dou_2017.pdf", "estimativa_dou_2018_20181019.pdf",
+        "Esclarecimentos_prestados_pela_DPE_estimativas_das_populacoes_municipais_20210827.pdf"]
+    assert "documentos" not in regra["quebras"][1]
     # Sem supressão, com o motivo escrito no catálogo.
     assert cat["bases"]["ibge_estimativa"]["supressao"]["aplica"] is False
     assert "Agregado oficial" in cat["bases"]["ibge_estimativa"]["supressao"]["motivo"]
@@ -276,7 +282,9 @@ def test_ficha_da_serie_tem_fonte_e_coleta_por_ano_quebras_e_o_motivo_de_nao_sup
         "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2024", "coletado_em": "2026-11-07T23:23:20Z",
         "valores_desde": "2026-11-01T10:00:00Z", "sha256": f"{2024:064d}", "bytes": 1508611,
         "municipios_com_valor": 2, "municipios_sem_valor": 1, "comparavel_desde": 2024}
-    assert ficha["quebras"] == [{"a_partir_de": q["a_partir_de"], "ressalva": q["ressalva"]} for q in regra["quebras"]]
+    assert ficha["quebras"] == [{"a_partir_de": q["a_partir_de"], "ressalva": q["ressalva"]}
+                                | ({"documentos": q["documentos"]} if "documentos" in q else {}) for q in regra["quebras"]]
+    assert ficha["quebras"][0]["documentos"][0]["url"].startswith("https://ftp.ibge.gov.br/")
     assert [q["a_partir_de"] for q in ficha["quebras"]] == [2018, 2024]
     assert ficha["sem_dado"] == {"anos": [2022, 2023], "ressalva": regra["anos"]["sem_dado_ressalva"]}
     assert ficha["notas"] == regra["notas"]
@@ -302,6 +310,19 @@ def test_ficha_da_serie_tem_fonte_e_coleta_por_ano_quebras_e_o_motivo_de_nao_sup
     (lambda c, x: x["quebras"][1].update(a_partir_de=2022), "cada quebra"),
     (lambda c, x: x["quebras"][1].update(ressalva=" "), "cada quebra"),
     (lambda c, x: x["quebras"].reverse(), "cada quebra"),
+    (lambda c, x: x["quebras"][0].update(fonte="x"), "só aceita a_partir_de, ressalva e documentos"),
+    (lambda c, x: x["quebras"][0].update(documentos=[]), "cada documento com titulo e url https"),
+    (lambda c, x: x["quebras"][0]["documentos"][0].update(url="http://ftp.ibge.gov.br/x.pdf"), "url https"),
+    (lambda c, x: x["quebras"][0]["documentos"][1].pop("titulo"), "url https"),
+    (lambda c, x: c.update(isoladas={"ibge_pop_ano": {"rotulo": "x", "arquivos": ["dados/ibge/populacao_por_ano.parquet"]}}),
+     "a ficha .json ao lado"),
+    (lambda c, x: c.update(isoladas={"outra": {"rotulo": "x", "arquivos": ["a.json"]}}), "não é base nem cruzamento"),
+    (lambda c, x: c["isoladas"]["ibge_pop_ano"].update(rotulo=" "), "só rotulo e arquivos"),
+    (lambda c, x: c["isoladas"]["ibge_pop_ano"].update(extra=1), "só rotulo e arquivos"),
+    (lambda c, x: c["isoladas"]["ibge_pop_ano"].update(arquivos=["/dados/x.json"]), "caminho relativo"),
+    (lambda c, x: c["isoladas"].update(sih={"rotulo": "SIH", "arquivos": ["dados/ibge/populacao_por_ano.json"]}),
+     "arquivo repetido"),
+    (lambda c, x: c.update(isoladas={}), "um mapa de bases"),
     (lambda c, x: x["notas"][0].update(municipios=[5107925]), "cada nota"),
     (lambda c, x: x["notas"][0].update(anos=[2022]), "cada nota"),
     (lambda c, x: x["notas"][0].update(ressalva=""), "cada nota"),

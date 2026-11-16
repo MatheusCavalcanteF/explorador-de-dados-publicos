@@ -4,8 +4,14 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const E = require('../consulta/especificacao.js');
 
-const real = JSON.parse(fs.readFileSync(process.argv[2], 'utf-8'));
 const copia = (x) => JSON.parse(JSON.stringify(x));
+// O catálogo como está no repositório não sabe até que ano a população foi coletada: isso vem da ficha que
+// o build publica ao lado do arquivo. A de teste tem os anos da coleta de 15/11/2026.
+const semCobertura = JSON.parse(fs.readFileSync(process.argv[2], 'utf-8'));
+const ANOS_COLETADOS = ['2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2024', '2025', '2026'];
+const ficha = (anos) => ({ cruzamento: 'ibge_pop_ano', anos: Object.fromEntries(anos.map((a) => [a, { url: 'x' }])) });
+const real = E.comCobertura(semCobertura, [ficha(ANOS_COLETADOS)]);
+assert.equal(semCobertura.cruzamentos_da_origem[0].anos.coletados, undefined);   // comCobertura não altera o original
 // O catálogo real com o SIH ligado: é o que a validação vai ver no dia em que a base for para o site.
 const ligado = copia(real);
 ligado.bases.sih.publicacao.site = true;
@@ -325,6 +331,43 @@ assert.deepEqual(ressalvas('2018', '2021'), []);
 assert.deepEqual(ressalvas('2021', '2024'), ['2024', '2022+2023']);
 assert.deepEqual(ressalvas('2019', '2023'), ['2022+2023']);
 assert.deepEqual(ressalvas('2024', '2026'), []);
+// Depois do último ano coletado. Em parte: a consulta vale, e a ressalva diz quais anos não têm dado e qual
+// é o último. Por inteiro: recusa, e a sugestão é o último ano que existe.
+{
+  const r = E.validar(real, populacao({ periodo: { de: '2025', ate: '2028' } }));
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.ressalvas, [{ tipo: 'fora_da_cobertura', periodos: ['2027', '2028'],
+    texto: 'Sem dado em 2027 e 2028: o último ano coletado da fonte é 2026.' }]);
+  semNumero(r);
+  assert.deepEqual(E.validar(real, populacao({ periodo: { de: '2021', ate: '2027' } })).ressalvas.map((x) => x.tipo),
+    ['quebra_de_serie', 'sem_dado', 'fora_da_cobertura']);
+  for (const catalogo of [real, ligado]) {
+    for (const [periodo, grafico] of [[{ de: '2030', ate: '2030' }, 'numero'], [{ de: '2027', ate: '2035' }, 'linha'], [{ de: '2027', ate: '2027' }, 'tabela']]) {
+      const fora = E.validar(catalogo, populacao({ periodo, grafico }));
+      assert.equal(fora.ok, false);
+      assert.equal(fora.motivo, 'periodo_indisponivel');
+      assert.match(fora.mensagem, /^População estimada está publicada de 2013 a 2026\./);
+      assert.deepEqual(fora.sugestoes[0].painel.periodo, { de: '2026', ate: '2026' });
+      sugestoesValidam(catalogo, fora);
+      semNumero(fora);
+    }
+  }
+  // A cobertura acompanha a coleta: quando a fonte tiver 2027, a mesma consulta passa, sem mudar o catálogo.
+  const com2027 = E.comCobertura(semCobertura, [ficha([...ANOS_COLETADOS, '2027'])]);
+  assert.equal(E.validar(com2027, populacao({ periodo: { de: '2027', ate: '2027' }, grafico: 'numero' })).ok, true);
+  assert.equal(E.validar(real, populacao({ periodo: { de: '2027', ate: '2027' }, grafico: 'numero' })).ok, false);
+}
+// Sem a ficha, ou com uma ficha que contradiz o catálogo, a validação não supõe até onde a série vai: recusa.
+for (const fichas of [undefined, [], [ficha([])], [ficha(['2012', '2013'])], [ficha(['2021', '2022'])], [ficha(['2013', 'x'])],
+  [{ cruzamento: 'outro', anos: { 2013: {} } }], [null], 'texto']) {
+  const catalogo = E.comCobertura(semCobertura, fichas);
+  const r = E.validar(catalogo, populacao());
+  assert.equal(r.ok, false, JSON.stringify(fichas));
+  assert.equal(r.motivo, 'cobertura_desconhecida');
+  assert.deepEqual(r.sugestoes, []);
+  assert.equal(E.validar(catalogo, populacao({ periodo: { de: '2030', ate: '2030' } })).motivo, 'cobertura_desconhecida');
+}
+assert.equal(E.validar(semCobertura, populacao()).motivo, 'cobertura_desconhecida');
 // Um ano só é uma célula: pode ser o número em destaque, e não atravessa quebra.
 {
   const r = E.validar(real, populacao({ periodo: { de: '2026', ate: '2026' }, grafico: 'numero' }));
@@ -363,7 +406,7 @@ recusaDaSerie(populacao({ territorio: { papel: 'residencia', municipios: ['35485
 recusaDaSerie(populacao({ territorio: { papel: 'hospital', municipios: ['3548500'] } }), 'papel_nao_se_aplica');
 // Antes do primeiro ano publicado: recusa, e a sugestão começa onde a série começa.
 assert.match(recusaDaSerie(populacao({ periodo: { de: '2001', ate: '2026' } }), 'periodo_indisponivel', { de: '2013', ate: '2026' }).mensagem,
-  /^População estimada está publicada de 2013 em diante/);
+  /^População estimada está publicada de 2013 a 2026/);
 recusaDaSerie(populacao({ periodo: { de: '2012', ate: '2012' } }), 'periodo_indisponivel', { de: '2013', ate: '2013' });
 // Só anos sem estimativa: recusa com o motivo do catálogo, e a sugestão é o ano seguinte que tem dado.
 assert.match(recusaDaSerie(populacao({ periodo: { de: '2022', ate: '2023' } }), 'periodo_sem_dado', { de: '2024', ate: '2024' }).mensagem,

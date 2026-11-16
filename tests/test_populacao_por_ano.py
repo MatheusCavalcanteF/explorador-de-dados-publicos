@@ -268,6 +268,8 @@ def test_ficha_da_serie_tem_fonte_e_coleta_por_ano_quebras_e_o_motivo_de_nao_sup
     ficha = json.loads((com / "dados/ibge/populacao_por_ano.json").read_text(encoding="utf-8"))
     regra = serie.regra(cat)
     assert ficha["arquivo"] == "populacao_por_ano.parquet" and ficha["metrica"] == "populacao_estimada"
+    # É por estes dois campos que a validação das consultas sabe até que ano a série vai (comCobertura).
+    assert ficha["cruzamento"] == "ibge_pop_ano" and all(len(a) == 4 and a.isdigit() for a in ficha["anos"])
     assert ficha["fonte"]["orgao"] == "IBGE" and ficha["fonte"]["tabela"] == "https://sidra.ibge.gov.br/tabela/6579"
     assert list(ficha["anos"]) == list(coleta["populacao_por_ano"]["anos"])
     assert ficha["anos"]["2024"] == {

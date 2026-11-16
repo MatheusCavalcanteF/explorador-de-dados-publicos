@@ -141,23 +141,43 @@ const Especificacao = (() => {
   const territorioDoCruzamento = (c) => c.dimensoes.find((d) => TERRITORIOS.includes(d)) || null;
   const dimensoesLivres = (c) => c.dimensoes.filter((d) => !TERRITORIOS.includes(d));
 
-  // Anos de um cruzamento que declara os seus (`anos`): do primeiro em diante, menos os sem dado. O último
-  // ano não fica no catálogo: é o que a fonte tiver, e o que não existe aparece como ausente na leitura.
-  const temDado = (c, ano) => ano >= c.anos.primeiro && !(c.anos.sem_dado || []).includes(ano);
+  // Anos de um cruzamento que declara os seus (`anos`). O catálogo diz o primeiro e os sem dado; o último é
+  // o que a fonte tiver, e por isso não fica no catálogo: vem da coleta, pela ficha publicada ao lado do
+  // arquivo, e entra em `anos.coletados` por comCobertura. Sem essa lista, a validação não sabe até onde a
+  // série vai, e recusa em vez de supor.
+  const temDado = (c, ano) => (c.anos.coletados || []).includes(ano);
   const anosDoPeriodo = (periodo) => {
     const anos = [];
     for (let ano = Number(periodo.de); ano <= Number(periodo.ate); ano += 1) anos.push(ano);
     return anos;
   };
-  // O período pedido, levado para onde o cruzamento tem dado: o começo sobe até o primeiro ano com dado,
-  // e o fim desce até o último antes dele.
+  const enumerar = (anos) => (anos.length > 1 ? `${anos.slice(0, -1).join(', ')} e ${anos[anos.length - 1]}` : String(anos[0]));
+  // O período pedido, levado para onde o cruzamento tem dado: o começo vai para o primeiro ano coletado
+  // dali em diante (ou para o último, se o pedido começa depois dele), e o fim, para o último até ali.
   const ajustarAosAnos = (periodo, c) => {
-    if (!c.anos || c.tempo !== 'ano') return periodo;
-    let de = Math.max(Number(periodo.de), c.anos.primeiro);
-    while (!temDado(c, de)) de += 1;
-    let ate = Math.max(Number(periodo.ate), de);
-    while (ate > de && !temDado(c, ate)) ate -= 1;
+    const coletados = c.anos && c.tempo === 'ano' ? c.anos.coletados || [] : [];
+    if (!coletados.length) return periodo;
+    const ultimo = coletados[coletados.length - 1];
+    const de = coletados.find((ano) => ano >= Number(periodo.de)) || ultimo;
+    const ate = [...coletados].reverse().find((ano) => ano <= Number(periodo.ate) && ano >= de) || de;
     return { de: String(de), ate: String(ate) };
+  };
+
+  // O catálogo com os anos que a coleta trouxe para cada cruzamento que declara `anos`. `fichas` são os
+  // JSON publicados ao lado dos arquivos (dados/ibge/populacao_por_ano.json): { cruzamento, anos: { 2013: … } }.
+  // Uma ficha que contradiz o catálogo (ano antes do primeiro, ou declarado sem dado) não é usada, e o
+  // cruzamento fica sem cobertura: toda consulta a ele é recusada.
+  const comCobertura = (catalogo, fichas) => {
+    const copia = { ...catalogo, cruzamentos_da_origem: (catalogo.cruzamentos_da_origem || []).map((c) => ({ ...c })) };
+    for (const c of copia.cruzamentos_da_origem) {
+      const ficha = (Array.isArray(fichas) ? fichas : []).find((f) => objeto(f) && f.cruzamento === c.id && objeto(f.anos));
+      if (!c.anos || !ficha) continue;
+      const anos = Object.keys(ficha.anos).filter((a) => PERIODO.ano.test(a)).map(Number).sort((a, b) => a - b);
+      const coerente = anos.length === Object.keys(ficha.anos).length && anos.length
+        && anos.every((ano) => ano >= c.anos.primeiro && !(c.anos.sem_dado || []).includes(ano));
+      if (coerente) c.anos = { ...c.anos, coletados: anos };
+    }
+    return copia;
   };
   // O que a tela precisa dizer junto do resultado, sem número: as quebras de série que o período atravessa,
   // os anos sem dado dentro dele e as notas dos municípios pedidos nos anos pedidos. Um ano só não atravessa
@@ -174,6 +194,13 @@ const Especificacao = (() => {
     }
     const faltam = (c.anos.sem_dado || []).filter((ano) => ano >= de && ano <= ate);
     if (faltam.length) saida.push({ tipo: 'sem_dado', periodos: faltam.map(String), texto: c.anos.sem_dado_ressalva });
+    // Anos pedidos depois do último coletado: o gráfico termina antes do fim do período, e a tela diz por quê.
+    const ultimo = c.anos.coletados[c.anos.coletados.length - 1];
+    const alem = anosDoPeriodo(painel.periodo).filter((ano) => ano > ultimo);
+    if (alem.length) {
+      saida.push({ tipo: 'fora_da_cobertura', periodos: alem.map(String),
+        texto: `Sem dado em ${enumerar(alem)}: o último ano coletado da fonte é ${ultimo}.` });
+    }
     for (const nota of c.notas || []) {
       const municipios = painel.territorio.municipios.filter((m) => nota.municipios.includes(m));
       const anos = nota.anos.filter((ano) => ano >= de && ano <= ate);
@@ -361,13 +388,19 @@ const Especificacao = (() => {
       return recusa('grao_indisponivel', `${descrever(catalogo, painel)}: este cruzamento não está publicado.`, [painel.metrica]);
     }
     if (cruzamento.anos && tempo === 'ano') {
+      const coletados = cruzamento.anos.coletados || [];
+      if (!coletados.length) {
+        return recusa('cobertura_desconhecida', `${rotulo}: não foi possível saber quais anos estão publicados.`, [painel.metrica]);
+      }
       const primeiro = cruzamento.anos.primeiro;
-      if (Number(painel.periodo.de) < primeiro) {
-        return recusa('periodo_indisponivel', `${rotulo} está publicada de ${primeiro} em diante.`, [painel.metrica]);
+      const ultimo = coletados[coletados.length - 1];
+      // Fora das pontas da série, nem que seja em parte no começo: a sugestão traz o período para dentro dela.
+      if (Number(painel.periodo.de) < primeiro || Number(painel.periodo.de) > ultimo) {
+        return recusa('periodo_indisponivel', `${rotulo} está publicada de ${primeiro} a ${ultimo}.`, [painel.metrica]);
       }
       const anos = anosDoPeriodo(painel.periodo);
       if (anos.every((ano) => !temDado(cruzamento, ano))) {
-        return recusa('periodo_sem_dado', `${rotulo} não tem dado em ${anos.join(' e ')}. ${cruzamento.anos.sem_dado_ressalva}`,
+        return recusa('periodo_sem_dado', `${rotulo} não tem dado em ${enumerar(anos)}. ${cruzamento.anos.sem_dado_ressalva || ''}`.trim(),
           [painel.metrica]);
       }
     }
@@ -507,7 +540,7 @@ const Especificacao = (() => {
     return { ok: true, estado: r.estado, paineis: r.estado.paineis.map((p) => validarNormalizado(catalogo, p)) };
   };
 
-  return { VERSAO, LIMITE_ESTADO, LIMITES, GRAFICOS, normalizar, validar, serializar, ler, abrir };
+  return { VERSAO, LIMITE_ESTADO, LIMITES, GRAFICOS, normalizar, validar, comCobertura, serializar, ler, abrir };
 })();
 
 if (typeof module !== 'undefined') module.exports = Especificacao;

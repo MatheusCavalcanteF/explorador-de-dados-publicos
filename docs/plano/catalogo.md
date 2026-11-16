@@ -110,6 +110,21 @@ dimensoes:
   municipio_hospital:   { base: sih, coluna: mun_hosp, conversao: ibge6_para_ibge7 }
   faixa_5: { base: sih, valores: [00-14, 15-29, 30-49, 50-69, 70+], aninhada_em: faixa_12 }
 
+cruzamentos_da_origem:   # já vêm agregados da fonte oficial: sem supressão, com o motivo na base
+  - id: ibge_pop_ano
+    base: ibge_estimativa   # supressao: { aplica: false, motivo: "..." }
+    dimensoes: [municipio]  # sem papel: nem residência, nem hospital
+    tempo: ano
+    metricas: [populacao_estimada]
+    arquivo: dados/ibge/populacao_por_ano.parquet
+    anos: { primeiro: 2013, sem_dado: [2022, 2023], sem_dado_ressalva: "..." }
+    quebras:                # o valor de a_partir_de em diante não se compara com o de antes
+      - { a_partir_de: 2018, ressalva: "..." }
+      - { a_partir_de: 2024, ressalva: "..." }   # Censo 2010 para Censo 2022
+    notas:                  # um município num ano
+      - { anos: [2024], municipios: ["5107925"], ressalva: "..." }
+    quebra_nao_declarada: { variacao_anual_pct: 5, municipios_max: 150 }   # acima disso, a coleta para
+
 cruzamentos:
   - id: sih_res_mes
     dimensoes: [municipio_residencia, mes]

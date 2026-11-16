@@ -18,6 +18,10 @@ const Especificacao = (() => {
   const SIGLA_DO_PAPEL = { residencia: 'r', hospital: 'h' };
   const PAPEL_DA_SIGLA = { r: 'residencia', h: 'hospital' };
   const ROTULO_DO_PAPEL = { residencia: 'município de residência', hospital: 'município do hospital' };
+  // O município sem papel: o da população residente, que já vem agregada da fonte. Um cruzamento com esta
+  // dimensão não pergunta "de residência ou do hospital?", e um painel com papel não cabe nele.
+  const SEM_PAPEL = 'municipio';
+  const TERRITORIOS = [...Object.values(PAPEIS), SEM_PAPEL];
   // "numero" é o valor único em destaque: só vale quando o painel resolve para uma célula.
   const GRAFICOS = ['linha', 'barras', 'tabela', 'numero'];
   const TEMPOS = ['mes', 'tri', 'ano'];
@@ -76,8 +80,8 @@ const Especificacao = (() => {
     if (!objeto(filtros)) erro('filtros deve ser um objeto');
     else {
       for (const dim of Object.keys(filtros).sort()) {
-        if (!ID.test(dim) || Object.values(PAPEIS).includes(dim)) {
-          erro(`filtro "${dim}" inválido: o município vai em território, com o papel`);
+        if (!ID.test(dim) || TERRITORIOS.includes(dim)) {
+          erro(`filtro "${dim}" inválido: o município vai em território, com o papel quando a métrica tem um`);
         } else if (!lista(filtros[dim], VALOR, LIMITES.valores) || !filtros[dim].length) {
           erro(`filtro ${dim}: de 1 a ${LIMITES.valores} valores, sem repetir`);
         } else painel.filtros[dim] = [...filtros[dim]];
@@ -85,7 +89,7 @@ const Especificacao = (() => {
     }
 
     const detalhar = p.detalhar === undefined ? [] : p.detalhar;
-    if (!lista(detalhar, ID, 8) || detalhar.some((d) => Object.values(PAPEIS).includes(d))) {
+    if (!lista(detalhar, ID, 8) || detalhar.some((d) => TERRITORIOS.includes(d))) {
       erro('detalhar deve ser uma lista de dimensões');
       painel.detalhar = [];
     } else {
@@ -130,8 +134,55 @@ const Especificacao = (() => {
 
   // ---------------------------------------------------------------- catálogo
 
+  // Os do catálogo que passam por supressão e os que já vêm agregados da fonte oficial: para a consulta,
+  // são a mesma coisa, um cruzamento pré-calculado.
+  const todosOsCruzamentos = (catalogo) => [...(catalogo.cruzamentos || []), ...(catalogo.cruzamentos_da_origem || [])];
   const papelDoCruzamento = (c) => Object.keys(PAPEIS).find((papel) => c.dimensoes.includes(PAPEIS[papel])) || null;
-  const dimensoesLivres = (c) => c.dimensoes.filter((d) => !Object.values(PAPEIS).includes(d));
+  const territorioDoCruzamento = (c) => c.dimensoes.find((d) => TERRITORIOS.includes(d)) || null;
+  const dimensoesLivres = (c) => c.dimensoes.filter((d) => !TERRITORIOS.includes(d));
+
+  // Anos de um cruzamento que declara os seus (`anos`): do primeiro em diante, menos os sem dado. O último
+  // ano não fica no catálogo: é o que a fonte tiver, e o que não existe aparece como ausente na leitura.
+  const temDado = (c, ano) => ano >= c.anos.primeiro && !(c.anos.sem_dado || []).includes(ano);
+  const anosDoPeriodo = (periodo) => {
+    const anos = [];
+    for (let ano = Number(periodo.de); ano <= Number(periodo.ate); ano += 1) anos.push(ano);
+    return anos;
+  };
+  // O período pedido, levado para onde o cruzamento tem dado: o começo sobe até o primeiro ano com dado,
+  // e o fim desce até o último antes dele.
+  const ajustarAosAnos = (periodo, c) => {
+    if (!c.anos || c.tempo !== 'ano') return periodo;
+    let de = Math.max(Number(periodo.de), c.anos.primeiro);
+    while (!temDado(c, de)) de += 1;
+    let ate = Math.max(Number(periodo.ate), de);
+    while (ate > de && !temDado(c, ate)) ate -= 1;
+    return { de: String(de), ate: String(ate) };
+  };
+  // O que a tela precisa dizer junto do resultado, sem número: as quebras de série que o período atravessa,
+  // os anos sem dado dentro dele e as notas dos municípios pedidos nos anos pedidos. Um ano só não atravessa
+  // quebra nenhuma.
+  const ressalvasDoPainel = (c, painel) => {
+    const saida = [];
+    if (!c.anos || c.tempo !== 'ano') return saida;
+    const de = Number(painel.periodo.de);
+    const ate = Number(painel.periodo.ate);
+    for (const q of c.quebras || []) {
+      if (de < q.a_partir_de && q.a_partir_de <= ate) {
+        saida.push({ tipo: 'quebra_de_serie', a_partir_de: String(q.a_partir_de), texto: q.ressalva });
+      }
+    }
+    const faltam = (c.anos.sem_dado || []).filter((ano) => ano >= de && ano <= ate);
+    if (faltam.length) saida.push({ tipo: 'sem_dado', periodos: faltam.map(String), texto: c.anos.sem_dado_ressalva });
+    for (const nota of c.notas || []) {
+      const municipios = painel.territorio.municipios.filter((m) => nota.municipios.includes(m));
+      const anos = nota.anos.filter((ano) => ano >= de && ano <= ate);
+      if (municipios.length && anos.length) {
+        saida.push({ tipo: 'nota_do_municipio', municipios, periodos: anos.map(String), texto: nota.ressalva });
+      }
+    }
+    return saida;
+  };
 
   // As bases de onde a métrica sai; a calculada depende das bases de cada parcela.
   const basesDaMetrica = (catalogo, nome, vistas = new Set()) => {
@@ -151,8 +202,8 @@ const Especificacao = (() => {
     const metrica = catalogo.metricas[nome];
     if (!metrica || metrica.formula || foraDoSite(catalogo, nome).length) return [];
     const superficie = (catalogo.bases[metrica.base] || {}).superficie;
-    return (catalogo.cruzamentos || []).filter((c) => c.metricas.includes(nome)
-      && papelDoCruzamento(c)
+    return todosOsCruzamentos(catalogo).filter((c) => c.metricas.includes(nome)
+      && territorioDoCruzamento(c)
       && (!metrica.cruzamentos || metrica.cruzamentos.includes(c.id))
       && (!superficie || ((superficie.cruzamentos[c.id] || {}).medidas || []).includes(nome)));
   };
@@ -187,12 +238,13 @@ const Especificacao = (() => {
       const valores = painel.filtros[d].filter((v) => !aceitos || aceitos.includes(v));
       if (valores.length) filtros[d] = valores;
     }
+    const papel = papelDoCruzamento(c);
     const adaptado = {
       metrica,
-      territorio: { papel: papelDoCruzamento(c), municipios: [...painel.territorio.municipios] },
+      territorio: { ...(papel ? { papel } : {}), municipios: [...painel.territorio.municipios] },
       filtros,
       detalhar: livres.filter((d) => !Object.hasOwn(filtros, d)).sort(),
-      periodo: converterPeriodo(painel.periodo, c.tempo),
+      periodo: ajustarAosAnos(converterPeriodo(painel.periodo, c.tempo), c),
       grafico: painel.grafico,
     };
     // O número em destaque não sobrevive a um grão com mais de uma célula: a sugestão vira tabela.
@@ -205,14 +257,18 @@ const Especificacao = (() => {
     const livres = dimensoesLivres(c);
     // Perder uma dimensão pedida pesa mais do que ganhar uma que não foi pedida.
     const diferentes = 2 * livres.filter((d) => !pedidas.has(d)).length + 3 * [...pedidas].filter((d) => !livres.includes(d)).length;
-    const papel = painel.territorio.papel && painel.territorio.papel !== papelDoCruzamento(c) ? 4 : 0;
+    // Papel trocado pesa; papel pedido num cruzamento que não tem papel nenhum pesa mais do que qualquer
+    // outra diferença, e mais do que a ordem das métricas: quem perguntou por residência ou hospital vê
+    // primeiro o que responde a isso.
+    const pedido = painel.territorio.papel;
+    const papel = pedido && pedido !== papelDoCruzamento(c) ? (papelDoCruzamento(c) ? 4 : 1000) : 0;
     return papel + diferentes + Math.abs(TEMPOS.indexOf(c.tempo) - TEMPOS.indexOf(tempoDe(painel.periodo.de)));
   };
 
   const descrever = (catalogo, painel) => {
     const metrica = catalogo.metricas[painel.metrica];
     const dims = [...Object.keys(painel.filtros), ...painel.detalhar].sort();
-    return [metrica.rotulo, `por ${ROTULO_DO_PAPEL[painel.territorio.papel]}`, ROTULO_DO_TEMPO[tempoDe(painel.periodo.de)],
+    return [metrica.rotulo, `por ${ROTULO_DO_PAPEL[painel.territorio.papel] || 'município'}`, ROTULO_DO_TEMPO[tempoDe(painel.periodo.de)],
       ...(dims.length ? [`com ${dims.join(' e ')}`] : [])].join(', ');
   };
 
@@ -281,7 +337,12 @@ const Especificacao = (() => {
         return recusa('valor_desconhecido', `${dim} não tem o valor ${estranhos.map((v) => `"${v}"`).join(', ')}.`, [painel.metrica]);
       }
     }
-    if (!painel.territorio.papel) {
+    const temPapel = publicados.some((c) => papelDoCruzamento(c));
+    if (!temPapel && painel.territorio.papel) {
+      return recusa('papel_nao_se_aplica', `${rotulo} é do município, sem a distinção entre residência e hospital.`,
+        [painel.metrica]);
+    }
+    if (temPapel && !painel.territorio.papel) {
       // "Em Santos": do hospital ou de residência? Sem padrão: quem pergunta escolhe.
       const opcoes = Object.keys(PAPEIS).map((papel) => {
         const escolhido = { ...painel, territorio: { ...painel.territorio, papel } };
@@ -290,13 +351,25 @@ const Especificacao = (() => {
       return { ok: false, tipo: 'ambigua', motivo: 'papel_do_territorio',
         mensagem: 'Os municípios são os de residência de quem foi atendido ou os do hospital?', opcoes };
     }
-    const pedidas = [PAPEIS[painel.territorio.papel], ...Object.keys(painel.filtros), ...painel.detalhar];
+    const pedidas = [painel.territorio.papel ? PAPEIS[painel.territorio.papel] : SEM_PAPEL,
+      ...Object.keys(painel.filtros), ...painel.detalhar];
     const tempo = tempoDe(painel.periodo.de);
     const cruzamento = publicados.find((c) => c.tempo === tempo && c.dimensoes.length === pedidas.length
       && pedidas.every((d) => c.dimensoes.includes(d)));
     if (!cruzamento) {
       // Nunca chega a este grão somando outro: células ocultas dariam um total errado e silencioso.
       return recusa('grao_indisponivel', `${descrever(catalogo, painel)}: este cruzamento não está publicado.`, [painel.metrica]);
+    }
+    if (cruzamento.anos && tempo === 'ano') {
+      const primeiro = cruzamento.anos.primeiro;
+      if (Number(painel.periodo.de) < primeiro) {
+        return recusa('periodo_indisponivel', `${rotulo} está publicada de ${primeiro} em diante.`, [painel.metrica]);
+      }
+      const anos = anosDoPeriodo(painel.periodo);
+      if (anos.every((ano) => !temDado(cruzamento, ano))) {
+        return recusa('periodo_sem_dado', `${rotulo} não tem dado em ${anos.join(' e ')}. ${cruzamento.anos.sem_dado_ressalva}`,
+          [painel.metrica]);
+      }
     }
     if (painel.grafico === 'numero' && !umaCelula(painel)) {
       // Mostrar um número só exigiria somar ou escolher entre células; a sugestão é a mesma consulta em tabela.
@@ -307,11 +380,13 @@ const Especificacao = (() => {
       ok: true,
       painel,
       cruzamento: cruzamento.id,
+      // Quebras de série, anos sem dado e notas de município dentro do pedido: a tela mostra junto do gráfico, sempre.
+      ressalvas: ressalvasDoPainel(cruzamento, painel),
       // Os parâmetros da consulta de modelo: escolher linhas de um cruzamento, sem somar nem juntar.
       consulta: {
         cruzamento: cruzamento.id,
         metrica: painel.metrica,
-        territorio: { dimensao: PAPEIS[painel.territorio.papel], municipios: [...painel.territorio.municipios] },
+        territorio: { dimensao: territorioDoCruzamento(cruzamento), municipios: [...painel.territorio.municipios] },
         filtros: painel.filtros,
         detalhar: painel.detalhar,
         tempo,

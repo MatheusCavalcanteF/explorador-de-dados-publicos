@@ -1,0 +1,923 @@
+{
+ "medido_em": "2026-11-16T02:32:27Z",
+ "tabela": 6579,
+ "variavel": 9324,
+ "lista_de_municipios": {
+  "origem": "coleta do pipeline (DTB)",
+  "periodo": "2025",
+  "municipios": 5571
+ },
+ "anos_na_tabela": [
+  "2001",
+  "2002",
+  "2003",
+  "2004",
+  "2005",
+  "2006",
+  "2008",
+  "2009",
+  "2011",
+  "2012",
+  "2013",
+  "2014",
+  "2015",
+  "2016",
+  "2017",
+  "2018",
+  "2019",
+  "2020",
+  "2021",
+  "2024",
+  "2025",
+  "2026"
+ ],
+ "anos_ausentes_entre_o_primeiro_e_o_ultimo": [
+  "2007",
+  "2010",
+  "2022",
+  "2023"
+ ],
+ "por_ano": {
+  "2001": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2001",
+   "bytes": 1508289,
+   "sha256": "fc2c524275497a985f6d8ab567525b86990bbb71b957c8bfe42a4e2341f0ec20",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5560,
+   "sinais_de_ausencia": {
+    "...": 11
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 11,
+   "soma_dos_municipios": 172385826,
+   "total_brasil_na_tabela": 172385826,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2002": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2002",
+   "bytes": 1508301,
+   "sha256": "07f45fa3ee3dddcff2ff5e907dae7cd67279042e18584c285e1488f4b8d4a6cd",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5560,
+   "sinais_de_ausencia": {
+    "...": 11
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 11,
+   "soma_dos_municipios": 174632960,
+   "total_brasil_na_tabela": 174632960,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2003": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2003",
+   "bytes": 1508319,
+   "sha256": "b27785e0bcee945425fa2c858a0b7f0cd36337f8d1b1ed270f52450c4b5d99b5",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5560,
+   "sinais_de_ausencia": {
+    "...": 11
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 11,
+   "soma_dos_municipios": 176871437,
+   "total_brasil_na_tabela": 176871437,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2004": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2004",
+   "bytes": 1508348,
+   "sha256": "eac542405fdb603d15d9846f54ed28aa2e857827ce5c51b38a4a81ebcc056b6f",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5564,
+   "sinais_de_ausencia": {
+    "...": 7
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 7,
+   "soma_dos_municipios": 181581024,
+   "total_brasil_na_tabela": 181569056,
+   "soma_menos_total_brasil": 11968,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2005": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2005",
+   "bytes": 1508353,
+   "sha256": "fd9e1332353c24d06d1ed44d76341dca45284a3a05d1497565ab737266e3a542",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5564,
+   "sinais_de_ausencia": {
+    "...": 7
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 7,
+   "soma_dos_municipios": 184184264,
+   "total_brasil_na_tabela": 184184264,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2006": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2006",
+   "bytes": 1508374,
+   "sha256": "e1e5c1a9b06792f0ef72fcabb0244d55a5eb470a106a60d6586207ff11119b43",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5564,
+   "sinais_de_ausencia": {
+    "...": 7
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 7,
+   "soma_dos_municipios": 186770562,
+   "total_brasil_na_tabela": 186770562,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2008": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2008",
+   "bytes": 1508483,
+   "sha256": "0d8ee0b506beaa90ff8d6ad72b37ff763b58d03c45f44303344ff3b63d053b49",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5565,
+   "sinais_de_ausencia": {
+    "...": 6
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 6,
+   "soma_dos_municipios": 189612823,
+   "total_brasil_na_tabela": 189605006,
+   "soma_menos_total_brasil": 7817,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2009": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2009",
+   "bytes": 1508496,
+   "sha256": "fd6e3425cb9adbf50e24922c1da4141a6776970fd9f4ee9df1cb981a95871322",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5565,
+   "sinais_de_ausencia": {
+    "...": 6
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 6,
+   "soma_dos_municipios": 191480630,
+   "total_brasil_na_tabela": 191480630,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2011": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2011",
+   "bytes": 1508555,
+   "sha256": "8c1212b823c915e27caa8e5007645e580682201d2acfe8c34ea5529015fcbc03",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5565,
+   "sinais_de_ausencia": {
+    "...": 6
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 6,
+   "soma_dos_municipios": 192379287,
+   "total_brasil_na_tabela": 192379287,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2012": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2012",
+   "bytes": 1508564,
+   "sha256": "b5023e0baa51da728486d0a59daecf32c9e0f54ac3c0295b8d95a49f475e728c",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 193946886,
+   "total_brasil_na_tabela": 193904015,
+   "soma_menos_total_brasil": 42871,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2013": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2013",
+   "bytes": 1508611,
+   "sha256": "e75232444432aeedad651f6f5f926badf6e079bf2708fe6285e7e3844915ead8",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 201032714,
+   "total_brasil_na_tabela": 201032714,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2014": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2014",
+   "bytes": 1508628,
+   "sha256": "c6f947001bfb0a30699799db27e6758a4afe2e0f72fe4cf35bc604624111e28b",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 202768562,
+   "total_brasil_na_tabela": 202768562,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2015": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2015",
+   "bytes": 1508639,
+   "sha256": "de8827be20796ed33e56329507b938a03725a742f3339209957a336eb3f64f55",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 204450049,
+   "total_brasil_na_tabela": 204450049,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2016": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2016",
+   "bytes": 1508649,
+   "sha256": "fa484dc099fef2c3105db99002552d83d92ea8f18104444498b8d037429f3f3a",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 206081432,
+   "total_brasil_na_tabela": 206081432,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2017": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2017",
+   "bytes": 1508646,
+   "sha256": "0afa9c65290fc18ab57dfdf723f8abe8cf581c8111b29b80e3fc9510bbe0044d",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 207660929,
+   "total_brasil_na_tabela": 207660929,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2018": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2018",
+   "bytes": 1508643,
+   "sha256": "89a4599c4a4591050c605d5825a5a90f7397d4dcf8ff1d87384a3cd7572b5ffb",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 208494900,
+   "total_brasil_na_tabela": 208494900,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2019": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2019",
+   "bytes": 1508658,
+   "sha256": "313a958cba93409fbff6ff050ba8af7746314dc2219281881fb104ac00ca1ea6",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 210147125,
+   "total_brasil_na_tabela": 210147125,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2020": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2020",
+   "bytes": 1508662,
+   "sha256": "c1155cfe1217a6b2f6d7fca8d1b25974ffe63fc1434aa0a455de5ae652931b26",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 211755692,
+   "total_brasil_na_tabela": 211755692,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2021": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2021",
+   "bytes": 1508660,
+   "sha256": "38cd175e7f345de65baec455672bf7204115e2bc9f863f0740628b1e813900d7",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 213317639,
+   "total_brasil_na_tabela": 213317639,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2024": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2024",
+   "bytes": 1508654,
+   "sha256": "b0dd3ad00824c6718c8298b690243d0f7fe6a6f48eb140af631e7412065b4c01",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5570,
+   "sinais_de_ausencia": {
+    "...": 1
+   },
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 1,
+   "soma_dos_municipios": 212583750,
+   "total_brasil_na_tabela": 212583750,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2025": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2025",
+   "bytes": 1508654,
+   "sha256": "3a2be712c79be2c8c50bd16527cd5cfcf14a58b0ab4c80bef379dc0f7c7e262d",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5571,
+   "sinais_de_ausencia": {},
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 0,
+   "soma_dos_municipios": 213421037,
+   "total_brasil_na_tabela": 213421037,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  },
+  "2026": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2026",
+   "bytes": 1508656,
+   "sha256": "2af3c54c40389e6aa25a347ae4ac023e9b1c0b5d7da7eccf76ccd85fd6716a73",
+   "linhas": 5571,
+   "codigos_repetidos": 0,
+   "com_numero": 5571,
+   "sinais_de_ausencia": {},
+   "fora_da_lista_do_projeto": [],
+   "da_lista_sem_numero": 0,
+   "soma_dos_municipios": 214211951,
+   "total_brasil_na_tabela": 214211951,
+   "soma_menos_total_brasil": 0,
+   "unidade": [
+    "Pessoas"
+   ],
+   "variavel": [
+    "9324"
+   ]
+  }
+ },
+ "transicoes": [
+  {
+   "de": "2001",
+   "ate": "2002",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 1.3,
+   "por_municipio_ao_ano": {
+    "municipios": 5560,
+    "mediana_pct": 0.71,
+    "mediana_do_modulo_pct": 0.96,
+    "p90_do_modulo_pct": 2.72,
+    "p99_do_modulo_pct": 6.86,
+    "caem": 1430,
+    "acima_de_1_pct": 2698,
+    "acima_de_2_pct": 1009,
+    "acima_de_5_pct": 108,
+    "acima_de_10_pct": 27,
+    "acima_de_20_pct": 7
+   }
+  },
+  {
+   "de": "2002",
+   "ate": "2003",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 1.28,
+   "por_municipio_ao_ano": {
+    "municipios": 5560,
+    "mediana_pct": 0.7,
+    "mediana_do_modulo_pct": 1.0,
+    "p90_do_modulo_pct": 2.7,
+    "p99_do_modulo_pct": 5.43,
+    "caem": 1506,
+    "acima_de_1_pct": 2767,
+    "acima_de_2_pct": 1019,
+    "acima_de_5_pct": 79,
+    "acima_de_10_pct": 16,
+    "acima_de_20_pct": 6
+   }
+  },
+  {
+   "de": "2003",
+   "ate": "2004",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 2.66,
+   "por_municipio_ao_ano": {
+    "municipios": 5560,
+    "mediana_pct": 1.45,
+    "mediana_do_modulo_pct": 2.07,
+    "p90_do_modulo_pct": 5.51,
+    "p99_do_modulo_pct": 12.04,
+    "caem": 1524,
+    "acima_de_1_pct": 4177,
+    "acima_de_2_pct": 2857,
+    "acima_de_5_pct": 688,
+    "acima_de_10_pct": 104,
+    "acima_de_20_pct": 17
+   }
+  },
+  {
+   "de": "2004",
+   "ate": "2005",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 1.44,
+   "por_municipio_ao_ano": {
+    "municipios": 5564,
+    "mediana_pct": 0.79,
+    "mediana_do_modulo_pct": 1.14,
+    "p90_do_modulo_pct": 3.1,
+    "p99_do_modulo_pct": 6.89,
+    "caem": 1530,
+    "acima_de_1_pct": 3095,
+    "acima_de_2_pct": 1304,
+    "acima_de_5_pct": 153,
+    "acima_de_10_pct": 21,
+    "acima_de_20_pct": 2
+   }
+  },
+  {
+   "de": "2005",
+   "ate": "2006",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 1.4,
+   "por_municipio_ao_ano": {
+    "municipios": 5564,
+    "mediana_pct": 0.78,
+    "mediana_do_modulo_pct": 1.11,
+    "p90_do_modulo_pct": 2.91,
+    "p99_do_modulo_pct": 5.88,
+    "caem": 1499,
+    "acima_de_1_pct": 3053,
+    "acima_de_2_pct": 1234,
+    "acima_de_5_pct": 103,
+    "acima_de_10_pct": 12,
+    "acima_de_20_pct": 6
+   }
+  },
+  {
+   "de": "2006",
+   "ate": "2008",
+   "anos_de_distancia": 2,
+   "variacao_brasil_pct": 1.52,
+   "por_municipio_ao_ano": {
+    "municipios": 5564,
+    "mediana_pct": 1.2,
+    "mediana_do_modulo_pct": 2.83,
+    "p90_do_modulo_pct": 9.54,
+    "p99_do_modulo_pct": 26.38,
+    "caem": 2108,
+    "acima_de_1_pct": 4435,
+    "acima_de_2_pct": 3458,
+    "acima_de_5_pct": 1576,
+    "acima_de_10_pct": 507,
+    "acima_de_20_pct": 116
+   }
+  },
+  {
+   "de": "2008",
+   "ate": "2009",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.99,
+   "por_municipio_ao_ano": {
+    "municipios": 5565,
+    "mediana_pct": 0.63,
+    "mediana_do_modulo_pct": 0.78,
+    "p90_do_modulo_pct": 1.99,
+    "p99_do_modulo_pct": 4.08,
+    "caem": 1296,
+    "acima_de_1_pct": 2114,
+    "acima_de_2_pct": 551,
+    "acima_de_5_pct": 25,
+    "acima_de_10_pct": 1,
+    "acima_de_20_pct": 0
+   }
+  },
+  {
+   "de": "2009",
+   "ate": "2011",
+   "anos_de_distancia": 2,
+   "variacao_brasil_pct": 0.47,
+   "por_municipio_ao_ano": {
+    "municipios": 5565,
+    "mediana_pct": -0.46,
+    "mediana_do_modulo_pct": 1.79,
+    "p90_do_modulo_pct": 5.43,
+    "p99_do_modulo_pct": 13.31,
+    "caem": 3147,
+    "acima_de_1_pct": 3909,
+    "acima_de_2_pct": 2540,
+    "acima_de_5_pct": 669,
+    "acima_de_10_pct": 130,
+    "acima_de_20_pct": 8
+   }
+  },
+  {
+   "de": "2011",
+   "ate": "2012",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.79,
+   "por_municipio_ao_ano": {
+    "municipios": 5565,
+    "mediana_pct": 0.47,
+    "mediana_do_modulo_pct": 0.64,
+    "p90_do_modulo_pct": 1.73,
+    "p99_do_modulo_pct": 4.06,
+    "caem": 1502,
+    "acima_de_1_pct": 1649,
+    "acima_de_2_pct": 394,
+    "acima_de_5_pct": 34,
+    "acima_de_10_pct": 12,
+    "acima_de_20_pct": 5
+   }
+  },
+  {
+   "de": "2012",
+   "ate": "2013",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 3.68,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 3.34,
+    "mediana_do_modulo_pct": 3.35,
+    "p90_do_modulo_pct": 5.72,
+    "p99_do_modulo_pct": 8.6,
+    "caem": 141,
+    "acima_de_1_pct": 5003,
+    "acima_de_2_pct": 4441,
+    "acima_de_5_pct": 836,
+    "acima_de_10_pct": 29,
+    "acima_de_20_pct": 3
+   }
+  },
+  {
+   "de": "2013",
+   "ate": "2014",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.86,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 0.47,
+    "mediana_do_modulo_pct": 0.64,
+    "p90_do_modulo_pct": 1.8,
+    "p99_do_modulo_pct": 3.95,
+    "caem": 1369,
+    "acima_de_1_pct": 1653,
+    "acima_de_2_pct": 410,
+    "acima_de_5_pct": 31,
+    "acima_de_10_pct": 3,
+    "acima_de_20_pct": 0
+   }
+  },
+  {
+   "de": "2014",
+   "ate": "2015",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.83,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 0.45,
+    "mediana_do_modulo_pct": 0.61,
+    "p90_do_modulo_pct": 1.68,
+    "p99_do_modulo_pct": 3.43,
+    "caem": 1367,
+    "acima_de_1_pct": 1512,
+    "acima_de_2_pct": 330,
+    "acima_de_5_pct": 19,
+    "acima_de_10_pct": 5,
+    "acima_de_20_pct": 1
+   }
+  },
+  {
+   "de": "2015",
+   "ate": "2016",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.8,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 0.43,
+    "mediana_do_modulo_pct": 0.59,
+    "p90_do_modulo_pct": 1.66,
+    "p99_do_modulo_pct": 3.53,
+    "caem": 1380,
+    "acima_de_1_pct": 1472,
+    "acima_de_2_pct": 329,
+    "acima_de_5_pct": 29,
+    "acima_de_10_pct": 6,
+    "acima_de_20_pct": 0
+   }
+  },
+  {
+   "de": "2016",
+   "ate": "2017",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.77,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 0.41,
+    "mediana_do_modulo_pct": 0.55,
+    "p90_do_modulo_pct": 1.55,
+    "p99_do_modulo_pct": 2.99,
+    "caem": 1364,
+    "acima_de_1_pct": 1300,
+    "acima_de_2_pct": 263,
+    "acima_de_5_pct": 15,
+    "acima_de_10_pct": 5,
+    "acima_de_20_pct": 2
+   }
+  },
+  {
+   "de": "2017",
+   "ate": "2018",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.4,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": -0.2,
+    "mediana_do_modulo_pct": 1.43,
+    "p90_do_modulo_pct": 4.28,
+    "p99_do_modulo_pct": 9.2,
+    "caem": 2934,
+    "acima_de_1_pct": 3491,
+    "acima_de_2_pct": 2013,
+    "acima_de_5_pct": 374,
+    "acima_de_10_pct": 43,
+    "acima_de_20_pct": 4
+   }
+  },
+  {
+   "de": "2018",
+   "ate": "2019",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.79,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 0.41,
+    "mediana_do_modulo_pct": 0.63,
+    "p90_do_modulo_pct": 1.78,
+    "p99_do_modulo_pct": 3.89,
+    "caem": 1595,
+    "acima_de_1_pct": 1642,
+    "acima_de_2_pct": 413,
+    "acima_de_5_pct": 35,
+    "acima_de_10_pct": 14,
+    "acima_de_20_pct": 3
+   }
+  },
+  {
+   "de": "2019",
+   "ate": "2020",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.77,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 0.39,
+    "mediana_do_modulo_pct": 0.59,
+    "p90_do_modulo_pct": 1.65,
+    "p99_do_modulo_pct": 3.12,
+    "caem": 1566,
+    "acima_de_1_pct": 1477,
+    "acima_de_2_pct": 328,
+    "acima_de_5_pct": 23,
+    "acima_de_10_pct": 8,
+    "acima_de_20_pct": 1
+   }
+  },
+  {
+   "de": "2020",
+   "ate": "2021",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.74,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 0.38,
+    "mediana_do_modulo_pct": 0.57,
+    "p90_do_modulo_pct": 1.58,
+    "p99_do_modulo_pct": 2.97,
+    "caem": 1566,
+    "acima_de_1_pct": 1378,
+    "acima_de_2_pct": 288,
+    "acima_de_5_pct": 16,
+    "acima_de_10_pct": 6,
+    "acima_de_20_pct": 1
+   }
+  },
+  {
+   "de": "2021",
+   "ate": "2024",
+   "anos_de_distancia": 3,
+   "variacao_brasil_pct": -0.34,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": -0.28,
+    "mediana_do_modulo_pct": 2.05,
+    "p90_do_modulo_pct": 6.57,
+    "p99_do_modulo_pct": 14.63,
+    "caem": 3002,
+    "acima_de_1_pct": 4082,
+    "acima_de_2_pct": 2848,
+    "acima_de_5_pct": 952,
+    "acima_de_10_pct": 194,
+    "acima_de_20_pct": 24
+   }
+  },
+  {
+   "de": "2024",
+   "ate": "2025",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.39,
+   "por_municipio_ao_ano": {
+    "municipios": 5570,
+    "mediana_pct": 0.09,
+    "mediana_do_modulo_pct": 0.27,
+    "p90_do_modulo_pct": 1.08,
+    "p99_do_modulo_pct": 2.86,
+    "caem": 2083,
+    "acima_de_1_pct": 637,
+    "acima_de_2_pct": 150,
+    "acima_de_5_pct": 5,
+    "acima_de_10_pct": 3,
+    "acima_de_20_pct": 0
+   }
+  },
+  {
+   "de": "2025",
+   "ate": "2026",
+   "anos_de_distancia": 1,
+   "variacao_brasil_pct": 0.37,
+   "por_municipio_ao_ano": {
+    "municipios": 5571,
+    "mediana_pct": 0.06,
+    "mediana_do_modulo_pct": 0.25,
+    "p90_do_modulo_pct": 1.05,
+    "p99_do_modulo_pct": 3.17,
+    "caem": 1840,
+    "acima_de_1_pct": 617,
+    "acima_de_2_pct": 152,
+    "acima_de_5_pct": 15,
+    "acima_de_10_pct": 1,
+    "acima_de_20_pct": 0
+   }
+  }
+ ]
+}

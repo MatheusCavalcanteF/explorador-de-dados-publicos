@@ -238,5 +238,6 @@ A F6 deve testar máscara por medida, escondendo só as admissões quando elas f
 
 - **Aplica:** internações, óbitos, emprego, matrículas e docentes.
 - **Não aplica:** contas públicas, índices (IDEB), população e contagem de estabelecimentos. PIB e turmas também ficam fora: não são contagem de pessoas.
+- **Quem não aplica diz por quê.** No catálogo, `supressao.aplica: false` só valida com o motivo escrito. A população por município e ano é publicada sem supressão porque é um agregado oficial que o IBGE já publica por município, e o projeto não a cruza com outra dimensão. Ela fica em `cruzamentos_da_origem`, fora dos cruzamentos que a supressão e o teste de dedução percorrem.
 
 Os microdados de origem são públicos, e o TabNet mostra contagens pequenas abertamente. A regra protege o que este site expõe e cruza, e é escolha deste projeto: em cidades pequenas, o site vai mostrar menos detalhe que o TabNet.

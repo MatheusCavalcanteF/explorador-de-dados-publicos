@@ -30,7 +30,7 @@ CENSO = {"tabela": 4714, "variavel": 93, "periodo": "2022"}
 # Um município novo pode entrar na lista antes de ter estimativa; mais do que isso é falha da fonte.
 MAX_AUSENTES = 10
 
-__all__ = ["ErroDeContrato", "avisos_de_revisao", "coletar", "comparar", "conferir_cobertura", "ler_sidra", "revisar"]
+__all__ = ["ErroDeContrato", "avisos_de_revisao", "coletar", "comparar", "conferir_cobertura", "ler_sidra", "ler_sidra_com_ausencia", "revisar"]
 
 
 def _json(corpo: bytes, onde: str):
@@ -42,6 +42,14 @@ def _json(corpo: bytes, onde: str):
 
 def ler_sidra(corpo: bytes, variavel: int, onde: str) -> tuple[str, dict[str, int]]:
     """Devolve (período, valores por código). As colunas são achadas pelo cabeçalho, não pela posição."""
+    periodo, valores, _ = ler_sidra_com_ausencia(corpo, variavel, onde, ())
+    return periodo, valores
+
+
+def ler_sidra_com_ausencia(corpo: bytes, variavel: int, onde: str,
+                           ausencia: tuple[str, ...]) -> tuple[str, dict[str, int], list[str]]:
+    """Como ler_sidra, mas os sinais de `ausencia` são aceitos como "sem dado": o código vai para a lista de
+    ausentes, sem valor. Nunca vira zero. Qualquer outro sinal continua recusado."""
     dados = _json(corpo, onde)
     if not isinstance(dados, list) or len(dados) < 2 or not isinstance(dados[0], dict):
         raise ErroDeContrato(f"{onde}: resposta sem cabeçalho ou sem linhas")
@@ -54,24 +62,27 @@ def ler_sidra(corpo: bytes, variavel: int, onde: str) -> tuple[str, dict[str, in
                     colunas[nome] = chave
     if set(colunas) != {"municipio", "variavel", "periodo"} or cabecalho.get("V") != "Valor":
         raise ErroDeContrato(f"{onde}: cabeçalho inesperado {sorted(cabecalho)}")
-    valores, periodos = {}, set()
+    valores, periodos, ausentes = {}, set(), []
     for linha in linhas:
         codigo, valor = str(linha.get(colunas["municipio"])), str(linha.get("V"))
         if linha.get("NC") != "6" or linha.get(colunas["variavel"]) != str(variavel):
             raise ErroDeContrato(f"{onde}: linha de outro nível ou variável no código {codigo}")
-        if not re.fullmatch(r"\d{7}", codigo) or codigo in valores:
+        if not re.fullmatch(r"\d{7}", codigo) or codigo in valores or codigo in ausentes:
             raise ErroDeContrato(f"{onde}: código {codigo} inválido ou repetido")
+        periodos.add(str(linha.get(colunas["periodo"])))
+        if valor in ausencia:
+            ausentes.append(codigo)
+            continue
         # Na SIDRA, "-", "..." e "X" são sinais de ausência ou sigilo, não números.
         if not valor.isdigit() or int(valor) <= 0:
             raise ErroDeContrato(f"{onde}: valor {valor!r} não é contagem positiva no código {codigo}")
         valores[codigo] = int(valor)
-        periodos.add(str(linha.get(colunas["periodo"])))
     if len(periodos) != 1:
         raise ErroDeContrato(f"{onde}: esperava um só período, veio {sorted(periodos)}")
     periodo = periodos.pop()
     if not re.fullmatch(r"\d{4}", periodo):
         raise ErroDeContrato(f"{onde}: período {periodo!r} não é um ano")
-    return periodo, valores
+    return periodo, valores, sorted(ausentes)
 
 
 def conferir_cobertura(codigos: set[str], valores: dict[str, int], onde: str, lista: str = "DTB") -> list[str]:
@@ -150,14 +161,14 @@ def _historico(fonte: dict, antes: dict) -> None:
     fonte["valores_desde"] = (antes.get("valores_desde") or antes["coletado_em"]) if igual else fonte["coletado_em"]
 
 
-def _baixar(url: str, pedir, onde: str) -> rede.Resposta:
+def baixar(url: str, pedir, onde: str) -> rede.Resposta:
     resposta = pedir(url)
     if resposta.status != 200:
         raise ErroDeContrato(f"{onde}: HTTP {resposta.status} em {url}")
     return resposta
 
 
-def _origem(url: str, resposta: rede.Resposta, coletado_em: str) -> dict:
+def origem(url: str, resposta: rede.Resposta, coletado_em: str) -> dict:
     return {"url": url, "coletado_em": coletado_em, "bytes": len(resposta.corpo), "sha256": rede.sha256(resposta.corpo)}
 
 
@@ -165,7 +176,7 @@ def _censo(codigos, pedir, release: Path | None, coletado_em: str, lista: str) -
     """Devolve (fonte, arquivo novo para a Release ou None se a Release já existe)."""
     url = URL_SIDRA.format(**CENSO)
     try:
-        resposta = _baixar(url, pedir, "Censo 2022")
+        resposta = baixar(url, pedir, "Censo 2022")
         _, valores = ler_sidra(resposta.corpo, CENSO["variavel"], "Censo 2022")
     except rede.ErroDeRede:
         if release is None:
@@ -187,27 +198,30 @@ def _censo(codigos, pedir, release: Path | None, coletado_em: str, lista: str) -
                             "conferido_com_a_fonte_em": coletado_em if valores is not None else None}
         fonte["ausentes"] = conferir_cobertura(codigos, fonte["valores"], "Censo 2022", lista)
         return fonte, None
-    novo = {"base": "ibge_censo_2022", "periodo": CENSO["periodo"], **_origem(url, resposta, coletado_em),
+    novo = {"base": "ibge_censo_2022", "periodo": CENSO["periodo"], **origem(url, resposta, coletado_em),
             "sha256_valores": sha256_valores(valores), "valores": valores}
     fonte = {**novo, "origem": "fonte", "ausentes": conferir_cobertura(codigos, valores, "Censo 2022", lista)}
     return fonte, novo
 
 
 def coletar(saida: Path, release_censo: Path | None = None, anterior: dict | None = None,
-            pedir=rede.pedir, agora=None, publicados=None) -> dict:
+            pedir=rede.pedir, agora=None, publicados=None, serie: dict | None = None,
+            anterior_da_serie: dict | None = None) -> dict:
     """`anterior` são as fontes do manifesto da última coleta, para dizer o que mudou desde ela.
-    `publicados` lê a estimativa do site no ar; só é chamado quando a estimativa mudou no mesmo período."""
+    `publicados` lê a estimativa do site no ar; só é chamado quando a estimativa mudou no mesmo período.
+    `serie` é a regra da população por ano (populacao_por_ano.regra); sem ela, a série não é coletada.
+    `anterior_da_serie` é o que o manifesto da última coleta guardou sobre ela."""
     coletado_em = (agora or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")
     fonte_dtb, municipios = dtb.coletar(pedir, coletado_em)
     codigos = {m["codigo"] for m in municipios}
     lista = f"DTB {fonte_dtb['periodo']}"
 
     url_est = URL_SIDRA.format(**ESTIMATIVA)
-    est = _baixar(url_est, pedir, "Estimativa de população")
+    est = baixar(url_est, pedir, "Estimativa de população")
     periodo, estimativa = ler_sidra(est.corpo, ESTIMATIVA["variavel"], "Estimativa de população")
     fontes = {
         "dtb": fonte_dtb,
-        "estimativa": _origem(url_est, est, coletado_em) | {
+        "estimativa": origem(url_est, est, coletado_em) | {
             "base": "ibge_estimativa", "periodo": periodo, "sha256_valores": sha256_valores(estimativa),
             "origem": "fonte", "ausentes": conferir_cobertura(codigos, estimativa, "Estimativa de população", lista)},
     }
@@ -230,6 +244,11 @@ def coletar(saida: Path, release_censo: Path | None = None, anterior: dict | Non
         m["populacao_estimada"] = estimativa.get(m["codigo"])
         m["populacao_censo"] = valores_censo.get(m["codigo"])
     resultado = {"coletado_em": coletado_em, "fontes": fontes, "municipios": municipios}
+    if serie is not None:
+        # Fora de `fontes`: as páginas de hoje não mostram a série, e a data de alteração delas não muda com ela.
+        from . import populacao_por_ano
+        resultado["populacao_por_ano"] = populacao_por_ano.coletar(
+            serie, codigos, lista, periodo, estimativa, anterior_da_serie, pedir, coletado_em)
     saida.mkdir(parents=True, exist_ok=True)
     (saida / "ibge.json").write_text(json.dumps(resultado, ensure_ascii=False, indent=1), encoding="utf-8")
     if novo is not None:

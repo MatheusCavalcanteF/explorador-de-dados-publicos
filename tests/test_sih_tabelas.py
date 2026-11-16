@@ -68,8 +68,9 @@ def test_faixas_de_5_cabem_nas_de_12_e_carater_nas_de_urgencia(cat):
     assert set(tab.FAIXA5_DE_FAIXA12) == set(faixa12)
     assert set(tab.FAIXA5_DE_FAIXA12.values()) == set(cat["dimensoes"]["faixa_5"]["valores"])
     assert set(tab.URGENCIA_DE_CARATER.values()) == set(cat["dimensoes"]["urgencia"]["valores"])
-    # Os níveis do código são os do catálogo.
-    for d in cat["dimensoes"].values():
+    # Os níveis do código são os do catálogo. Só as dimensões do SIH: o município sem papel é da população.
+    assert [n for n, d in cat["dimensoes"].items() if d["base"] != "sih"] == ["municipio"]
+    for d in (d for d in cat["dimensoes"].values() if d["base"] == "sih"):
         familia = tab.FAMILIA[d["niveis"][0]]
         assert tab.NIVEIS[familia][-len(d["niveis"]):] == d["niveis"] or tab.NIVEIS[familia][:len(d["niveis"])] == d["niveis"]
 

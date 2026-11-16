@@ -56,6 +56,9 @@ def validar(catalogo: dict) -> None:
             elif not isinstance(revisao.get("aviso_variacao_pct"), (int, float)):
                 raise ErroDeCatalogo(f"Base {nome}: revisao.aviso_variacao_pct deve ser um número")
         supressao = base.get("supressao") or {}
+        # Publicar sem supressão é uma decisão, e a decisão fica escrita junto da regra.
+        if "supressao" in base and not supressao.get("aplica") and not str(supressao.get("motivo") or "").strip():
+            raise ErroDeCatalogo(f"Base {nome}: supressao.aplica false precisa dizer o motivo")
         if supressao.get("aplica") and (not isinstance(supressao.get("k"), int) or supressao["k"] < 2):
             raise ErroDeCatalogo(f"Base {nome}: supressao.k deve ser um inteiro de 2 para cima")
         if "margens_complementar" in supressao and supressao["margens_complementar"] not in ("conhecidas", "todas"):
@@ -116,6 +119,9 @@ def validar(catalogo: dict) -> None:
             raise ErroDeCatalogo(f"{onde}: toda métrica publicada diz suas ressalvas")
     if "cruzamentos" in catalogo:
         _validar_cruzamentos(catalogo)
+    if "cruzamentos_da_origem" in catalogo:
+        _validar_cruzamentos_da_origem(catalogo)
+    if "cruzamentos" in catalogo:
         for nome, base in bases.items():
             if "superficie" in base:
                 _validar_superficie(nome, base["superficie"], catalogo)
@@ -148,6 +154,64 @@ def _validar_superficie(nome: str, superficie: dict, catalogo: dict) -> None:
         recentes = regra.get("anos_recentes")
         if recentes is not None and (isinstance(recentes, bool) or not isinstance(recentes, int) or recentes < 1):
             raise ErroDeCatalogo(f"Base {nome}: {cid}.anos_recentes deve ser um inteiro de 1 para cima")
+
+
+def _ano(valor) -> bool:
+    return isinstance(valor, int) and not isinstance(valor, bool) and 1900 <= valor <= 2099
+
+
+def _caminho_no_site(arquivo: str, sufixo: str) -> bool:
+    return arquivo.endswith(sufixo) and not arquivo.startswith("/") and ".." not in arquivo.split("/") and "\\" not in arquivo
+
+
+def _validar_cruzamentos_da_origem(catalogo: dict) -> None:
+    """Cruzamentos que já vêm agregados da fonte: sem supressão, com o motivo na base, e com os anos e as
+    quebras da série, que a coleta confere e a validação das consultas lê."""
+    bases, dimensoes, metricas = catalogo["bases"], catalogo.get("dimensoes") or {}, catalogo["metricas"]
+    vistos = {c["id"] for c in catalogo.get("cruzamentos") or []}
+    for c in catalogo["cruzamentos_da_origem"]:
+        onde = f"Cruzamento da origem {c.get('id')}"
+        if not c.get("id") or c["id"] in vistos:
+            raise ErroDeCatalogo(f"{onde}: id ausente ou repetido")
+        vistos.add(c["id"])
+        base = bases.get(c.get("base"))
+        if base is None:
+            raise ErroDeCatalogo(f"{onde}: base {c.get('base')!r} não existe")
+        if (base.get("supressao") or {}).get("aplica") is not False:
+            raise ErroDeCatalogo(f"{onde}: só entra aqui o agregado oficial de uma base com supressao.aplica false; "
+                                 "o que precisa de supressão vai em cruzamentos")
+        if c.get("tempo") not in TEMPOS:
+            raise ErroDeCatalogo(f"{onde}: tempo deve ser um de {TEMPOS}")
+        if not c.get("dimensoes") or any(d not in dimensoes or dimensoes[d].get("base") == "sih" for d in c["dimensoes"]):
+            raise ErroDeCatalogo(f"{onde}: dimensão fora do catálogo ou do SIH")
+        if not c.get("metricas") or any(metricas.get(m, {}).get("base") != c["base"] for m in c["metricas"]):
+            raise ErroDeCatalogo(f"{onde}: as métricas precisam existir e sair da base {c['base']}")
+        if not _caminho_no_site(str(c.get("arquivo") or ""), ".parquet"):
+            raise ErroDeCatalogo(f"{onde}: arquivo é um caminho .parquet relativo, dentro do site")
+        anos = c.get("anos") or {}
+        sem_dado = anos.get("sem_dado") or []
+        if c["tempo"] != "ano" or not _ano(anos.get("primeiro")):
+            raise ErroDeCatalogo(f"{onde}: precisa de tempo ano e de anos.primeiro")
+        if (not isinstance(sem_dado, list) or not all(_ano(a) and a > anos["primeiro"] for a in sem_dado)
+                or sorted(set(sem_dado)) != sem_dado):
+            raise ErroDeCatalogo(f"{onde}: anos.sem_dado é uma lista crescente de anos depois do primeiro")
+        if sem_dado and not str(anos.get("sem_dado_ressalva") or "").strip():
+            raise ErroDeCatalogo(f"{onde}: anos.sem_dado precisa da ressalva que a tela mostra")
+        quebras = c.get("quebras") or []
+        inicios = [q.get("a_partir_de") if isinstance(q, dict) else None for q in quebras] if isinstance(quebras, list) else [None]
+        if (not all(_ano(a) and a > anos["primeiro"] and a not in sem_dado for a in inicios) or sorted(set(inicios)) != inicios
+                or not all(str(q.get("ressalva") or "").strip() for q in quebras)):
+            raise ErroDeCatalogo(f"{onde}: cada quebra tem a_partir_de, um ano com dado depois do primeiro, em ordem, "
+                                 "e a ressalva que a tela mostra")
+        for nota in c.get("notas") or []:
+            municipios, anos_da_nota = nota.get("municipios") or [], nota.get("anos") or []
+            if (not municipios or not all(isinstance(m, str) and len(m) == 7 and m.isdigit() for m in municipios)
+                    or not anos_da_nota or not all(_ano(a) and a >= anos["primeiro"] and a not in sem_dado for a in anos_da_nota)
+                    or not str(nota.get("ressalva") or "").strip()):
+                raise ErroDeCatalogo(f"{onde}: cada nota tem municípios (7 dígitos, como texto), anos com dado e a ressalva")
+        regra = c.get("quebra_nao_declarada") or {}
+        if not _numero(regra.get("variacao_anual_pct")) or not _numero(regra.get("municipios_max")):
+            raise ErroDeCatalogo(f"{onde}: quebra_nao_declarada precisa de variacao_anual_pct e municipios_max positivos")
 
 
 def _numero(valor) -> bool:

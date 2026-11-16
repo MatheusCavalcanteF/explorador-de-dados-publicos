@@ -74,6 +74,8 @@ invalido((p, e) => { e.v = '1'; }, 'versão');
 invalido((p, e) => { e.titulo = 'Meu painel'; }, 'campo desconhecido');
 invalido((p) => { p.titulo = 'Texto livre'; }, 'campo desconhecido');
 invalido((p) => { p.filtros.municipio_residencia = ['3548500']; }, 'o município vai em território');
+invalido((p) => { p.filtros.municipio = ['3548500']; }, 'o município vai em território');
+invalido((p) => { p.detalhar = ['municipio']; }, 'detalhar');
 invalido((p) => { p.territorio.papel = 'ocorrencia'; }, 'papel');
 invalido((p) => { p.territorio.municipios = []; }, 'municípios');
 invalido((p) => { p.territorio.municipios = ['354850']; }, 'municípios');
@@ -93,24 +95,37 @@ invalido((p, e) => { e.paineis = []; }, 'painéis');
 invalido((p, e) => { e.paineis = Array.from({ length: 13 }, () => copia(p)); }, 'painéis');
 for (const lixo of [null, undefined, 'v=1', 7, [], { v: 1 }]) assert.equal(E.normalizar(lixo).ok, false);
 
-// ---------------------------------------------------------------- catálogo de hoje: nada passa
+// ---------------------------------------------------------------- catálogo de hoje: só a população por ano
 
-// O SIH está com publicacao.site false e a população não tem cruzamento: toda especificação é recusada.
+// O SIH está com publicacao.site false: nada no grão de um cruzamento dele passa, com métrica nenhuma. A única
+// consulta publicada é a população por município e ano, e é ela que toda recusa sugere.
 let recusadas = 0;
 for (const c of real.cruzamentos) {
   for (const metrica of Object.keys(real.metricas)) {
     const r = E.validar(real, noGrao(c, metrica));
     assert.equal(r.ok, false, `${c.id} ${metrica}`);
     assert.equal(r.tipo, 'recusa');
-    assert.deepEqual(r.sugestoes, []);
-    assert.match(r.mensagem, /Nenhuma consulta parecida está publicada/);
-    assert.equal(r.motivo, real.metricas[metrica].base === 'sih' || metrica === 'taxa_internacao' ? 'nao_publicada' : 'sem_cruzamento');
+    assert.equal(r.motivo, { populacao_estimada: 'papel_nao_se_aplica', populacao_censo: 'sem_cruzamento' }[metrica] || 'nao_publicada');
+    assert.deepEqual(r.sugestoes.map((s) => s.cruzamento), ['ibge_pop_ano'], `${c.id} ${metrica}`);
+    assert.equal(r.sugestoes[0].painel.territorio.papel, undefined);
+    assert.doesNotMatch(r.mensagem, /Nenhuma consulta parecida/);
+    sugestoesValidam(real, r);
     semNumero(r);
     recusadas += 1;
   }
 }
 assert.equal(recusadas, real.cruzamentos.length * Object.keys(real.metricas).length);
 assert.match(E.validar(real, base()).mensagem, /^Internações ainda não está publicada no site/);
+// Sem a população por ano no catálogo, não sobra nada para sugerir, e a recusa diz isso.
+{
+  const semSerie = copia(real);
+  delete semSerie.cruzamentos_da_origem;
+  const r = E.validar(semSerie, base());
+  assert.equal(r.motivo, 'nao_publicada');
+  assert.deepEqual(r.sugestoes, []);
+  assert.match(r.mensagem, /Nenhuma consulta parecida está publicada/);
+  assert.equal(E.validar(semSerie, { ...base({ metrica: 'populacao_estimada' }), territorio: { municipios: ['3548500'] } }).motivo, 'sem_cruzamento');
+}
 // Sem o papel, a pergunta continua sendo qual é o papel, mas nenhuma das respostas valida.
 {
   const r = E.validar(real, base({ territorio: { municipios: ['3548500'] } }));
@@ -241,9 +256,11 @@ assert.equal(E.validar(ligado, base({ tema: 'saude' })).ok, true);
   // Com o catálogo de hoje, continua recusado como tudo o mais.
   assert.equal(E.validar(real, celula).motivo, 'nao_publicada');
 }
-// População e taxa continuam de fora: não há cruzamento delas no catálogo.
-recusa(base({ metrica: 'populacao_estimada' }), 'sem_cruzamento');
+// A taxa continua de fora: é calculada, e não há cruzamento dela no catálogo.
 recusa(base({ metrica: 'taxa_internacao' }), 'sem_cruzamento');
+// Quem pergunta com papel vê primeiro o que tem papel: a população só entra depois das tabelas do SIH.
+assert.ok(!recusa(base({ metrica: 'leitos' }), 'metrica_desconhecida').sugestoes.some((s) => s.cruzamento === 'ibge_pop_ano'));
+assert.equal(recusa({ ...base({ metrica: 'leitos' }), territorio: { municipios: ['3548500'] } }, 'metrica_desconhecida').sugestoes[0].cruzamento, 'ibge_pop_ano');
 // Formato errado também é recusa, sem exceção.
 assert.equal(E.validar(ligado, { metrica: 'internacoes' }).motivo, 'formato');
 assert.equal(E.validar(ligado, null).motivo, 'formato');
@@ -259,6 +276,117 @@ assert.equal(E.validar(ligado, null).motivo, 'formato');
   semNumero(mensal);
 }
 
+// ---------------------------------------------------------------- população por município e ano
+
+// Já vem agregada do IBGE, sem supressão e sem papel: "em Santos" não é ambíguo. Vale com o catálogo de hoje
+// e com o SIH ligado.
+const populacao = (mudancas = {}) => ({
+  metrica: 'populacao_estimada',
+  territorio: { municipios: ['3548500'] },
+  filtros: {},
+  detalhar: [],
+  periodo: { de: '2013', ate: '2026' },
+  grafico: 'linha',
+  ...mudancas,
+});
+const serie = real.cruzamentos_da_origem.find((c) => c.id === 'ibge_pop_ano');
+assert.deepEqual([serie.anos.primeiro, serie.anos.sem_dado, serie.quebras.map((q) => q.a_partir_de)], [2013, [2022, 2023], [2018, 2024]]);
+for (const catalogo of [real, ligado]) {
+  const r = E.validar(catalogo, populacao());
+  assert.equal(r.ok, true);
+  assert.equal(r.cruzamento, 'ibge_pop_ano');
+  assert.deepEqual(r.consulta, {
+    cruzamento: 'ibge_pop_ano',
+    metrica: 'populacao_estimada',
+    territorio: { dimensao: 'municipio', municipios: ['3548500'] },
+    filtros: {},
+    detalhar: [],
+    tempo: 'ano',
+    de: '2013',
+    ate: '2026',
+  });
+  // A série inteira atravessa as duas quebras e os dois anos sem estimativa: as três ressalvas vêm junto,
+  // com o texto do catálogo, e a do Censo 2022 diz que os valores não são comparáveis.
+  assert.deepEqual(r.ressalvas, [
+    { tipo: 'quebra_de_serie', a_partir_de: '2018', texto: serie.quebras[0].ressalva },
+    { tipo: 'quebra_de_serie', a_partir_de: '2024', texto: serie.quebras[1].ressalva },
+    { tipo: 'sem_dado', periodos: ['2022', '2023'], texto: serie.anos.sem_dado_ressalva },
+  ]);
+  assert.match(r.ressalvas[1].texto, /Censo 2022.*Não são comparáveis/);
+  semNumero(r);
+  assert.equal(E.validar(catalogo, populacao({ tema: 'populacao' })).ok, true);
+  assert.equal(E.validar(catalogo, populacao({ territorio: { municipios: ['3548500', '3550308', '1100015'] }, grafico: 'tabela' })).ok, true);
+}
+// A ressalva segue o período: só aparece a quebra que ele atravessa.
+const ressalvas = (de, ate) => E.validar(real, populacao({ periodo: { de, ate } })).ressalvas.map((x) => x.a_partir_de || x.periodos.join('+'));
+assert.deepEqual(ressalvas('2013', '2017'), []);
+assert.deepEqual(ressalvas('2017', '2018'), ['2018']);
+assert.deepEqual(ressalvas('2018', '2021'), []);
+assert.deepEqual(ressalvas('2021', '2024'), ['2024', '2022+2023']);
+assert.deepEqual(ressalvas('2019', '2023'), ['2022+2023']);
+assert.deepEqual(ressalvas('2024', '2026'), []);
+// Um ano só é uma célula: pode ser o número em destaque, e não atravessa quebra.
+{
+  const r = E.validar(real, populacao({ periodo: { de: '2026', ate: '2026' }, grafico: 'numero' }));
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.ressalvas, []);
+  assert.equal(E.validar(real, populacao({ grafico: 'numero' })).motivo, 'numero_pede_uma_celula');
+}
+// A nota de um município num ano só aparece para quem pede aquele município naquele ano.
+{
+  const sorriso = (de, ate, municipios = ['3548500', '5107925']) => E.validar(real, populacao({ territorio: { municipios }, periodo: { de, ate }, grafico: 'tabela' }))
+    .ressalvas.filter((x) => x.tipo === 'nota_do_municipio');
+  assert.deepEqual(sorriso('2024', '2024'), [{ tipo: 'nota_do_municipio', municipios: ['5107925'], periodos: ['2024'], texto: serie.notas[0].ressalva }]);
+  assert.deepEqual(sorriso('2013', '2026').map((x) => x.municipios), [['5107925']]);
+  assert.deepEqual(sorriso('2025', '2026'), []);
+  assert.deepEqual(sorriso('2024', '2024', ['3548500']), []);
+  assert.match(serie.notas[0].ressalva, /Boa Esperança do Norte/);
+}
+// As outras métricas de hoje não ganharam ressalva nenhuma.
+assert.deepEqual(E.validar(ligado, base()).ressalvas, []);
+
+const recusaDaSerie = (painel, motivo, periodo) => {
+  for (const catalogo of [real, ligado]) {
+    const r = E.validar(catalogo, painel);
+    assert.equal(r.tipo, 'recusa');
+    assert.equal(r.motivo, motivo, r.mensagem);
+    assert.equal(r.sugestoes[0].cruzamento, 'ibge_pop_ano');
+    assert.equal(r.sugestoes[0].painel.territorio.papel, undefined);
+    if (periodo) assert.deepEqual(r.sugestoes[0].painel.periodo, periodo);
+    sugestoesValidam(catalogo, r);
+    semNumero(r);
+  }
+  return E.validar(real, painel);
+};
+// Com papel, a pergunta não cabe: a população não distingue residência de hospital.
+recusaDaSerie(populacao({ territorio: { papel: 'residencia', municipios: ['3548500'] } }), 'papel_nao_se_aplica', { de: '2013', ate: '2026' });
+recusaDaSerie(populacao({ territorio: { papel: 'hospital', municipios: ['3548500'] } }), 'papel_nao_se_aplica');
+// Antes do primeiro ano publicado: recusa, e a sugestão começa onde a série começa.
+assert.match(recusaDaSerie(populacao({ periodo: { de: '2001', ate: '2026' } }), 'periodo_indisponivel', { de: '2013', ate: '2026' }).mensagem,
+  /^População estimada está publicada de 2013 em diante/);
+recusaDaSerie(populacao({ periodo: { de: '2012', ate: '2012' } }), 'periodo_indisponivel', { de: '2013', ate: '2013' });
+// Só anos sem estimativa: recusa com o motivo do catálogo, e a sugestão é o ano seguinte que tem dado.
+assert.match(recusaDaSerie(populacao({ periodo: { de: '2022', ate: '2023' } }), 'periodo_sem_dado', { de: '2024', ate: '2024' }).mensagem,
+  /não tem dado em 2022 e 2023\. O IBGE não tem estimativa de 2022 nem de 2023/);
+recusaDaSerie(populacao({ periodo: { de: '2022', ate: '2022' }, grafico: 'numero' }), 'periodo_sem_dado', { de: '2024', ate: '2024' });
+// Outro grão não existe: por mês, por trimestre, ou com dimensão do SIH. Tema errado, também.
+recusaDaSerie(populacao({ periodo: { de: '2025-01', ate: '2025-12' } }), 'grao_indisponivel', { de: '2025', ate: '2025' });
+recusaDaSerie(populacao({ periodo: { de: '2021-T1', ate: '2024-T4' } }), 'grao_indisponivel', { de: '2021', ate: '2024' });
+recusaDaSerie(populacao({ detalhar: ['sexo'] }), 'grao_indisponivel');
+recusaDaSerie(populacao({ filtros: { faixa_12: ['80+'] } }), 'grao_indisponivel');
+recusaDaSerie(populacao({ tema: 'saude' }), 'tema_incompativel');
+// O Censo é outra métrica, sem cruzamento por ano: a sugestão é a estimativa.
+recusaDaSerie(populacao({ metrica: 'populacao_censo', periodo: { de: '2022', ate: '2022' } }), 'sem_cruzamento', { de: '2024', ate: '2024' });
+// Na URL, o território sem papel vai com "n", e o link abre validado.
+{
+  const texto = E.serializar({ v: 1, paineis: [populacao()] }).texto;
+  assert.equal(texto, 'v=1&p=m:populacao_estimada;t:n,3548500;p:2013,2026;g:linha');
+  const aberto = E.abrir(real, texto);
+  assert.equal(aberto.ok, true);
+  assert.deepEqual(aberto.paineis[0], E.validar(real, populacao()));
+  assert.equal(E.serializar(aberto.estado).texto, texto);
+}
+
 // ---------------------------------------------------------------- URL: ida e volta
 
 const fixo = 'v=1&p=m:internacoes;k:saude;t:r,3548500;f:capitulo_cid=10;p:2025-T1,2025-T4;g:linha';
@@ -266,7 +394,7 @@ assert.deepEqual(E.serializar(exemplo), { ok: true, texto: fixo, tamanho: fixo.l
 assert.deepEqual(E.ler(fixo), E.normalizar(exemplo));
 assert.deepEqual(E.ler(`#${fixo}`), E.normalizar(exemplo));
 
-const estados = [exemplo];
+const estados = [exemplo, { v: 1, paineis: [populacao(), populacao({ periodo: { de: '2026', ate: '2026' }, grafico: 'numero' })] }];
 for (const c of ligado.cruzamentos) {
   for (const metrica of c.metricas) estados.push({ v: 1, paineis: [noGrao(c, metrica)] });
 }

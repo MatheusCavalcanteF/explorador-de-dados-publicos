@@ -2,6 +2,7 @@
 
 Só metadados e totais. Os valores por município ficam no site e na Release, não aqui. A exceção são
 as revisões da estimativa do IBGE: para cada município revisado, o valor antes e depois, por código.
+Da população por ano, cada ano tem a própria URL, data de coleta e hash.
 """
 from __future__ import annotations
 
@@ -23,8 +24,12 @@ def resumo_ibge(coleta: dict) -> dict:
         uf["municipios"] += 1
         uf["populacao_estimada"] += m["populacao_estimada"] or 0
         uf["populacao_censo_2022"] += m["populacao_censo"] or 0
-    return {"coletado_em": coleta["coletado_em"], "fontes": coleta["fontes"], "municipios": len(coleta["municipios"]),
-            "por_uf": dict(sorted(por_uf.items()))}
+    resumo = {"coletado_em": coleta["coletado_em"], "fontes": coleta["fontes"], "municipios": len(coleta["municipios"]),
+              "por_uf": dict(sorted(por_uf.items()))}
+    if "populacao_por_ano" in coleta:
+        # De cada ano, de onde veio, quando e com que hash; os valores ficam no arquivo do site.
+        resumo["populacao_por_ano"] = {k: v for k, v in coleta["populacao_por_ano"].items() if k != "valores"}
+    return resumo
 
 
 def gravar(coleta_dir: Path, destino: Path) -> list[str]:

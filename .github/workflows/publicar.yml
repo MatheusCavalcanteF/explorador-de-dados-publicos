@@ -50,6 +50,8 @@ jobs:
       # serve para dizer o que mudou, pelo hash dos valores. Se a estimativa mudar no mesmo período,
       # a coleta lê o Parquet do site no ar para achar os municípios revisados; variação acima do
       # limite do catálogo vira aviso nesta execução, sem bloquear.
+      # A população por ano vem junto: um pedido à SIDRA por ano da série, com contrato próprio
+      # (pipeline/populacao_por_ano.py). Se ele falhar, nada é publicado.
       - name: Coleta do IBGE
         run: >
           python -m pipeline coletar --saida build/coleta --censo-release build/release/censo-2022.json

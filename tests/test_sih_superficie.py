@@ -192,3 +192,17 @@ def test_superficie_de_versao_reprovada_nao_e_gravada(cat, tmp_path):
     with pytest.raises(sih_superficie.ErroDeSuperficie, match="não vão para a superfície"):
         sih_superficie.gravar(sup, tmp_path / "superficie.parquet", cat)
     assert not (tmp_path / "superficie.parquet").exists()
+
+
+def test_populacao_por_ano_fica_fora_das_regras_e_dos_cruzamentos_do_sih(cat):
+    """A série já vem agregada do IBGE: não passa pela supressão nem pelo teste de dedução, e incluí-la no
+    catálogo não muda o hash das regras do SIH, que decide se os anos fechados são reaproveitados."""
+    import copy
+
+    from pipeline import sih_reaproveitamento
+    sem = copy.deepcopy(cat)
+    del sem["cruzamentos_da_origem"], sem["dimensoes"]["municipio"]
+    assert sih_reaproveitamento.regras_sha256(sem) == sih_reaproveitamento.regras_sha256(cat)
+    assert all(c["id"].startswith("sih_") for c in cat["cruzamentos"])
+    assert [c["id"] for c in cat["cruzamentos_da_origem"]] == ["ibge_pop_ano"]
+    assert cat["bases"]["sih"]["publicacao"] == {"site": False}

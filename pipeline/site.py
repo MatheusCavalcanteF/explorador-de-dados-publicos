@@ -421,6 +421,62 @@ def parquet(municipios: list[dict], destino: Path) -> None:
     pq.write_table(tabela, destino, compression="NONE")
 
 
+def populacao_por_ano(coleta: dict, catalogo: dict, saida: Path) -> list[str]:
+    """A série da população por município e ano, quando a coleta a traz: o Parquet e, ao lado, um JSON com a
+    fonte e a data de coleta de cada ano, as quebras e o motivo de não haver supressão.
+
+    Uma linha por município e ano coletado. Município sem estimativa no ano fica com a população nula, nunca
+    zero. `comparavel_desde` é o primeiro ano do trecho da série em que a linha está: valores com anos
+    diferentes nessa coluna não se comparam, e quem lê só o arquivo vê a quebra em cada linha.
+    """
+    serie = coleta.get("populacao_por_ano")
+    if not serie:
+        return []
+    cruzamento = next(c for c in catalogo["cruzamentos_da_origem"] if c["id"] == serie["cruzamento"])
+    metrica_id = cruzamento["metricas"][0]
+    metrica, base = catalogo["metricas"][metrica_id], catalogo["bases"][cruzamento["base"]]
+    anos = sorted(serie["anos"], key=int)
+    codigos = sorted(m["codigo"] for m in coleta["municipios"])
+    linhas = [(codigo, int(ano), serie["valores"][ano].get(codigo), serie["anos"][ano]["comparavel_desde"])
+              for codigo in codigos for ano in anos]
+    tabela = pa.table({
+        "codigo": pa.array([l[0] for l in linhas], pa.string()),
+        "ano": pa.array([l[1] for l in linhas], pa.int16()),
+        "populacao": pa.array([l[2] for l in linhas], pa.int32()),
+        "comparavel_desde": pa.array([l[3] for l in linhas], pa.int16()),
+    })
+    destino = saida / cruzamento["arquivo"]
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    pq.write_table(tabela, destino, compression="NONE")
+    fonte = metrica["fonte"]
+    descricao = {
+        "cruzamento": cruzamento["id"], "metrica": metrica_id, "rotulo": metrica["rotulo"], "unidade": metrica["unidade"],
+        "arquivo": destino.name,
+        "colunas": {
+            "codigo": "Código do município no IBGE, com 7 dígitos",
+            "ano": "Ano de referência da estimativa",
+            "populacao": "População residente estimada, em pessoas. Nulo é município sem estimativa no ano, nunca zero",
+            "comparavel_desde": "Primeiro ano do trecho da série em que a linha está. Valores com anos diferentes nesta "
+                                "coluna não são comparáveis entre si: ver quebras"},
+        "fonte": {"orgao": fonte["orgao"], "pesquisa": fonte["pesquisa"], "tabela": fonte["tabela"],
+                  "valor_exato": fonte["acesso"]["url"], "atribuicao": base["licenca"]["atribuicao"],
+                  "licenca": base["licenca"]["id"]},
+        "coletado_em": serie["coletado_em"],
+        "anos": {ano: {"url": serie["anos"][ano]["url"], "coletado_em": serie["anos"][ano]["coletado_em"],
+                       "valores_desde": serie["anos"][ano]["valores_desde"], "sha256": serie["anos"][ano]["sha256"],
+                       "bytes": serie["anos"][ano]["bytes"], "municipios_com_valor": serie["anos"][ano]["municipios"],
+                       "municipios_sem_valor": len(serie["anos"][ano]["ausentes"]),
+                       "comparavel_desde": serie["anos"][ano]["comparavel_desde"]} for ano in anos},
+        "sem_dado": {"anos": cruzamento["anos"].get("sem_dado") or [], "ressalva": cruzamento["anos"].get("sem_dado_ressalva")},
+        "quebras": [{"a_partir_de": q["a_partir_de"], "ressalva": q["ressalva"]} for q in cruzamento.get("quebras") or []],
+        "notas": [{"anos": n["anos"], "municipios": n["municipios"], "ressalva": n["ressalva"]} for n in cruzamento.get("notas") or []],
+        "supressao": {"aplica": False, "motivo": base["supressao"]["motivo"]},
+    }
+    ficha = destino.with_suffix(".json")
+    ficha.write_text(json.dumps(descricao, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
+    return [cruzamento["arquivo"], ficha.relative_to(saida).as_posix()]
+
+
 def estimativa_publicada(corpo: bytes) -> dict[str, int]:
     """Estimativa por município no Parquet publicado: a coleta seguinte compara com ela para achar revisões."""
     tabela = pq.read_table(io.BytesIO(corpo), columns=["codigo", "populacao_estimada"]).to_pydict()
@@ -511,6 +567,7 @@ def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = No
     gravar("dados/municipios.json", json.dumps([[m["codigo"], m["nome"], m["uf"]] for m in municipios],
                                                ensure_ascii=False, separators=(",", ":")))
     parquet(municipios, saida / PARQUET)
+    populacao_por_ano(coleta, catalogo, saida)
     versao = {"execucao": execucao, "coletado_em": coleta["coletado_em"], "municipios": len(municipios)}
     if sih is not None:
         versao["sih"] = "build local, fora do catálogo publicado"

@@ -3,6 +3,7 @@
     python -m pipeline releases   --destino build/release   (partição fechada do Censo; falha ao consultar para)
     python -m pipeline no-ar      --destino build/no-ar     (versão no ar do SIH, a superfície no site; idem)
     python -m pipeline coletar    --saida build/coleta [--censo-release arquivo] [--anterior manifesto/ibge.json]
+                                  (lista de municípios, estimativa mais recente, Censo 2022 e população por ano)
     python -m pipeline alcance    --saida build/coleta
     python -m pipeline diagnostico --saida build/diagnostico [--resumo arquivo.md] [--pular inep ...]
     python -m pipeline inep       --saida build/inep [--resumo arquivo.md]
@@ -30,7 +31,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from . import alcance, catalogo, diagnostico, hospedagem, ibge, links, manifesto, projeto, rede, release, site
+from . import (alcance, catalogo, diagnostico, hospedagem, ibge, links, manifesto, populacao_por_ano, projeto, rede,
+               release, site)
 
 
 def _estimativa_no_site():
@@ -139,14 +141,25 @@ def main(argv=None) -> int:
         print(f"publicar={'true' if regra.get('site') else 'false'}")
     elif args.comando == "coletar":
         censo = args.censo_release if args.censo_release and args.censo_release.exists() else None
-        anterior = _ler(args.anterior)["fontes"] if args.anterior and args.anterior.exists() else None
-        resultado = ibge.coletar(args.saida, censo, anterior, publicados=_estimativa_no_site)
+        manifesto_anterior = _ler(args.anterior) if args.anterior and args.anterior.exists() else None
+        anterior = manifesto_anterior["fontes"] if manifesto_anterior else None
+        resultado = ibge.coletar(args.saida, censo, anterior, publicados=_estimativa_no_site,
+                                 serie=populacao_por_ano.regra(cat),
+                                 anterior_da_serie=(manifesto_anterior or {}).get("populacao_por_ano"))
         fontes = resultado["fontes"]
         print(f"IBGE: {len(resultado['municipios'])} municípios da DTB {fontes['dtb']['periodo']} "
               f"(data-base {fontes['dtb']['data_base']}); estimativa {fontes['estimativa']['periodo']}; "
               f"Censo 2022 da {fontes['censo']['origem']}")
         for nome, fonte in fontes.items():
             print(f"{nome}: em relação à coleta anterior, {fonte['em_relacao_a_coleta_anterior']}")
+        serie = resultado["populacao_por_ano"]
+        print(f"População por ano: {len(serie['anos'])} anos, de {min(serie['anos'])} a {max(serie['anos'])}, "
+              f"um pedido à SIDRA por ano")
+        # Um ano já coletado que muda é revisão do IBGE: fica no manifesto, com a data, e vira aviso aqui.
+        for ano, item in serie["anos"].items():
+            if item["em_relacao_a_coleta_anterior"] == "valores_mudaram":
+                print(f"::warning title=População por ano revisada pelo IBGE::Os valores de {ano} mudaram desde a "
+                      f"coleta anterior; o manifesto registra a data")
         # Revisão não bloqueia: aparece como aviso no workflow, além da ressalva na página.
         limite = cat["bases"]["ibge_estimativa"]["revisao"]["aviso_variacao_pct"]
         nomes = {m["codigo"]: m["nome"] for m in resultado["municipios"]}

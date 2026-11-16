@@ -1,0 +1,318 @@
+{
+ "conferido_em": "2026-11-16T02:32:28Z",
+ "coleta_do_pipeline": {
+  "coletado_em": "2026-11-16T02:20:23Z",
+  "sha256_valores_por_ano": {
+   "2013": "375f5b08afb102e56d5f7974d51f671a97c16249dc5d2bc105c0c29e104b6929",
+   "2014": "b1ab84c58609d78d74fc848ef0b48fd8144d643a0fd65868f06941a08bd5d9cf",
+   "2015": "4fe18374424a2c51f7d585b4b18c5ec998df41c63ae6cf045e2ad2c4da8e9d54",
+   "2016": "7ebd56a8d5a6d290cbd3bf970f3ee03eea9f39e5609779dda7127bf23bb30f47",
+   "2017": "56dc855436839bd5539033def17d0d485addf096608d0f99ec3ce72aa133563a",
+   "2018": "4207baf15d1244d08d0e7dfc24de6c4e14e480cd49fdff5d0e46315c70c4e876",
+   "2019": "37f1baf302f8ee8b329974d49b99067aef44278e2085937f2e7a200fa13dfb9f",
+   "2020": "510811e02e31aee470a12332e6b182dc3fca7c11eef148fa50985765dfccee2b",
+   "2021": "29e1fc6732264cde9d341876cb0d6a86c22df7189753df2792f07e1597ea3783",
+   "2024": "fdeaa9ab2385890280c0cbbf164a855cc1fb176a932143722811625617e81359",
+   "2025": "2ee624d0a8df789182c41f1f66a8d3425f04a2fe5ddcf2a2a1c87210e1e9ce39",
+   "2026": "ad1d9bb6dc006e7d71872e82b40a57b7adb2aca9c0ca241667d719e36fc39360"
+  }
+ },
+ "sidra_por_municipio": {
+  "como": "um pedido por município, com todos os anos da tabela (n6/{municipio}, p/all)",
+  "amostra": [
+   "4314902",
+   "3124906",
+   "3554904",
+   "2804300",
+   "4320651",
+   "2614402",
+   "3552403",
+   "2514453",
+   "3544251",
+   "2304236",
+   "2511707",
+   "3106101",
+   "1711803",
+   "4204350",
+   "4215356",
+   "4117453",
+   "1200351",
+   "2307908",
+   "2312304",
+   "3157302",
+   "3156106",
+   "4205357",
+   "4124400",
+   "2313401",
+   "2510501",
+   "3110707",
+   "2414407",
+   "2210607",
+   "3533205",
+   "3519204"
+  ],
+  "ufs_na_amostra": 13,
+  "anos": [
+   "2013",
+   "2014",
+   "2015",
+   "2016",
+   "2017",
+   "2018",
+   "2019",
+   "2020",
+   "2021",
+   "2024",
+   "2025",
+   "2026"
+  ],
+  "comparados": 360,
+  "iguais": 360,
+  "diferentes": []
+ },
+ "planilhas_do_ftp": {
+  "2018": {
+   "pasta": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2018/",
+   "planilhas": [
+    {
+     "arquivo": "POP2018_20220905.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2018/POP2018_20220905.ods",
+     "bytes": 185578,
+     "sha256": "01f06bad64ac57ec5b6b7c4d2de712c59daf19c1bfea473458cc67ad7546ff66",
+     "municipios": 5570,
+     "com_marca_de_nota": 19,
+     "na_coleta_e_na_planilha": 5570,
+     "iguais": 5570,
+     "diferentes": 0,
+     "codigos_diferentes": [],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    },
+    {
+     "arquivo": "estimativa_dou_2018_20181019.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2018/estimativa_dou_2018_20181019.ods",
+     "bytes": 194207,
+     "sha256": "a6cd961a06c4975e8defdc5958c365b6db3f04a57ef8f93b192add3b3e6077c1",
+     "municipios": 5570,
+     "com_marca_de_nota": 14,
+     "na_coleta_e_na_planilha": 5570,
+     "iguais": 5567,
+     "diferentes": 3,
+     "codigos_diferentes": [
+      "2300150",
+      "2301208",
+      "2301950"
+     ],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    }
+   ],
+   "bate_inteira_com": [
+    "POP2018_20220905.ods"
+   ]
+  },
+  "2021": {
+   "pasta": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2021/",
+   "planilhas": [
+    {
+     "arquivo": "POP2021_20240624.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2021/POP2021_20240624.ods",
+     "bytes": 208689,
+     "sha256": "909da50040de6054ee2bd4a555631c83c591b72ec0c4fdb20f08a4eb881b83cb",
+     "municipios": 5570,
+     "com_marca_de_nota": 30,
+     "na_coleta_e_na_planilha": 5570,
+     "iguais": 5570,
+     "diferentes": 0,
+     "codigos_diferentes": [],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    },
+    {
+     "arquivo": "estimativa_dou_2021.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2021/estimativa_dou_2021.ods",
+     "bytes": 193832,
+     "sha256": "57746ed3f495f1f3111ed4ed33ee59d6e9ddd4f7023c25434fc79cd1e5b6a8bb",
+     "municipios": 5570,
+     "com_marca_de_nota": 19,
+     "na_coleta_e_na_planilha": 5570,
+     "iguais": 5570,
+     "diferentes": 0,
+     "codigos_diferentes": [],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    }
+   ],
+   "bate_inteira_com": [
+    "POP2021_20240624.ods",
+    "estimativa_dou_2021.ods"
+   ]
+  },
+  "2024": {
+   "pasta": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2024/",
+   "planilhas": [
+    {
+     "arquivo": "POP2024_20241101.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2024/POP2024_20241101.ods",
+     "bytes": 191958,
+     "sha256": "baee8461212654f302bb9e9b16383eb6fffd6ca4be7891886c3cad129b306cf9",
+     "municipios": 5571,
+     "com_marca_de_nota": 0,
+     "na_coleta_e_na_planilha": 5570,
+     "iguais": 5564,
+     "diferentes": 6,
+     "codigos_diferentes": [
+      "2801207",
+      "2805406",
+      "5106240",
+      "5106307",
+      "5107925",
+      "5108501"
+     ],
+     "soma_coleta_menos_planilha_nos_diferentes": 5772,
+     "soma_dos_que_so_estao_na_planilha": 5772,
+     "so_na_planilha": [
+      "5101837"
+     ],
+     "so_na_coleta": []
+    },
+    {
+     "arquivo": "POP2024_20241230.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2024/POP2024_20241230.ods",
+     "bytes": 191994,
+     "sha256": "a1a05b51982d8ac398f1069bf2f2756c13d7b785c92302146bd490c266e14664",
+     "municipios": 5571,
+     "com_marca_de_nota": 0,
+     "na_coleta_e_na_planilha": 5570,
+     "iguais": 5566,
+     "diferentes": 4,
+     "codigos_diferentes": [
+      "5106240",
+      "5106307",
+      "5107925",
+      "5108501"
+     ],
+     "soma_coleta_menos_planilha_nos_diferentes": 5772,
+     "soma_dos_que_so_estao_na_planilha": 5772,
+     "so_na_planilha": [
+      "5101837"
+     ],
+     "so_na_coleta": []
+    },
+    {
+     "arquivo": "estimativa_dou_2024.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2024/estimativa_dou_2024.ods",
+     "bytes": 199222,
+     "sha256": "de66e4714c9fae2e11627eb60b27d4a7327f63ab7235e414e3599cca22421f19",
+     "municipios": 5570,
+     "com_marca_de_nota": 0,
+     "na_coleta_e_na_planilha": 5570,
+     "iguais": 5568,
+     "diferentes": 2,
+     "codigos_diferentes": [
+      "2801207",
+      "2805406"
+     ],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    }
+   ],
+   "bate_inteira_com": []
+  },
+  "2025": {
+   "pasta": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2025/",
+   "planilhas": [
+    {
+     "arquivo": "POP2025_20251031.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2025/POP2025_20251031.ods",
+     "bytes": 213151,
+     "sha256": "415348094d4e4a10d4a88005e5f5241ee9ffe013e2ceac4fa4fe952a1291057a",
+     "municipios": 5571,
+     "com_marca_de_nota": 0,
+     "na_coleta_e_na_planilha": 5571,
+     "iguais": 5567,
+     "diferentes": 4,
+     "codigos_diferentes": [
+      "2800308",
+      "2806701",
+      "4108601",
+      "4116109"
+     ],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    },
+    {
+     "arquivo": "POP2025_20260113.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2025/POP2025_20260113.ods",
+     "bytes": 212846,
+     "sha256": "33dc6f79def9522e282cd69b87a9ce75327a81239d6060d9c8f9f5a49bd2a1b5",
+     "municipios": 5571,
+     "com_marca_de_nota": 0,
+     "na_coleta_e_na_planilha": 5571,
+     "iguais": 5569,
+     "diferentes": 2,
+     "codigos_diferentes": [
+      "2800308",
+      "2806701"
+     ],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    },
+    {
+     "arquivo": "POP2025_20260828.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2025/POP2025_20260828.ods",
+     "bytes": 212873,
+     "sha256": "748303510fb724f11a6e36b3d3ba19d1655397cacabe7dad5ba82ac11d781629",
+     "municipios": 5571,
+     "com_marca_de_nota": 0,
+     "na_coleta_e_na_planilha": 5571,
+     "iguais": 5571,
+     "diferentes": 0,
+     "codigos_diferentes": [],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    },
+    {
+     "arquivo": "estimativa_dou_2025.ods",
+     "url": "https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2025/estimativa_dou_2025.ods",
+     "bytes": 214193,
+     "sha256": "16e2efbb0d2a43d18994d4354b58020b7231b0e99fafb08d86f5142c17ca0a6a",
+     "municipios": 5571,
+     "com_marca_de_nota": 0,
+     "na_coleta_e_na_planilha": 5571,
+     "iguais": 5567,
+     "diferentes": 4,
+     "codigos_diferentes": [
+      "2800308",
+      "2806701",
+      "4108601",
+      "4116109"
+     ],
+     "soma_coleta_menos_planilha_nos_diferentes": 0,
+     "soma_dos_que_so_estao_na_planilha": 0,
+     "so_na_planilha": [],
+     "so_na_coleta": []
+    }
+   ],
+   "bate_inteira_com": [
+    "POP2025_20260828.ods"
+   ]
+  }
+ }
+}

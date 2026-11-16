@@ -50,12 +50,19 @@ bases:
     licenca: { id: nao-declarada-na-origem, atribuicao: "IBGE, Estimativas de População" }
     coleta:
       origem: "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/last%201"   # a SIDRA diz o período mais recente
+      # A série por ano (cruzamentos_da_origem.ibge_pop_ano): os anos que a tabela tem saem dela mesma, no
+      # nível Brasil, e cada ano é um pedido com todos os municípios.
+      periodos: "https://apisidra.ibge.gov.br/values/t/6579/n1/all/v/9324/p/all"
+      por_ano: "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/{ano}"
     mudanca: hash_dos_valores   # a SIDRA revisa estimativas; o hash compara com a coleta anterior
     # Valor que muda no mesmo período: a página ganha a ressalva "revisado pelo IBGE", com a data da
     # coleta que detectou, e o manifesto guarda antes e depois de cada município. Não bloqueia.
     revisao: { acao: marcar_revisado, aviso_variacao_pct: 5 }   # acima de 5%, aviso no workflow
     # Município na SIDRA que a DTB não tem para a coleta com erro claro (decisão de 08/11/2026).
-    supressao: { aplica: false }   # população não é contagem de atendimentos
+    # Sem supressão, e o motivo fica escrito: sem ele, o catálogo não valida.
+    supressao:
+      aplica: false
+      motivo: "Agregado oficial que o IBGE já publica por município e ano. Nenhum valor sai de registro individual, e o projeto não cruza a população com outra dimensão."
   sih:
     nome: Sistema de Informações Hospitalares do SUS (AIH Reduzida)
     orgao: Ministério da Saúde / DATASUS
@@ -166,7 +173,9 @@ bases:
       origem: "https://apisidra.ibge.gov.br/values/t/4714/n6/all/v/93/p/2022"
     particao_fechada: { release: ibge-censo-2022, arquivo: censo-2022.json }
     mudanca: hash_dos_valores   # valor diferente do guardado na Release para o pipeline
-    supressao: { aplica: false }
+    supressao:
+      aplica: false
+      motivo: "Agregado oficial que o IBGE já publica por município. Nenhum valor sai de registro individual, e o projeto não cruza a população com outra dimensão."
 
 metricas:
   populacao_estimada:
@@ -278,6 +287,9 @@ metricas:
 # Dimensões dos cruzamentos do SIH. "niveis" vai do mais fino ao mais grosso: somar uma dimensão é
 # subir um nível, e o teste de dedução considera todas as somas que alguém pode montar.
 dimensoes:
+  # O município sem papel, da lista da DTB: é o da população residente. No SIH o município sempre tem
+  # papel, o de residência ou o do hospital, e por isso as dimensões dele são outras.
+  municipio: { base: ibge_dtb, niveis: [municipio] }
   municipio_residencia: { base: sih, niveis: [mun_res, uf_res], conversao: ibge6_para_ibge7 }
   municipio_hospital: { base: sih, niveis: [mun_hosp, uf_hosp], conversao: ibge6_para_ibge7 }
   # SEXO no RD, como no SEXO.CNV do TabWin (TAB_SIH.zip, pasta Auxiliar do FTP, de 15/10/2026): 1 é
@@ -368,6 +380,49 @@ cruzamentos:
   - { id: sih_hosp_ano_especialidade, mae: sih_hosp_ano, dimensoes: [municipio_hospital, especialidade], tempo: ano, metricas: [internacoes] }
   - { id: sih_hosp_tri_capitulo, herda_trimestre_de: sih_hosp_mes, dimensoes: [municipio_hospital, capitulo_cid], tempo: tri, metricas: [internacoes] }
   - { id: sih_hosp_mes_carater, mae: sih_hosp_mes, dimensoes: [municipio_hospital, carater], tempo: mes, metricas: [internacoes] }
+
+# Cruzamentos que já vêm agregados da fonte oficial. Ficam fora da lista acima porque a supressão e o teste
+# de dedução não passam por eles: a base diz por que não aplica supressão. Cada um é um arquivo do site.
+#
+# ibge_pop_ano, medido em 15/11/2026 (docs/medicoes/resultados/populacao_serie.json). A tabela 6579 tem 22
+# anos, de 2001 a 2026, sem 2007, 2010, 2022 e 2023. A série publicada começa em 2013: daí em diante, 5.570
+# municípios têm número em todos os anos (5.571 desde 2025), e a soma dos municípios é igual ao total do
+# Brasil da própria tabela. Antes disso, até 11 municípios da lista atual não têm valor; em 2004, 2008 e
+# 2012 a soma dos municípios passa do total do Brasil; e em 4 das 10 passagens de um ano para o seguinte
+# disponível (2003-2004, 2006-2008, 2009-2011 e 2012-2013), mais de 600 municípios mudam mais de 5% ao ano.
+cruzamentos_da_origem:
+  - id: ibge_pop_ano
+    base: ibge_estimativa
+    dimensoes: [municipio]
+    tempo: ano
+    metricas: [populacao_estimada]
+    arquivo: dados/ibge/populacao_por_ano.parquet
+    # O último ano é o que a SIDRA tiver. Um ano de sem_dado que apareça na tabela, ou outro que falte,
+    # para a coleta: a validação das consultas lê esta lista.
+    anos:
+      primeiro: 2013
+      sem_dado: [2022, 2023]
+      sem_dado_ressalva: "O IBGE não tem estimativa de 2022 nem de 2023 nesta tabela. A população de 2022 é a do Censo, que é contagem e fica em outra métrica."
+    # Onde a série muda de patamar: o valor de a_partir_de em diante não se compara com o de antes. A
+    # ressalva acompanha toda consulta que atravessa a quebra, e o arquivo traz, em cada linha, desde que
+    # ano o valor é comparável. Nas 9 passagens comuns de 2013 em diante, de 5 a 35 municípios mudam mais
+    # de 5% ao ano, e de 1.364 a 2.083 caem; em 2017-2018 são 374 e 2.934, e em 2021-2024, 952 e 3.002.
+    quebras:
+      - a_partir_de: 2018
+        ressalva: "A série muda de patamar entre 2017 e 2018: 2.934 dos 5.570 municípios têm em 2018 estimativa menor que a de 2017, contra 1.364 a 1.595 nas outras passagens de um ano entre 2013 e 2021 (medido em 15/11/2026). Os valores de 2018 em diante não são diretamente comparáveis com os anteriores."
+      - a_partir_de: 2024
+        ressalva: "As estimativas de 2024 em diante partem do Censo 2022, e as de 2021 para trás, do Censo 2010. Não são comparáveis: a diferença entre 2021 e 2024 mistura a mudança da população com a troca da base. Em 3.002 dos 5.570 municípios, a estimativa de 2024 é menor que a de 2021 (medido em 15/11/2026)."
+    # Ressalvas de alguns municípios em alguns anos, que acompanham a consulta que os inclui. Medido em
+    # 15/11/2026 contra as planilhas de estimativas do FTP do IBGE (conferencia_populacao_serie.json): em 2018,
+    # 2021 e 2025 a SIDRA é igual à planilha mais recente do ano em todos os municípios; em 2024, difere dela
+    # só nestes quatro, e não traz Boa Esperança do Norte.
+    notas:
+      - anos: [2024]
+        municipios: ["5106240", "5106307", "5107925", "5108501"]
+        ressalva: "Em 2024, o valor da SIDRA para este município é maior que o da planilha de estimativas do IBGE de 30/12/2024. Somadas, as diferenças em Nova Ubiratã, Paranatinga, Sorriso e Vera dão 5.772 pessoas, a população de Boa Esperança do Norte (MT) na mesma planilha; na SIDRA, esse município só tem estimativa de 2025 em diante. A variação de 2024 para 2025 mistura a mudança da população com a do território."
+    # Uma passagem fora da lista acima em que mais municípios do que isto mudem mais do que o percentual,
+    # ao ano, para a coleta: é uma quebra que a tela ainda não avisa.
+    quebra_nao_declarada: { variacao_anual_pct: 5, municipios_max: 150 }
 
 # Somas que a supressão e o teste de dedução de cada versão tratam como publicadas, além dos cruzamentos:
 # UF e Brasil. Cada uma é uma lista de colunas; a vazia é o total do Brasil no ano. A superfície de hoje

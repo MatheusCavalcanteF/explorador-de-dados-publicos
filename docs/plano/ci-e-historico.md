@@ -42,7 +42,13 @@ Os dados não entram no git, e o que está publicado não serve de base para rec
 
 **O que continua parando tudo** é o que indica problema do próprio build: a falha dos testes sem rede, o site acima do limite de tamanho, um erro de programação, ou um estado que o mecanismo não espera (`ErroDeIsolamento`), como base reprovada que o catálogo não lista, base que não reprovou e não foi construída, ou arquivo mantido que muda entre a conferência e o build. A lista de municípios, a estimativa e o Censo também param tudo: todas as páginas saem deles, e a série também (a cobertura confere com a DTB, e o último ano, com a estimativa). A falha de um deles deixa o site inteiro como está, que é a mesma regra aplicada a todos os arquivos de uma vez.
 
-**O que o mecanismo não cobre ainda.** No `Publicar`, o passo do SIH ainda termina com erro quando um ano reprova; ele só roda com `publicacao.site: true`, e a superfície ainda não vai ao site. Quando for, o passo grava a reprovação em `reprovadas.json`, juntando à da coleta. Antes disso há uma decisão a tomar: se o SIH sair do site, a consulta à versão no ar da execução seguinte recebe `404` e hoje leria isso como primeira publicação, sem o ataque conjunto com a versão que esteve no ar. O `publicado.json` guarda essa versão, e a consulta precisa passar a lê-lo.
+**O que o mecanismo não cobre ainda.** No `Publicar`, o passo do SIH ainda termina com erro quando um ano reprova; ele só roda com `publicacao.site: true`, e a superfície ainda não vai ao site. Quando for, o passo grava a reprovação em `reprovadas.json`, juntando à da coleta.
+
+**Decidido em 18/11/2026, para cada base:**
+
+- **Lista de municípios, estimativa e Censo:** continuam parando tudo, como no parágrafo acima.
+- **SIH: uma vez publicado, nunca é tratado como primeira publicação.** A consulta à versão no ar lê o `publicado.json`. Se ele diz que o SIH já foi ao ar e a cópia do site não confere ou não responde, só o SIH bloqueia, e o resto do site publica. Hoje, um `404` com o site respondendo é lido como primeira publicação, sem o ataque conjunto com a versão que esteve no ar; com a regra, isso só vale quando o manifesto não registra publicação anterior do SIH. Fica para o passo que leva o SIH ao site; não foi implementado agora.
+- **Série de população:** cópia que não confere com o manifesto sai do site, e o job fica vermelho, como já faz o mecanismo de 16/11/2026.
 
 ### Superfície pública do SIH
 

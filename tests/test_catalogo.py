@@ -22,6 +22,22 @@ def test_catalogo_do_repositorio_e_valido(cat):
     assert len(cat["temas"]) == 12
 
 
+def test_cada_leitura_e_uma_copia_e_o_arquivo_alterado_e_lido_de_novo(_lido, tmp_path):
+    primeira = catalogo.carregar()
+    primeira["temas"].clear()
+    primeira["metricas"]["internacoes"]["nome"] = "alterado"
+    assert catalogo.carregar() == _lido
+    copia = tmp_path / "catalogo.yaml"
+    texto = catalogo.CAMINHO.read_text(encoding="utf-8")
+    copia.write_text(texto.replace("versao: 1", "versao: 2", 1), encoding="utf-8")
+    # Inválido: recusado toda vez, sem ficar guardado.
+    for _ in range(2):
+        with pytest.raises(catalogo.ErroDeCatalogo, match="versão 1"):
+            catalogo.carregar(copia)
+    copia.write_text(texto, encoding="utf-8")
+    assert catalogo.carregar(copia) == _lido
+
+
 def test_leitor_em_c_e_em_python_leem_o_mesmo_catalogo():
     import yaml
     texto = catalogo.CAMINHO.read_text(encoding="utf-8")

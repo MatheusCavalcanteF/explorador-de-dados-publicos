@@ -81,6 +81,49 @@ def test_mes_vira_trimestre_e_municipio_vira_uf():
     assert list(tab.converter_coluna(pd.Series(["350010"]), "mun_res", "uf_res")) == ["35"]
 
 
+def _posicoes_por_multiindex(alvo, procura, colunas):
+    """A busca de posição usada até 17/11/2026, guardada como referência."""
+    colunas = list(colunas)
+    if len(colunas) == 1:
+        indice, busca = pd.Index(alvo[colunas[0]]), pd.Index(procura[colunas[0]])
+    else:
+        indice, busca = pd.MultiIndex.from_frame(alvo[colunas]), pd.MultiIndex.from_frame(procura[colunas])
+    if not indice.is_unique:
+        raise ValueError("chave repetida")
+    return indice.get_indexer(busca).astype(np.int64)
+
+
+@pytest.mark.parametrize("tipo", ["str", object])
+def test_posicoes_por_codigo_dao_o_mesmo_que_o_multiindex(tipo):
+    rng = np.random.default_rng(3)
+    nulos = [None] if tipo == "str" else [None, np.nan]
+    dominios = {"mun_res": [f"35{i:04d}" for i in range(40)] + nulos, "mes": [f"2025{m:02d}" for m in range(1, 13)],
+                "sexo": ["1", "3", "9"] + nulos, "capitulo": [f"{c:02d}" for c in range(23)]}
+    vistos = {"ausente": 0, "nulo": 0, "vazio": 0}
+    for colunas in [list(dominios)[:n] for n in (1, 2, 3, 4)] + [["sexo", "mes"], ["capitulo", "sexo", "mun_res"]]:
+        for linhas in (0, 6, 60):
+            def sortear(quantas):
+                return pd.DataFrame({c: pd.Series([dominios[c][i] for i in rng.integers(0, len(dominios[c]), quantas)],
+                                                  dtype=tipo) for c in colunas})
+            alvo = sortear(linhas).drop_duplicates(ignore_index=True)
+            # A procura repete linhas do alvo, em outra ordem, e traz chaves que ele não tem.
+            procura = pd.concat([alvo.sample(frac=1.5, replace=True, random_state=linhas), sortear(15)],
+                                ignore_index=True)
+            esperado = _posicoes_por_multiindex(alvo, procura, colunas)
+            assert np.array_equal(tab.posicoes(alvo, procura, colunas), esperado), (colunas, linhas)
+            vistos["ausente"] += int((esperado < 0).sum())
+            vistos["nulo"] += int(procura.isna().any(axis=1)[esperado >= 0].sum())
+            vistos["vazio"] += len(alvo) == 0
+        repetido = pd.concat([alvo, alvo.iloc[[0]]], ignore_index=True)
+        for buscar in (_posicoes_por_multiindex, tab.posicoes):
+            with pytest.raises(ValueError, match="chave repetida"):
+                buscar(repetido, procura, colunas)
+    # Passou por chave que falta, por chave nula achada e por alvo vazio.
+    assert vistos["ausente"] > 0 and vistos["nulo"] > 0 and vistos["vazio"] == 6
+    with pytest.raises(ValueError, match="sem coluna"):
+        tab.posicoes(alvo, procura, ())
+
+
 def test_soma_derivada_bate_com_a_contagem_direta(cat, ano_montado):
     nos, _ = ano_montado
     con = duckdb.connect()
@@ -410,7 +453,9 @@ def _ano_com_municipio_pequeno(cat, janeiro):
 
 @pytest.fixture(scope="module")
 def no_ar_com_5_em_janeiro(cat):
-    """A versão no ar de um ano fechado, com k = 5: passou no teste, e o município pequeno mostra 5 em janeiro."""
+    """A versão no ar de um ano fechado, com k = 5: passou no teste, e o município pequeno mostra 5 em janeiro.
+    As arestas que suprimir_ate_passar calculou aqui (r["arestas"]) só dependem das chaves dos nós; os testes que
+    suprimem os mesmos nós de novo as recebem prontas, sem recalcular."""
     nos = _ano_com_municipio_pequeno(cat, janeiro=5)
     r = sih_deducao.suprimir_ate_passar(nos, cat, 5, False)
     assert r["passou"]
@@ -430,7 +475,7 @@ def test_mesma_regra_no_ano_fechado_herda_e_repete_a_versao_no_ar(cat, no_ar_com
     from pipeline import sih
     nos, no_ar, anterior = no_ar_com_5_em_janeiro
     fixas = sih.fixas_da_anterior(nos, cat, anterior, 2025, 202512)
-    r = sih_deducao.suprimir_ate_passar(nos, cat, 5, False, fixas=fixas)
+    r = sih_deducao.suprimir_ate_passar(nos, cat, 5, False, fixas=fixas, arestas=no_ar["arestas"])
     assert r["passou"] and len(r["historico"]) == len(no_ar["historico"])
     for cid, df in r["suprimidas"].items():
         assert (df["oculto"] == no_ar["suprimidas"][cid]["oculto"]).all(), cid
@@ -438,9 +483,9 @@ def test_mesma_regra_no_ano_fechado_herda_e_repete_a_versao_no_ar(cat, no_ar_com
 
 def test_subir_o_k_no_ano_fechado_deixa_sem_protecao_a_contagem_igual_ao_k_antigo(cat, no_ar_com_5_em_janeiro):
     from pipeline import sih
-    nos, _, anterior = no_ar_com_5_em_janeiro
+    nos, no_ar, anterior = no_ar_com_5_em_janeiro
     fixas = sih.fixas_da_anterior(nos, cat, anterior, 2025, 202512)
-    r = sih_deducao.suprimir_ate_passar(nos, cat, 6, False, max_rodadas=3, fixas=fixas)
+    r = sih_deducao.suprimir_ate_passar(nos, cat, 6, False, max_rodadas=3, fixas=fixas, arestas=no_ar["arestas"])
     linha = _linha_do_pequeno(r)
     mensal = r["suprimidas"]["sih_res_mes"]
     # Janeiro, que a versão no ar mostrou com 5, agora é contagem pequena e fica oculto. Os outros 11 meses e o
@@ -457,7 +502,7 @@ def test_subir_o_k_no_ano_fechado_deixa_sem_protecao_a_contagem_igual_ao_k_antig
     assert len(reveladas) == 4 and reveladas[0] >= reveladas[1] > 0 and len(set(reveladas[1:])) == 1
     assert ocultas == sorted(set(ocultas))
     # A causa é a herança, não o k: sem versão no ar, o mesmo ano passa com k = 6.
-    assert sih_deducao.suprimir_ate_passar(nos, cat, 6, False)["passou"]
+    assert sih_deducao.suprimir_ate_passar(nos, cat, 6, False, arestas=no_ar["arestas"])["passou"]
 
 
 def test_valor_de_periodo_fechado_que_vira_contagem_pequena_reprova_sem_mudanca_de_regra(cat, no_ar_com_5_em_janeiro):

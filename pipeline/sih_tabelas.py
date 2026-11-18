@@ -154,16 +154,31 @@ def agregar(fino_df: pd.DataFrame, fino: tuple[str, ...], grosso: tuple[str, ...
 def posicoes(alvo: pd.DataFrame, procura: pd.DataFrame, colunas) -> np.ndarray:
     """Para cada linha de `procura`, a posição da linha de `alvo` com as mesmas `colunas`, ou -1 se não houver.
 
-    Busca por índice, e não junção: dá as mesmas posições, de 1,5 a 6 vezes mais rápido nos tamanhos do
-    Brasil e dos testes. As chaves de `alvo` têm de ser únicas, senão ValueError."""
+    Chave de uma coluna: busca pelo índice da própria coluna. De várias: cada coluna vira um código inteiro, o
+    mesmo nas duas tabelas, a chave vira um inteiro só, e a busca é por índice desse inteiro. Dá as mesmas
+    posições que a busca por MultiIndex usada até 17/11/2026 (um teste compara as duas, com chave ausente e
+    nula); as 176 arestas do ano sintético dos testes caíram de 0,376 para 0,140 s. As chaves de `alvo` têm de
+    ser únicas, senão ValueError."""
     colunas = list(colunas)
+    if not colunas:
+        raise ValueError("busca de posição sem coluna de chave")
     if len(colunas) == 1:
         indice, busca = pd.Index(alvo[colunas[0]]), pd.Index(procura[colunas[0]])
-    else:
-        indice, busca = pd.MultiIndex.from_frame(alvo[colunas]), pd.MultiIndex.from_frame(procura[colunas])
+        if not indice.is_unique:
+            raise ValueError(f"{nome(no(colunas))}: chave repetida")
+        return indice.get_indexer(busca).astype(np.int64)
+    n = len(alvo)
+    chave = np.zeros(n + len(procura), dtype=np.int64)
+    for c in colunas:
+        valores = np.concatenate([alvo[c].to_numpy(dtype=object), procura[c].to_numpy(dtype=object)])
+        # Nulo (None ou NaN) é um valor só, que casa com nulo, como no MultiIndex.
+        codigos, unicos = pd.factorize(valores, use_na_sentinel=False)
+        # Renumerada a cada coluna, a chave fica abaixo do número de linhas, e o produto não estoura.
+        chave = pd.factorize(chave * len(unicos) + codigos)[0].astype(np.int64)
+    indice = pd.Index(chave[:n])
     if not indice.is_unique:
         raise ValueError(f"{nome(no(colunas))}: chave repetida")
-    return indice.get_indexer(busca).astype(np.int64)
+    return indice.get_indexer(chave[n:]).astype(np.int64)
 
 
 def indice_acima(fino_df: pd.DataFrame, fino: tuple[str, ...], grosso_df: pd.DataFrame,

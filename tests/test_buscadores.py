@@ -10,11 +10,17 @@ from test_site import coleta, jsonld, ler
 T = "2026-11-08T02:36:11Z"
 
 
-@pytest.fixture
-def municipio(tmp_path):
-    saida = tmp_path / "site"
+@pytest.fixture(scope="module")
+def _municipio(tmp_path_factory):
+    saida = tmp_path_factory.mktemp("buscadores") / "site"
     site.construir(coleta(), catalogo.carregar(), saida)
     return jsonld(ler(saida, "municipio/3548500/index.html"))
+
+
+@pytest.fixture
+def municipio(_municipio):
+    """O JSON-LD da página de um município, de um site construído uma vez por módulo; cada teste recebe uma cópia."""
+    return copy.deepcopy(_municipio)
 
 
 @pytest.mark.parametrize("estrago, motivo", [

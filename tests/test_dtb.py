@@ -50,6 +50,19 @@ def test_espacos_e_celulas_repetidas_do_ods():
     assert dtb.linhas_ods(buffer.getvalue(), "t")[0] == ["a", "", "", "d"]
 
 
+def test_mesma_planilha_com_outro_rotulo_vem_do_cache_e_o_erro_diz_o_rotulo_de_cada_leitura():
+    planilha = ods([["só neste teste", "b"]])
+    antes = dtb._linhas_ods.cache_info()
+    primeira = dtb.linhas_ods(planilha, "um")
+    primeira[0].append("alterada")
+    assert dtb.linhas_ods(planilha, "outro") == [["só neste teste", "b"]]
+    depois = dtb._linhas_ods.cache_info()
+    assert (depois.misses - antes.misses, depois.hits - antes.hits) == (1, 1)
+    for onde in ("um", "outro"):
+        with pytest.raises(ErroDeContrato, match=f"^{onde}: não é uma planilha .ods legível"):
+            dtb.linhas_ods(b"nada", onde)
+
+
 @pytest.mark.parametrize("estrago, mensagem", [
     ("sem_data_base", "DATA BASE"),
     ("sem_coluna", "nenhuma linha com as colunas"),

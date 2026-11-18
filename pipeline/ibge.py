@@ -67,7 +67,7 @@ def ler_sidra_com_ausencia(corpo: bytes, variavel: int, onde: str,
         codigo, valor = str(linha.get(colunas["municipio"])), str(linha.get("V"))
         if linha.get("NC") != "6" or linha.get(colunas["variavel"]) != str(variavel):
             raise ErroDeContrato(f"{onde}: linha de outro nível ou variável no código {codigo}")
-        if not re.fullmatch(r"\d{7}", codigo) or codigo in valores or codigo in ausentes:
+        if not dtb.CODIGO.fullmatch(codigo) or codigo in valores or codigo in ausentes:
             raise ErroDeContrato(f"{onde}: código {codigo} inválido ou repetido")
         periodos.add(str(linha.get(colunas["periodo"])))
         if valor in ausencia:

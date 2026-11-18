@@ -20,7 +20,7 @@ MODULOS = ("sih_coleta", "sih_janela", "sih_tabelas", "supressao", "deducao", "s
 DO_SIH = ("COLUNA_DA_METRICA", "NAO_SAEM", "tabelas_publicaveis", "resumo_supressao", "reprovados", "dependentes",
           "catalogo_sem", "fixas_da_anterior", "suprimir_publicaveis", "_suprimir_com_situacao_fixa", "d_de",
           "construir_ano", "ler_anterior", "anterior_do_ano")
-IMPRESSOES = {1: "19313bbc127430eff403eb7a914077903eef53a6605f51dade7738bd47750516"}
+IMPRESSOES = {1: "cc7812dbb3f6be275f7b801d49240fe3a58378ad04dc7d42f82b592ab0156a52"}
 
 
 def _sem_docstrings(arvore: ast.AST) -> ast.AST:

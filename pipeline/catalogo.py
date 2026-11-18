@@ -1,6 +1,8 @@
 """Leitura e validação do catálogo. Um catálogo inconsistente para o pipeline antes de qualquer coleta."""
 from __future__ import annotations
 
+import copy
+import functools
 from pathlib import Path
 
 import yaml
@@ -21,7 +23,15 @@ LEITOR = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
 
 
 def carregar(caminho: Path = CAMINHO) -> dict:
-    catalogo = yaml.load(caminho.read_text(encoding="utf-8"), Loader=LEITOR)
+    """O catálogo validado. O arquivo é lido a cada chamada; o mesmo texto não é analisado de novo, e cada
+    chamada recebe uma cópia própria, que pode alterar sem mudar a das outras."""
+    return copy.deepcopy(_analisar(caminho.read_text(encoding="utf-8")))
+
+
+@functools.lru_cache(maxsize=4)
+def _analisar(texto: str) -> dict:
+    """Analisar o YAML custa dez vezes a cópia. Catálogo que não passa na validação não fica guardado."""
+    catalogo = yaml.load(texto, Loader=LEITOR)
     validar(catalogo)
     return catalogo
 

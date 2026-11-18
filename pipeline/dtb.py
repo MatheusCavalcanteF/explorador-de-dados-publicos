@@ -23,6 +23,7 @@ RAIZ = "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territori
 PASTAS_A_PROCURAR = 3
 PLANILHA = re.compile(r"(?:^|/)RELATORIO_DTB_BRASIL[^/]*MUNICIPIO[^/]*\.ods", re.IGNORECASE)
 COLUNAS = {"uf": "UF", "uf_nome": "Nome_UF", "codigo": "Código Município Completo", "nome": "Nome_Município"}
+CODIGO = re.compile(r"\d{7}")
 DATA_BASE = re.compile(r"DATA BASE:\s*(\d{2})/(\d{2})/(\d{4})")
 # Contra arquivo corrompido ou malicioso: a planilha de 2025 tem 206 KB, e o XML dentro dela, 7,7 MB.
 MAX_PLANILHA = 50_000_000
@@ -95,24 +96,33 @@ def _texto(elemento) -> str:
 def linhas_ods(ods: bytes, onde: str) -> list[list[str]]:
     """Linhas não vazias da primeira folha, como texto. Células repetidas e mescladas mantêm a posição.
 
-    A leitura do XML é o que mais pesa; a mesma planilha lida de novo vem do cache, como cópia.
+    A leitura do XML é o que mais pesa; a mesma planilha lida de novo vem do cache, como cópia, qualquer que
+    seja `onde`, que só entra na mensagem de erro.
     """
-    return [list(linha) for linha in _linhas_ods(ods, onde)]
+    try:
+        linhas = _linhas_ods(ods)
+    except _Ilegivel as e:
+        raise ErroDeContrato(f"{onde}: {e}") from None
+    return [list(linha) for linha in linhas]
 
 
-@functools.lru_cache(maxsize=4)
-def _linhas_ods(ods: bytes, onde: str) -> tuple[tuple[str, ...], ...]:
+class _Ilegivel(Exception):
+    """A planilha não abre; linhas_ods diz qual era."""
+
+
+@functools.lru_cache(maxsize=8)
+def _linhas_ods(ods: bytes) -> tuple[tuple[str, ...], ...]:
     try:
         with zipfile.ZipFile(io.BytesIO(ods)) as z:
             info = z.getinfo("content.xml")
             if info.file_size > MAX_XML:
-                raise ErroDeContrato(f"{onde}: content.xml com {info.file_size} bytes, acima do limite")
+                raise _Ilegivel(f"content.xml com {info.file_size} bytes, acima do limite")
             raiz = ET.fromstring(z.read(info))
     except (zipfile.BadZipFile, KeyError, ET.ParseError) as e:
-        raise ErroDeContrato(f"{onde}: não é uma planilha .ods legível ({type(e).__name__})") from None
+        raise _Ilegivel(f"não é uma planilha .ods legível ({type(e).__name__})") from None
     folha = raiz.find(f".//{{{_TABELA}}}table")
     if folha is None:
-        raise ErroDeContrato(f"{onde}: planilha sem folha")
+        raise _Ilegivel("planilha sem folha")
     linhas = []
     for linha in folha.iter(f"{{{_TABELA}}}table-row"):
         # Células vazias só entram quando uma com texto vem depois: as do fim da linha, repetidas
@@ -188,7 +198,7 @@ def validar(linhas: list[list[str]], onde: str) -> tuple[str, list[dict]]:
         sigla, uf_nome = UFS[uf]
         if valor["uf_nome"] != uf_nome:
             raise ErroDeContrato(f"{onde}: a UF {uf} vem como {valor['uf_nome']!r}, e não {uf_nome!r}")
-        if not re.fullmatch(r"\d{7}", codigo) or not codigo.startswith(uf):
+        if not CODIGO.fullmatch(codigo) or not codigo.startswith(uf):
             raise ErroDeContrato(f"{onde}: código {codigo!r} inválido para a UF {sigla}")
         if not valor["nome"]:
             raise ErroDeContrato(f"{onde}: município {codigo} sem nome")

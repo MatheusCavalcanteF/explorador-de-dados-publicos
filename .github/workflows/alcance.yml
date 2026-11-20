@@ -14,6 +14,12 @@ on:
         description: "Incluir o INEP (6 pedidos)"
         type: boolean
         default: false
+      inep_tls:
+        # Medição da F1c: variações de TLS, sequência de pedidos, outros hosts, rotas https e http e o
+        # download completo dos arquivos só para o hash. Roda antes de qualquer outro pedido ao INEP.
+        description: "Diagnóstico de TLS e rotas do INEP, com download para hash (cerca de 70 pedidos)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -21,7 +27,7 @@ permissions:
 jobs:
   diagnosticar:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     env:
       INCLUIR_INEP: ${{ inputs.inep }}
     steps:
@@ -34,6 +40,38 @@ jobs:
 
       - name: Instalar dependências
         run: pip install -r requirements.txt
+
+      # Só os cabeçalhos (96 bytes por pacote) da conversa com a faixa do INEP: o TTL do SYN-ACK e o do
+      # reset dizem se o reset sai do mesmo equipamento que aceitou a conexão. O arquivo .pcap não sai do runner.
+      - name: "INEP: início da captura"
+        if: inputs.inep_tls
+        run: |
+          command -v tcpdump || { sudo apt-get update -qq && sudo apt-get install -y -qq tcpdump; }
+          sudo tcpdump -i any -nn -s 96 -U -w "$RUNNER_TEMP/inep.pcap" 'net 200.130.24.0/24' > /dev/null 2>&1 &
+          sleep 3
+
+      - name: "INEP: variações de TLS, sequência, hosts e rotas"
+        if: inputs.inep_tls
+        run: python docs/medicoes/scripts/diagnosticar_inep.py --saida build/diagnostico/inep_tls.json
+
+      - name: "INEP: openssl e curl"
+        if: always() && inputs.inep_tls
+        run: |
+          mkdir -p build/diagnostico
+          bash docs/medicoes/scripts/inep_openssl_curl.sh | tee -a "$GITHUB_STEP_SUMMARY" > build/diagnostico/inep_openssl_curl.md
+
+      - name: "INEP: fim da captura"
+        if: always() && inputs.inep_tls
+        run: |
+          sudo pkill -INT tcpdump || true
+          sleep 2
+          sudo tcpdump -nn -v -r "$RUNNER_TEMP/inep.pcap" > build/diagnostico/inep_pacotes.txt 2>&1 || true
+          wc -l build/diagnostico/inep_pacotes.txt
+
+      # Depois da captura, para ela não guardar o tráfego do download. Os blocos passam pelo hash e são descartados.
+      - name: "INEP: download completo, só para o hash"
+        if: always() && inputs.inep_tls
+        run: python docs/medicoes/scripts/diagnosticar_inep.py --etapas "" --baixar --esquemas http,https --tentativas 3 --saida build/diagnostico/inep_baixar.json
 
       - name: Diagnóstico
         run: |

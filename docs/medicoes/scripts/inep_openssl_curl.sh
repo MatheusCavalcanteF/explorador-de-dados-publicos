@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# INEP pelo openssl e pelo curl, fora do Python: TLS 1.2 e 1.3, sem SNI, uma cifra só e a porta 80.
+# Roda no runner (workflow Alcance das fontes, opção inep_tls) e numa máquina local. Sai uma tabela em
+# Markdown na saída padrão. Nenhum corpo é guardado: o curl grava em /dev/null.
+alvo=download.inep.gov.br
+url="https://$alvo/dados_abertos/microdados_censo_escolar_2024.zip"
+erro=$(mktemp)
+
+medir() {
+  local saida=0 linha
+  linha=$(curl -sS -o /dev/null --connect-timeout 10 --max-time 60 \
+    -w '%{remote_ip} | %{time_connect} | %{time_appconnect} | %{time_total} | %{http_code}' \
+    "$@" 2> "$erro") || saida=$?
+  echo "| curl $* | $linha | $saida $(tr '\n|' '  ' < "$erro" | head -c 160) |"
+}
+
+abrir() {
+  local r
+  r=$(timeout 20 openssl s_client -connect "$alvo:443" "$@" < /dev/null 2>&1 \
+    | grep -E '^CONNECTED|Cipher is|errno|alert|reset' | head -4 | tr '\n|' '  ')
+  echo "| openssl $* | $r |"
+}
+
+echo "### INEP: openssl e curl"
+echo ""
+echo "- $(openssl version)"
+echo "- $(curl --version | head -1)"
+if command -v dig > /dev/null; then
+  echo "- dig: A $(dig +short A $alvo | tr '\n' ' ')/ AAAA de $alvo: $(dig +short AAAA $alvo | tr '\n' ' ')/ AAAA de public.inep.gov.br: $(dig +short AAAA public.inep.gov.br | tr '\n' ' ')"
+fi
+echo ""
+echo "| Pedido | Resultado |"
+echo "|---|---|"
+abrir -tls1_2 -servername "$alvo"; sleep 2
+abrir -tls1_3 -servername "$alvo"; sleep 2
+abrir -tls1_2 -noservername; sleep 2
+abrir -tls1_2 -cipher ECDHE-RSA-AES128-GCM-SHA256 -servername "$alvo"; sleep 2
+echo ""
+echo "| Pedido | IP | Conexão | TLS | Total | HTTP | Saída do curl |"
+echo "|---|---|---:|---:|---:|---|---|"
+medir -r 0-1023 --tlsv1.2 --tls-max 1.2 "$url"; sleep 2
+medir -r 0-1023 --tlsv1.3 "$url"; sleep 2
+medir -r 0-1023 "${url/https:/http:}"; sleep 2
+medir -r 0-1023 "$url"
+rm -f "$erro"

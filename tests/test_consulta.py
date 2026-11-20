@@ -25,7 +25,8 @@ LINK = re.compile(r'<p class="serie-link">.*?</p>')
 # O site da versão anterior à consulta (746c0f4), construído com coleta_da_consulta() e o catálogo daquela
 # versão, por quem extraiu a árvore com `git archive 746c0f4`: um SHA-256 por arquivo. Com a chave desligada, o
 # build de agora precisa dar exatamente estes arquivos, com estes bytes. Uma mudança que altere o site de
-# propósito refaz o gabarito, com a chave desligada, e diz no commit o que mudou.
+# propósito refaz o gabarito, com a chave desligada, e diz no commit o que mudou. O gabarito e este teste saem
+# no commit que liga a chave construtor (decidido em 20/11/2026).
 SITE_SEM_A_CONSULTA = {
     "404.html":
         "ded936396a90fdd5e9ba418e8f0b931380aa4a72cbfa2703df74d4af89add29b",

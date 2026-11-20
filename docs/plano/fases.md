@@ -59,7 +59,7 @@ A divisão proposta (deploy e CI; SIH e catálogo; educação e IBGE) foi mantid
 
 ### F2. Construtor de dashboards
 
-**Primeira tela, em 18/11/2026, fora do ar:** a [página de consulta](arquitetura.md#página-de-consulta), com a população por município e ano como única consulta publicada, desligada pela chave `construtor` de `projeto.yaml`. Não feito: acrescentar painel pela tela (um link com vários painéis já abre, cada um com a sua interpretação e a sua recusa), os caminhos estáveis dos dados abertos, o teste em aparelho físico e no Safari do iOS.
+**Primeira tela, em 18/11/2026, fora do ar:** a [página de consulta](arquitetura.md#página-de-consulta), com a população por município e ano como única consulta publicada, desligada pela chave `construtor` de `projeto.yaml`. O commit que liga a chave tira também o gabarito do site sem a consulta, que até lá garante que nada dela vai ao ar. Não feito: acrescentar painel pela tela (um link com vários painéis já abre, cada um com a sua interpretação e a sua recusa), os caminhos estáveis dos dados abertos, o teste em aparelho físico e no Safari do iOS.
 
 - Especificação na URL, exportação, **leitor em JavaScript sobre arquivos por UF**.
 - **Teste de igualdade entre leitor e motor no CI.** O motor só entra na v1 se uma função provar que precisa dele.

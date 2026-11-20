@@ -9,10 +9,19 @@ updates:
       pip-minor-e-patch:
         update-types: [minor, patch]
 
+  # O leitor de Parquet do site (web/leitor.js, gerado em ferramentas/empacotar) e o da conferência do site
+  # publicado (ferramentas/leitor) ficam na mesma versão do hyparquet: um teste reprova se divergirem
+  # (decidido em 20/11/2026). Agrupado por nome, o hyparquet sobe nas duas pastas num pull request só; ainda
+  # é preciso gerar web/leitor.js de novo com ferramentas/empacotar/empacotar.mjs antes do merge.
   - package-ecosystem: npm
-    directory: "/ferramentas/leitor"
+    directories:
+      - "/ferramentas/leitor"
+      - "/ferramentas/empacotar"
     schedule:
       interval: weekly
+    groups:
+      leitor-de-parquet:
+        group-by: dependency-name
 
   - package-ecosystem: github-actions
     directory: "/"

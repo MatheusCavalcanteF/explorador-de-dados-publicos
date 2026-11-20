@@ -215,6 +215,38 @@ const Consulta = (() => {
     for (let v = inicio; v <= fim + passo / 2; v += passo) marcas.push(Math.round(v));
     return { inicio, fim, marcas };
   };
+  // Faixa mínima do eixo da linha, relativa ao maior valor do período. Medido em 18/11/2026 na série de
+  // 2013 a 2026: dentro de um trecho comparável, a variação de um ano para o seguinte tem mediana de 0,51% e
+  // p99 de 3,31% (188 de 50.131 passagens acima de 5%); a série inteira de um município varia, do menor ao
+  // maior valor, 9,9% do maior na mediana e 22,7% no p90. Com 20%, a variação anual típica ocupa cerca de
+  // 2,5% da altura, uma de 5% (o limite de quebra não declarada do catálogo) ocupa um quarto, e em 9 de cada
+  // 10 municípios a série cabe na faixa: aí a mesma variação percentual tem a mesma altura em todos os
+  // gráficos. Quando os valores não cabem, o eixo cresce até cobri-los.
+  const FAIXA_MINIMA = 0.2;
+  const dominioDaLinha = (minimo, maximo) => {
+    const faixa = Math.max(maximo - minimo, FAIXA_MINIMA * maximo);
+    const lo = Math.max(0, (minimo + maximo) / 2 - faixa / 2);
+    return { lo, hi: lo + faixa };
+  };
+
+  // Variação percentual dentro de cada trecho comparável, do primeiro ao último ano com valor dele. Nunca
+  // através de uma quebra: de um trecho a outro, a série muda de base.
+  const variacoes = (pontos) => {
+    const trechos = new Map();
+    for (const p of pontos) {
+      if (p.valor === null) continue;
+      if (!trechos.has(p.comparavel)) trechos.set(p.comparavel, []);
+      trechos.get(p.comparavel).push(p);
+    }
+    return [...trechos.values()].filter((t) => t.length > 1).map((t) => ({
+      de: t[0].ano, ate: t[t.length - 1].ano, pct: (t[t.length - 1].valor / t[0].valor - 1) * 100 }));
+  };
+  const porcentagem = (pct) => {
+    const texto = Math.abs(pct).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    return `${texto === '0,0' ? '' : pct > 0 ? '+' : '\u2212'}${texto}%`;
+  };
+  const textoDasVariacoes = (pontos) => variacoes(pontos).map((v) => `${porcentagem(v.pct)} de ${v.de} a ${v.ate}`).join('; ');
+
   // Um formato por eixo: em mil a partir de 10 mil, em milhões a partir de 1 milhão.
   const formatoDoEixo = (maximo) => {
     if (maximo >= 1e6) return (v) => (v ? `${(v / 1e6).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} mi` : '0');
@@ -259,7 +291,7 @@ const Consulta = (() => {
     SITUACOES, NA_CELULA, NOME_DO_GRAFICO, numero, juntar, faixas, dataHora, cruzamento, comFicha, enderecoDaFicha,
     fichaDe, colunaDoValor, abrir, comCobertura, indexar, conferir, executar, situacaoDoAno, trechos, segmentos,
     nomeDe, listaDeMunicipios, textoDoPeriodo, rotuloDaMetrica, titulo, descrever, estadoCom, codigosNoTexto,
-    painelDaSerie, escala, formatoDoEixo, csv,
+    painelDaSerie, escala, formatoDoEixo, csv, FAIXA_MINIMA, dominioDaLinha, variacoes, porcentagem, textoDasVariacoes,
   };
 })();
 
@@ -504,7 +536,12 @@ if (typeof module !== 'undefined') module.exports = Consulta;
     const H = o.altura;
     const colunas = o.tipo === 'colunas';
     const valores = o.pontos.filter((p) => p.valor !== null).map((p) => p.valor);
-    const e = valores.length ? C.escala(Math.min(...valores), Math.max(...valores), colunas) : C.escala(0, 1, true);
+    let e = C.escala(0, 1, true);
+    if (valores.length && colunas) e = C.escala(Math.min(...valores), Math.max(...valores), true);
+    else if (valores.length) {
+      const d = C.dominioDaLinha(Math.min(...valores), Math.max(...valores));
+      e = C.escala(d.lo, d.hi, false);
+    }
     const fmt = C.formatoDoEixo(e.fim);
     const esq = 8 + Math.max(...e.marcas.map((m) => larguraDoTexto(fmt(m))));
     const dir = colunas ? 6 : 14;
@@ -742,20 +779,30 @@ if (typeof module !== 'undefined') module.exports = Consulta;
     const pontosDe = (codigo) => modelo.anos.map((ano) => ({ ano, ...modelo.celulas[codigo][ano] }));
     if (!varios) {
       const codigo = modelo.municipios[0];
+      const variacao = C.textoDasVariacoes(pontosDe(codigo));
+      if (variacao) elementos.push(h('p', { class: 'variacao' }, h('span', { class: 'variacao__rotulo' }, 'Variação em cada trecho comparável: '), variacao));
       const { caixa, depois: d } = novaCaixa((cx) => serie(cx, { anos: modelo.anos, pontos: pontosDe(codigo), tipo, quebras, altura: 260,
         dica: dicaDoPonto(metrica, null, ressalvas) }), `${rotuloDoGrafico}: ${C.titulo(catalogo, painel, nomes)}.`);
       depois.push(d);
+      caixa.dataset.variacao = variacao;
       elementos.push(h('figure', { class: 'figura' }, caixa));
     } else {
       // Um gráfico por município, cada um na própria escala: um município de 5 mil habitantes ao lado de um
       // de 11 milhões viraria uma reta no chão. A comparação entre eles fica nas barras de um ano e na tabela.
-      elementos.push(h('p', { class: 'nota-grafico' }, 'Um gráfico por município, cada um na própria escala. Para comparar os valores entre municípios, use a tabela ou escolha um ano só.'));
+      elementos.push(h('p', { class: 'nota-grafico' }, tipo === 'linha'
+        ? `Um gráfico por município. Cada eixo cobre pelo menos ${Math.round(C.FAIXA_MINIMA * 100)}% do maior valor do município no período, `
+          + 'para que uma variação pequena não pareça grande; quando os valores cabem nessa faixa, a mesma variação percentual tem a mesma '
+          + 'altura em todos os gráficos. A porcentagem é medida dentro de cada trecho comparável, nunca através de uma quebra.'
+        : 'Um gráfico por município, cada um na própria escala, a partir do zero. A porcentagem é medida dentro de cada trecho comparável, nunca através de uma quebra.'));
       elementos.push(h('div', { class: 'multiplos' }, modelo.municipios.map((codigo) => {
         const nome = C.nomeDe(nomes, codigo);
         const { caixa, depois: d } = novaCaixa((cx) => serie(cx, { anos: modelo.anos, pontos: pontosDe(codigo), tipo, quebras, altura: 200,
           dica: dicaDoPonto(metrica, nome, ressalvas) }), `${rotuloDoGrafico}: ${metrica.rotulo} de ${nome}, ${C.textoDoPeriodo(painel.periodo)}.`, nome);
         depois.push(d);
-        return h('figure', { class: 'multiplo' }, h('figcaption', { class: 'multiplo__titulo' }, nome), caixa);
+        const variacao = C.textoDasVariacoes(pontosDe(codigo));
+        caixa.dataset.variacao = variacao;
+        return h('figure', { class: 'multiplo' }, h('figcaption', null, h('span', { class: 'multiplo__titulo' }, nome),
+          variacao ? h('span', { class: 'variacao' }, variacao) : null), caixa);
       })));
     }
     // A legenda diz o que cada marca quer dizer, e só o que aparece no gráfico.
@@ -765,6 +812,7 @@ if (typeof module !== 'undefined') module.exports = Consulta;
     if (tem('sem_dado')) itens.push(h('span', { class: 'item' }, h('span', { class: 'chave chave--faixa' }), 'Ano sem estimativa do IBGE'));
     if (tem('fora_da_cobertura')) itens.push(h('span', { class: 'item' }, h('span', { class: 'chave chave--faixa' }), 'Ano ainda sem dado'));
     if (tem('sem_estimativa')) itens.push(h('span', { class: 'item' }, `Sem ${tipo === 'linha' ? 'ponto' : 'coluna'}: sem estimativa para o município no ano`));
+    if (tipo === 'linha' && !varios) itens.push(h('span', { class: 'item' }, `Eixo com pelo menos ${Math.round(C.FAIXA_MINIMA * 100)}% do maior valor do período`));
     if (itens.length) elementos.push(h('p', { class: 'legenda-consulta' }, itens));
     return elementos;
   };
@@ -924,7 +972,7 @@ if (typeof module !== 'undefined') module.exports = Consulta;
   const png = async (secao, painel, modelo, metrica, ressalvas, ficha) => {
     for (const caixa of secao.querySelectorAll('.grafico-consulta')) desenhar(caixa);
     const imagens = await Promise.all([...secao.querySelectorAll('.grafico-consulta')].map(async (caixa) => ({
-      titulo: caixa.dataset.titulo, ...(await imagemDoSvg(caixa.querySelector('svg'))) })));
+      titulo: caixa.dataset.titulo, variacao: caixa.dataset.variacao || '', ...(await imagemDoSvg(caixa.querySelector('svg'))) })));
     const estilo = getComputedStyle(document.body);
     const fundo = estilo.backgroundColor;
     const tinta = estilo.color;
@@ -975,10 +1023,11 @@ if (typeof module !== 'undefined') module.exports = Consulta;
       });
     } else {
       for (const im of imagens) {
-        const topo = altura + (im.titulo ? 40 : 0);
+        const topo = altura + (im.titulo ? 40 : 0) + (im.variacao ? 30 : 0);
         largura = Math.max(largura, im.largura);
         desenhos.push((y) => {
-          if (im.titulo) { ctx.font = fonte(700, 24); ctx.fillStyle = tinta; ctx.fillText(im.titulo, margem, y + topo - 12); }
+          if (im.titulo) { ctx.font = fonte(700, 24); ctx.fillStyle = tinta; ctx.fillText(im.titulo, margem, y + topo - (im.variacao ? 42 : 12)); }
+          if (im.variacao) { ctx.font = fonte(400, 20); ctx.fillStyle = suave; ctx.fillText(`Variação: ${im.variacao}`, margem, y + topo - 12); }
           ctx.drawImage(im.imagem, margem, y + topo);
         });
         altura = topo + im.altura + 16;
@@ -987,7 +1036,7 @@ if (typeof module !== 'undefined') module.exports = Consulta;
     ctx.font = fonte(800, 30);
     largura = Math.max(largura, ctx.measureText(titulo).width);
     ctx.font = fonte(400, 20);
-    for (const n of notas) largura = Math.max(largura, ctx.measureText(n).width);
+    for (const n of [...notas, ...imagens.map((im) => `Variação: ${im.variacao}`)]) largura = Math.max(largura, ctx.measureText(n).width);
     tela.width = Math.ceil(largura) + 2 * margem;
     tela.height = 72 + altura + 24 + 30 * notas.length + margem;
     ctx.fillStyle = fundo;

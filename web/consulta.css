@@ -186,7 +186,11 @@
   max-width: 64rem;
 }
 .multiplo { margin: 0; min-width: 0; }
-.multiplo__titulo { font-weight: 800; margin-bottom: 0.25rem; }
+.multiplo figcaption { display: grid; gap: 0.1rem; margin-bottom: 0.25rem; }
+.multiplo__titulo { font-weight: 800; }
+.variacao { margin: 0 0 0.5rem; font-size: 0.95rem; color: var(--tinta-suave); font-variant-numeric: tabular-nums lining-nums; }
+.multiplo .variacao { margin: 0; font-size: 0.9rem; }
+.variacao__rotulo { font-weight: 700; }
 .nota-grafico { margin: 0 0 0.75rem; color: var(--tinta-suave); font-size: 0.95rem; }
 
 .legenda-consulta { display: flex; flex-wrap: wrap; gap: 0.3rem 1.25rem; margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--tinta-suave); }

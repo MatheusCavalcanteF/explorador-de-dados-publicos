@@ -237,6 +237,24 @@ const principal = async () => {
 
   const e = C.escala(429398, 429528, false);
   assert.ok(e.inicio > 0 && e.inicio <= 429398 && e.fim >= 429528);
+  // Faixa mínima da linha: 20% do maior valor, centrada nos dados, nunca abaixo de zero; série que varia mais
+  // do que isso ocupa o eixo inteiro.
+  assert.equal(C.FAIXA_MINIMA, 0.2);
+  const santosEixo = C.dominioDaLinha(428000, 435000);
+  assert.ok(Math.abs(santosEixo.hi - santosEixo.lo - 0.2 * 435000) < 1e-6 && santosEixo.lo < 428000 && santosEixo.hi > 435000);
+  assert.deepEqual(C.dominioDaLinha(600, 1000), { lo: 600, hi: 1000 });
+  assert.ok(Math.abs(C.dominioDaLinha(5, 6).lo - 4.9) < 1e-9);
+  assert.equal(C.dominioDaLinha(0, 10).lo, 0);
+  // Variação por trecho comparável, sem atravessar quebra nem ano sem dado.
+  const vs = C.variacoes(pontos(santos.m, SANTOS));
+  assert.deepEqual(vs.map((v) => [v.de, v.ate]), [[2013, 2017], [2018, 2021], [2024, 2026]]);
+  assert.ok(Math.abs(vs[2].pct - (429528 / 429508 - 1) * 100) < 1e-9);
+  assert.deepEqual(C.variacoes(pontos(boa.m, BOA)).map((v) => [v.de, v.ate]), [[2025, 2026]]);
+  assert.equal(C.porcentagem(1.234), '+1,2%');
+  assert.equal(C.porcentagem(-0.96), '\u22121,0%');
+  assert.equal(C.porcentagem(0.004), '0,0%');
+  assert.equal(C.porcentagem(-0.004), '0,0%');
+  assert.equal(C.textoDasVariacoes(pontos(boa.m, BOA)), `${C.porcentagem((5983 / 5973 - 1) * 100)} de 2025 a 2026`);
   assert.equal(C.escala(5000, 9000, true).inicio, 0);
   assert.equal(C.formatoDoEixo(430000)(425000), '425 mil');
   assert.equal(C.formatoDoEixo(600000)(0), '0');

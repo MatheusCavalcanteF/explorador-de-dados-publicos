@@ -3,5 +3,5 @@
    o build acrescenta estas linhas ao fim de estilo.css (pipeline/site_consulta.py, ESTILO_DO_LINK). Com a
    chave desligada, estilo.css sai igual ao de antes da consulta. */
 .serie-link { margin: 0.25rem 0 1.25rem; }
-.serie-link a { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 1.1rem; font-weight: 700; }
-.serie-link .seta { width: 1em; height: 1em; }
+.serie-link a { font-size: 1.1rem; font-weight: 700; }
+.serie-link .seta { width: 1em; height: 1em; margin-left: 0.3em; vertical-align: -0.15em; }

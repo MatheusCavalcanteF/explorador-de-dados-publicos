@@ -1,0 +1,51 @@
+# Regras da coleta do INEP para a F1c (rota 1: HTTPS no runner, decidida em 20/11/2026). Só a coleta: sem
+# tabelas, supressão nem site. Fica fora de catalogo.yaml enquanto a educação não vai ao site: só
+# `python -m pipeline.inep` lê este arquivo, e nada do Publicar nem do site depende dele.
+#
+# Os anos seguem o plano (Limites de tamanho: "2019 em diante"). Os microdados de 2025 respondiam 404 em 20/11/2026,
+# e o Ideb só existe na edição 2023, que traz a série de cada município de 2005 a 2023 numa planilha por etapa:
+# as edições 2019 e 2021 respondem 404 na mesma pasta.
+versao: 1
+host: download.inep.gov.br
+
+bases:
+  inep_censo_escolar:
+    nome: Censo Escolar da Educação Básica (microdados)
+    orgao: INEP
+    # Uma linha por escola, inclusive paralisadas e extintas. Os arquivos de 2019 a 2021 foram republicados nesse
+    # formato em 08/03/2023, e o de 2024, em 08/07/2026, numa pasta chamada ..._defeso.
+    anos: [2019, 2020, 2021, 2022, 2023, 2024]
+    arquivo: "dados_abertos/microdados_censo_escolar_{ano}.zip"
+    # Achados pelo nome do arquivo, sem diferenciar maiúsculas: a pasta muda a cada ano, e o de 2020 é .CSV.
+    csv: "microdados_ed_basica_{ano}.csv"
+    md5: "md5_microdados_ed_basica_{ano}.txt"
+    separador: ";"
+    codificacao: latin-1
+    ano: NU_ANO_CENSO
+    municipio: CO_MUNICIPIO
+    chave: CO_ENTIDADE
+    dependencia: { coluna: TP_DEPENDENCIA, valores: ["1", "2", "3", "4"] }   # federal, estadual, municipal, privada
+    # As contagens que a F1c usa (medir_educacao.py): vazias ou inteiros de 0 para cima.
+    contagens: [QT_MAT_BAS, QT_MAT_INF, QT_MAT_FUND_AI, QT_MAT_FUND_AF, QT_MAT_MED, QT_MAT_EJA, QT_MAT_ESP, QT_MAT_PROF,
+                QT_DOC_BAS, QT_TUR_BAS]
+    total: QT_MAT_BAS   # o total nacional vai para o manifesto, para conferir com o que o INEP divulga
+
+  inep_ideb:
+    nome: Índice de Desenvolvimento da Educação Básica (Ideb) por município
+    orgao: INEP
+    edicao: 2023
+    anos: [2019, 2021, 2023]   # as colunas VL_OBSERVADO_<ano> que a F1c usa
+    arquivos:
+      anos_iniciais: "ideb/resultados/divulgacao_anos_iniciais_municipios_{edicao}.xlsx"
+      anos_finais: "ideb/resultados/divulgacao_anos_finais_municipios_{edicao}.xlsx"
+      ensino_medio: "ideb/resultados/divulgacao_ensino_medio_municipios_{edicao}.xlsx"
+    # O cabeçalho estava na linha 10 nas três planilhas; acima dele vêm título e descrição, e abaixo dos dados, as notas.
+    cabecalho_ate_a_linha: 20
+    uf: SG_UF
+    municipio: CO_MUNICIPIO
+    rede: { coluna: REDE, valores: [Estadual, Municipal, Pública, Federal] }
+    valor: VL_OBSERVADO_{ano}
+    escala: [0, 10]
+    # Município e rede sem Ideb no ano. As notas da planilha citam ND, ND* e ND***, que não aparecem nessas colunas
+    # na edição 2023: se aparecerem, a coleta para e pede a decisão.
+    marcas: ["-"]

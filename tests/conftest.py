@@ -199,3 +199,50 @@ class FonteFalsa:
         if item is None:
             raise rede.ErroDeRede(f"{url} fora do ar no teste")
         return item(url, kwargs) if callable(item) else item
+
+
+# --- INEP: .xlsx e .zip dos microdados, no formato das fontes -------------------------------------------------
+
+LIVRO_XLSX = ('<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+              'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+              '<sheets><sheet name="Plan1" sheetId="1" r:id="rId7"/><sheet name="Outra" sheetId="2" r:id="rId8"/></sheets></workbook>')
+
+
+def coluna_xlsx(i: int) -> str:
+    """0, 25, 26, ... para A, Z, AA, ..."""
+    letras, i = "", i + 1
+    while i:
+        i, resto = divmod(i - 1, 26)
+        letras = chr(65 + resto) + letras
+    return letras
+
+
+def _celula_xlsx(referencia: str, valor) -> str:
+    if valor is None:
+        return ""
+    if isinstance(valor, bool):
+        return f'<c r="{referencia}" t="b"><v>{int(valor)}</v></c>'
+    if isinstance(valor, (int, float)):
+        return f'<c r="{referencia}"><v>{valor}</v></c>'
+    return f'<c r="{referencia}" t="inlineStr"><is><t>{escape(valor)}</t></is></c>'
+
+
+def xlsx_de_teste(caminho, linhas: dict, compartilhadas=(), alvo="worksheets/sheet1.xml", extra_linhas=""):
+    """.xlsx mínimo, como o Excel grava: a primeira planilha (rId7) aponta para `alvo`, e há uma segunda que não deve
+    ser lida. `linhas`: {número da linha: [valores]}, texto em linha; `compartilhadas`: os <si> de sharedStrings."""
+    corpo = "".join(f'<row r="{n}">' + "".join(_celula_xlsx(f"{coluna_xlsx(i)}{n}", v) for i, v in enumerate(valores))
+                    + "</row>" for n, valores in linhas.items())
+    folha = ('<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'
+             f"{corpo}{extra_linhas}</sheetData></worksheet>")
+    relacoes = ('<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                '<Relationship Id="rId8" Type="x" Target="worksheets/sheet2.xml"/>'
+                f'<Relationship Id="rId7" Type="x" Target="{alvo}"/></Relationships>')
+    with zipfile.ZipFile(caminho, "w") as z:
+        z.writestr("xl/workbook.xml", LIVRO_XLSX)
+        z.writestr("xl/_rels/workbook.xml.rels", relacoes)
+        z.writestr("xl/" + alvo.lstrip("/").removeprefix("xl/"), folha)
+        z.writestr("xl/worksheets/sheet2.xml", folha.replace("<sheetData>", '<sheetData><row r="1"><c r="A1"><v>99</v></c></row>', 1))
+        if compartilhadas:
+            z.writestr("xl/sharedStrings.xml", '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+                       + "".join(compartilhadas) + "</sst>")
+    return caminho

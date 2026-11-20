@@ -1,0 +1,2706 @@
+{
+ "descricao": "INEP: variações de TLS, sequência de pedidos, hosts vizinhos, rotas https e http e hash do download completo, numa máquina local e no runner. Sem corpo de resposta.",
+ "execucao_do_workflow": "44777247301",
+ "local": {
+  "conferido_em": "2026-11-20T16:38:25Z",
+  "ambiente": {
+   "sistema": "Windows-11-10.0.26300-SP0",
+   "python": "3.14.8",
+   "openssl": "OpenSSL 3.5.9 29 Sep 2026",
+   "github_actions": false,
+   "imagem_do_runner": null,
+   "execucao": null
+  },
+  "dns": {
+   "A": [
+    "200.130.24.15"
+   ],
+   "AAAA": "sem registro (11001)"
+  },
+  "dns_alias": {
+   "A": [
+    "200.130.24.15"
+   ],
+   "AAAA": "sem registro (11001)"
+  },
+  "sondas": {
+   "padrao_primeira": {
+    "em": "2026-11-20T16:38:25Z",
+    "ok": false,
+    "tipo": "reset",
+    "ms_conexao": 38,
+    "ms_tls": 486,
+    "passo": "tls"
+   },
+   "tcp_sem_enviar_nada": {
+    "em": "2026-11-20T16:38:28Z",
+    "ok": true,
+    "tipo": "silêncio por 6 s",
+    "ms_conexao": 22
+   },
+   "http_na_porta_443": {
+    "em": "2026-11-20T16:38:36Z",
+    "ok": true,
+    "tipo": "fechou (FIN)",
+    "ms_conexao": 19,
+    "ms_resposta": 20
+   },
+   "http_na_porta_80": {
+    "em": "2026-11-20T16:38:38Z",
+    "ok": true,
+    "tipo": "respondeu",
+    "ms_conexao": 35,
+    "ms_resposta": 24,
+    "primeira_linha": "HTTP/1.1 301 Moved Permanently"
+   },
+   "tls12": {
+    "em": "2026-11-20T16:38:40Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 19,
+    "ms_tls": 65,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "tls13": {
+    "em": "2026-11-20T16:38:42Z",
+    "ok": false,
+    "tipo": "alerta TLS: SSLV3_ALERT_HANDSHAKE_FAILURE",
+    "ms_conexao": 43,
+    "ms_tls": 27,
+    "passo": "tls"
+   },
+   "tls12_uma_cifra_p256": {
+    "em": "2026-11-20T16:38:44Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 33,
+    "ms_tls": 45,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "tls12_sem_sni": {
+    "em": "2026-11-20T16:38:46Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 20,
+    "ms_tls": 46,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "tls12_sni_de_outro_host": {
+    "em": "2026-11-20T16:38:48Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 37,
+    "ms_tls": 55,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "padrao_so_x25519": {
+    "em": "2026-11-20T16:38:50Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 50,
+    "ms_tls": 41,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "padrao_com_verificacao": {
+    "em": "2026-11-20T16:38:52Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 41,
+    "ms_tls": 47,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "padrao_ultima": {
+    "em": "2026-11-20T16:38:54Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 44,
+    "ms_tls": 53,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   }
+  },
+  "certificado_sha256": [
+   "eceb5f3d724ba86bd535b731115e711f69eb5e1167de43793e06eabfafee2c14"
+  ],
+  "sequencia": [
+   {
+    "em": "2026-11-20T16:38:57Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 41,
+    "ms_tls": 43,
+    "pausa_s": 0
+   },
+   {
+    "em": "2026-11-20T16:38:58Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 41,
+    "ms_tls": 47,
+    "pausa_s": 1
+   },
+   {
+    "em": "2026-11-20T16:39:00Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 38,
+    "ms_tls": 42,
+    "pausa_s": 2
+   },
+   {
+    "em": "2026-11-20T16:39:05Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 20,
+    "ms_tls": 46,
+    "pausa_s": 5
+   },
+   {
+    "em": "2026-11-20T16:39:15Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 41,
+    "ms_tls": 43,
+    "pausa_s": 10
+   },
+   {
+    "em": "2026-11-20T16:39:45Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 35,
+    "ms_tls": 46,
+    "pausa_s": 30
+   },
+   {
+    "em": "2026-11-20T16:40:45Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 47,
+    "ms_tls": 56,
+    "pausa_s": 60
+   }
+  ],
+  "hosts": {
+   "inep_www": {
+    "host": "www.inep.gov.br",
+    "dns": {
+     "A": [
+      "200.130.24.57"
+     ],
+     "AAAA": "sem registro (11001)"
+    },
+    "tls": {
+     "ok": false,
+     "tipo": "tempo esgotado",
+     "ms_conexao": 23,
+     "ms_tls": 15003,
+     "passo": "tls"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 38,
+     "ms_resposta": 22,
+     "primeira_linha": "HTTP/1.0 302 Moved Temporarily"
+    }
+   },
+   "inep_inepdata": {
+    "host": "inepdata.inep.gov.br",
+    "dns": {
+     "A": [
+      "200.130.24.213"
+     ],
+     "AAAA": "sem registro (11001)"
+    },
+    "tls": {
+     "ok": false,
+     "tipo": "tempo esgotado",
+     "ms_conexao": 33,
+     "ms_tls": 15009,
+     "passo": "tls"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 43,
+     "ms_resposta": 28,
+     "primeira_linha": "HTTP/1.1 302 Found"
+    }
+   },
+   "inep_ideb": {
+    "host": "ideb.inep.gov.br",
+    "dns": {
+     "A": [
+      "200.130.24.9"
+     ],
+     "AAAA": "sem registro (11001)"
+    },
+    "tls": {
+     "ok": false,
+     "tipo": "reset",
+     "ms_conexao": 41,
+     "ms_tls": 497,
+     "passo": "tls"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 33,
+     "ms_resposta": 23,
+     "primeira_linha": "HTTP/1.0 302 Moved Temporarily"
+    }
+   },
+   "govbr": {
+    "host": "www.gov.br",
+    "dns": {
+     "A": [
+      "161.148.164.31"
+     ],
+     "AAAA": [
+      "2804:151:3:2:161:148:164:31"
+     ]
+    },
+    "tls": {
+     "ok": true,
+     "versao": "TLSv1.3",
+     "cifra": "TLS_CHACHA20_POLY1305_SHA256",
+     "ms_conexao": 35,
+     "ms_tls": 31,
+     "http": "HTTP/1.1 403 Forbidden"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 51,
+     "ms_resposta": 40,
+     "primeira_linha": "HTTP/1.1 302 Found"
+    }
+   },
+   "ibge_sidra": {
+    "host": "apisidra.ibge.gov.br",
+    "dns": {
+     "A": [
+      "104.18.2.213",
+      "104.18.3.213"
+     ],
+     "AAAA": [
+      "2606:4700::6812:2d5",
+      "2606:4700::6812:3d5"
+     ]
+    },
+    "tls": {
+     "ok": true,
+     "versao": "TLSv1.3",
+     "cifra": "TLS_AES_256_GCM_SHA384",
+     "ms_conexao": 28,
+     "ms_tls": 14,
+     "http": "HTTP/1.1 403 Forbidden"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 29,
+     "ms_resposta": 14,
+     "primeira_linha": "HTTP/1.1 403 Forbidden"
+    }
+   },
+   "ibge_servicodados": {
+    "host": "servicodados.ibge.gov.br",
+    "dns": {
+     "A": [
+      "104.18.2.213",
+      "104.18.3.213"
+     ],
+     "AAAA": [
+      "2606:4700::6812:2d5",
+      "2606:4700::6812:3d5"
+     ]
+    },
+    "tls": {
+     "ok": true,
+     "versao": "TLSv1.3",
+     "cifra": "TLS_AES_256_GCM_SHA384",
+     "ms_conexao": 30,
+     "ms_tls": 19,
+     "http": "HTTP/1.1 403 Forbidden"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 21,
+     "ms_resposta": 15,
+     "primeira_linha": "HTTP/1.1 403 Forbidden"
+    }
+   },
+   "controle_github": {
+    "host": "api.github.com",
+    "dns": {
+     "A": [
+      "4.228.31.149"
+     ],
+     "AAAA": "sem registro (11001)"
+    },
+    "tls": {
+     "ok": true,
+     "versao": "TLSv1.3",
+     "cifra": "TLS_AES_128_GCM_SHA256",
+     "ms_conexao": 24,
+     "ms_tls": 12,
+     "http": "HTTP/1.1 200 OK"
+    },
+    "http_80": {
+     "ok": false,
+     "tipo": "tempo esgotado",
+     "passo": "conexao"
+    }
+   }
+  },
+  "rotas": {
+   "arquivos": {
+    "microdados_2024": {
+     "https": {
+      "head": {
+       "tipo": "reset"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "dc63aaf497b53c37fc7d7bdb2bb9e934b7f7eac8f7f84adfe116c00d87c8898d"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "33829396",
+       "Last-Modified": "Wed, 08 Jul 2026 12:22:27 GMT",
+       "ETag": "\"2043214-656188f8006c0\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "dc63aaf497b53c37fc7d7bdb2bb9e934b7f7eac8f7f84adfe116c00d87c8898d"
+      }
+     }
+    },
+    "sinopse_2024": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "145089739",
+       "Last-Modified": "Tue, 14 Jul 2026 17:34:03 GMT",
+       "ETag": "\"8a5e4cb-656959cea98c0\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "4025023e4ccffbd6fa4dcfbdde5ea5981770fb54dcf95f800a8cc2ffb95fdaea"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "145089739",
+       "Last-Modified": "Tue, 14 Jul 2026 17:34:03 GMT",
+       "ETag": "\"8a5e4cb-656959cea98c0\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "4025023e4ccffbd6fa4dcfbdde5ea5981770fb54dcf95f800a8cc2ffb95fdaea"
+      }
+     }
+    },
+    "sinopse_2025": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "232142480",
+       "Last-Modified": "Thu, 30 Jul 2026 21:50:08 GMT",
+       "ETag": "\"dd63690-657db0e33e400\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "5eeffc7bf29db5d9af8c1f051d98f38c1b039b569fa308e20d7c0f61b1405835"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "232142480",
+       "Last-Modified": "Thu, 30 Jul 2026 21:50:08 GMT",
+       "ETag": "\"dd63690-657db0e33e400\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "5eeffc7bf29db5d9af8c1f051d98f38c1b039b569fa308e20d7c0f61b1405835"
+      }
+     }
+    },
+    "ideb_2023_anos_iniciais": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "11249038",
+       "Last-Modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+       "ETag": "\"aba58e-61f9777299300\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "11249038",
+       "Last-Modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+       "ETag": "\"aba58e-61f9777299300\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     }
+    },
+    "ideb_2023_anos_finais": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "10731967",
+       "Last-Modified": "Tue, 13 Aug 2024 21:40:00 GMT",
+       "ETag": "\"a3c1bf-61f9773960c00\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "10731967",
+       "Last-Modified": "Tue, 13 Aug 2024 21:40:00 GMT",
+       "ETag": "\"a3c1bf-61f9773960c00\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     }
+    },
+    "ideb_2023_ensino_medio": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "3362082",
+       "Last-Modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+       "ETag": "\"334d22-61f9777299300\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "3362082",
+       "Last-Modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+       "ETag": "\"334d22-61f9777299300\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     }
+    }
+   },
+   "paginas": {
+    "govbr_inep_microdados": {
+     "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-escolar",
+     "status": 200,
+     "bytes": 233179,
+     "links_download_inep": 31
+    },
+    "govbr_inep_sinopses": {
+     "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/sinopses-estatisticas/educacao-basica",
+     "status": 200,
+     "bytes": 236302,
+     "links_download_inep": 40
+    },
+    "govbr_inep_ideb": {
+     "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados",
+     "status": 200,
+     "bytes": 223809,
+     "links_download_inep": 0
+    },
+    "dadosgov_microdados": {
+     "url": "https://dados.gov.br/dados/conjuntos-dados/inep-microdados-do-censo-escolar-da-educacao-basica",
+     "status": 200,
+     "bytes": 9632,
+     "links_download_inep": 0
+    },
+    "mec_pgi_ideb": {
+     "url": "http://api.pgi.gov.br/api/1/serie/240.json",
+     "tipo": "tempo esgotado"
+    },
+    "mec_dados_abertos": {
+     "url": "https://dadosabertos.mec.gov.br/",
+     "status": 403,
+     "bytes": 5453,
+     "links_download_inep": 0
+    }
+   }
+  },
+  "baixar": {
+   "microdados_2024": {
+    "https": {
+     "ok": true,
+     "bytes": 33829396,
+     "sha256": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+     "md5": "3677a83797d6d7b764411457d829fd6e",
+     "s": 6.1,
+     "etag": "\"2043214-656188f8006c0\"",
+     "last_modified": "Wed, 08 Jul 2026 12:22:27 GMT",
+     "tentativas": [
+      {
+       "em": null,
+       "ok": false,
+       "tipo": "reset",
+       "bytes": 0,
+       "s": 19.1
+      },
+      {
+       "em": "2026-11-20T16:48:26Z",
+       "ok": false,
+       "tipo": "reset",
+       "bytes": 0,
+       "s": 19.1
+      },
+      {
+       "em": "2026-11-20T16:48:35Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 33829396,
+       "s": 6.1
+      }
+     ]
+    },
+    "http": {
+     "ok": true,
+     "bytes": 33829396,
+     "sha256": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+     "md5": "3677a83797d6d7b764411457d829fd6e",
+     "s": 5.0,
+     "etag": "\"2043214-656188f8006c0\"",
+     "last_modified": "Wed, 08 Jul 2026 12:22:27 GMT"
+    }
+   },
+   "sinopse_2024": {
+    "https": {
+     "ok": true,
+     "bytes": 145089739,
+     "sha256": "b1555ecc1df586e17a1f34f692fbf248927fba4dd00cb91bb98fd7fdfe1c65cb",
+     "md5": "7ac91b508db7cdd592865f831ada4ca8",
+     "s": 22.6,
+     "etag": "\"8a5e4cb-656959cea98c0\"",
+     "last_modified": "Tue, 14 Jul 2026 17:34:03 GMT"
+    },
+    "http": {
+     "ok": true,
+     "bytes": 145089739,
+     "sha256": "b1555ecc1df586e17a1f34f692fbf248927fba4dd00cb91bb98fd7fdfe1c65cb",
+     "md5": "7ac91b508db7cdd592865f831ada4ca8",
+     "s": 22.4,
+     "etag": "\"8a5e4cb-656959cea98c0\"",
+     "last_modified": "Tue, 14 Jul 2026 17:34:03 GMT"
+    }
+   },
+   "sinopse_2025": {
+    "https": {
+     "ok": true,
+     "bytes": 232142480,
+     "sha256": "a8a41fcd487e98dc26c9107dfd92f403641983b2737d50497bac3e47b4f051c8",
+     "md5": "d84cbdf81d16a68269e0c65b19b8671b",
+     "s": 38.3,
+     "etag": "\"dd63690-657db0e33e400\"",
+     "last_modified": "Thu, 30 Jul 2026 21:50:08 GMT"
+    },
+    "http": {
+     "ok": true,
+     "bytes": 232142480,
+     "sha256": "a8a41fcd487e98dc26c9107dfd92f403641983b2737d50497bac3e47b4f051c8",
+     "md5": "d84cbdf81d16a68269e0c65b19b8671b",
+     "s": 33.5,
+     "etag": "\"dd63690-657db0e33e400\"",
+     "last_modified": "Thu, 30 Jul 2026 21:50:08 GMT"
+    }
+   },
+   "ideb_2023_anos_iniciais": {
+    "https": {
+     "ok": true,
+     "bytes": 11249038,
+     "sha256": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+     "md5": "90e8cc044f133a6a3bb3377a4c7c4cf5",
+     "s": 3.1,
+     "etag": "\"aba58e-61f9777299300\"",
+     "last_modified": "Tue, 13 Aug 2024 21:41:00 GMT"
+    },
+    "http": {
+     "ok": true,
+     "bytes": 11249038,
+     "sha256": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+     "md5": "90e8cc044f133a6a3bb3377a4c7c4cf5",
+     "s": 2.6,
+     "etag": "\"aba58e-61f9777299300\"",
+     "last_modified": "Tue, 13 Aug 2024 21:41:00 GMT"
+    }
+   },
+   "ideb_2023_anos_finais": {
+    "https": {
+     "ok": true,
+     "bytes": 10731967,
+     "sha256": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+     "md5": "41f1b0408d04aa98a89cd3fdff11b88c",
+     "s": 2.3,
+     "etag": "\"a3c1bf-61f9773960c00\"",
+     "last_modified": "Tue, 13 Aug 2024 21:40:00 GMT"
+    },
+    "http": {
+     "ok": true,
+     "bytes": 10731967,
+     "sha256": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+     "md5": "41f1b0408d04aa98a89cd3fdff11b88c",
+     "s": 2.1,
+     "etag": "\"a3c1bf-61f9773960c00\"",
+     "last_modified": "Tue, 13 Aug 2024 21:40:00 GMT"
+    }
+   },
+   "ideb_2023_ensino_medio": {
+    "https": {
+     "ok": true,
+     "bytes": 3362082,
+     "sha256": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231",
+     "md5": "37fad73c76b54bce1c0b83be243622b0",
+     "s": 1.3,
+     "etag": "\"334d22-61f9777299300\"",
+     "last_modified": "Tue, 13 Aug 2024 21:41:00 GMT"
+    },
+    "http": {
+     "ok": true,
+     "bytes": 3362082,
+     "sha256": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231",
+     "md5": "37fad73c76b54bce1c0b83be243622b0",
+     "s": 1.5,
+     "etag": "\"334d22-61f9777299300\"",
+     "last_modified": "Tue, 13 Aug 2024 21:41:00 GMT"
+    }
+   }
+  }
+ },
+ "runner": {
+  "conferido_em": "2026-11-20T16:50:00Z",
+  "ambiente": {
+   "sistema": "Linux-7.0.0-1020-azure-x86_64-with-glibc2.43",
+   "python": "3.14.10",
+   "openssl": "OpenSSL 3.5.5 27 Jan 2026",
+   "github_actions": true,
+   "imagem_do_runner": "ubuntu26",
+   "execucao": "44777247301"
+  },
+  "dns": {
+   "A": [
+    "200.130.24.15"
+   ],
+   "AAAA": "sem registro (-2)"
+  },
+  "dns_alias": {
+   "A": [
+    "200.130.24.15"
+   ],
+   "AAAA": "sem registro (-5)"
+  },
+  "sondas": {
+   "padrao_primeira": {
+    "em": "2026-11-20T16:50:01Z",
+    "ok": false,
+    "tipo": "reset",
+    "ms_conexao": 122,
+    "ms_tls": 121,
+    "passo": "tls"
+   },
+   "tcp_sem_enviar_nada": {
+    "em": "2026-11-20T16:50:03Z",
+    "ok": true,
+    "tipo": "silêncio por 6 s",
+    "ms_conexao": 123
+   },
+   "http_na_porta_443": {
+    "em": "2026-11-20T16:50:11Z",
+    "ok": true,
+    "tipo": "fechou (FIN)",
+    "ms_conexao": 122,
+    "ms_resposta": 122
+   },
+   "http_na_porta_80": {
+    "em": "2026-11-20T16:50:13Z",
+    "ok": true,
+    "tipo": "respondeu",
+    "ms_conexao": 131,
+    "ms_resposta": 124,
+    "primeira_linha": "HTTP/1.1 301 Moved Permanently"
+   },
+   "tls12": {
+    "em": "2026-11-20T16:50:15Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 123,
+    "ms_tls": 247,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "tls13": {
+    "em": "2026-11-20T16:50:18Z",
+    "ok": false,
+    "tipo": "alerta TLS: SSLV3_ALERT_HANDSHAKE_FAILURE",
+    "ms_conexao": 131,
+    "ms_tls": 126,
+    "passo": "tls"
+   },
+   "tls12_uma_cifra_p256": {
+    "em": "2026-11-20T16:50:20Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 122,
+    "ms_tls": 246,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "tls12_sem_sni": {
+    "em": "2026-11-20T16:50:23Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 124,
+    "ms_tls": 247,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "tls12_sni_de_outro_host": {
+    "em": "2026-11-20T16:50:25Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 122,
+    "ms_tls": 245,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "padrao_so_x25519": {
+    "em": "2026-11-20T16:50:28Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 125,
+    "ms_tls": 245,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   },
+   "padrao_com_verificacao": {
+    "em": "2026-11-20T16:50:30Z",
+    "ok": false,
+    "tipo": "certificado: unable to get local issuer certificate",
+    "ms_conexao": 131,
+    "ms_tls": 124,
+    "passo": "tls"
+   },
+   "padrao_ultima": {
+    "em": "2026-11-20T16:50:32Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 123,
+    "ms_tls": 247,
+    "http": "HTTP/1.1 301 Moved Permanently"
+   }
+  },
+  "certificado_sha256": [
+   "eceb5f3d724ba86bd535b731115e711f69eb5e1167de43793e06eabfafee2c14"
+  ],
+  "sequencia": [
+   {
+    "em": "2026-11-20T16:50:35Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 126,
+    "ms_tls": 253,
+    "pausa_s": 0
+   },
+   {
+    "em": "2026-11-20T16:50:36Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 130,
+    "ms_tls": 253,
+    "pausa_s": 1
+   },
+   {
+    "em": "2026-11-20T16:50:39Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 122,
+    "ms_tls": 247,
+    "pausa_s": 2
+   },
+   {
+    "em": "2026-11-20T16:50:44Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 125,
+    "ms_tls": 253,
+    "pausa_s": 5
+   },
+   {
+    "em": "2026-11-20T16:50:54Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 122,
+    "ms_tls": 246,
+    "pausa_s": 10
+   },
+   {
+    "em": "2026-11-20T16:51:25Z",
+    "ok": true,
+    "versao": "TLSv1.2",
+    "cifra": "ECDHE-RSA-AES128-GCM-SHA256",
+    "ms_conexao": 122,
+    "ms_tls": 247,
+    "pausa_s": 30
+   },
+   {
+    "em": "2026-11-20T16:52:25Z",
+    "ok": false,
+    "tipo": "reset",
+    "ms_conexao": 122,
+    "ms_tls": 121,
+    "passo": "tls",
+    "pausa_s": 60
+   }
+  ],
+  "hosts": {
+   "inep_www": {
+    "host": "www.inep.gov.br",
+    "dns": {
+     "A": [
+      "200.130.24.57"
+     ],
+     "AAAA": "sem registro (-5)"
+    },
+    "tls": {
+     "ok": false,
+     "tipo": "reset",
+     "ms_conexao": 128,
+     "ms_tls": 121,
+     "passo": "tls"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 122,
+     "ms_resposta": 122,
+     "primeira_linha": "HTTP/1.0 302 Moved Temporarily"
+    }
+   },
+   "inep_inepdata": {
+    "host": "inepdata.inep.gov.br",
+    "dns": {
+     "A": [
+      "200.130.24.213"
+     ],
+     "AAAA": "sem registro (-5)"
+    },
+    "tls": {
+     "ok": false,
+     "tipo": "reset",
+     "ms_conexao": 122,
+     "ms_tls": 121,
+     "passo": "tls"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 123,
+     "ms_resposta": 125,
+     "primeira_linha": "HTTP/1.1 302 Found"
+    }
+   },
+   "inep_ideb": {
+    "host": "ideb.inep.gov.br",
+    "dns": {
+     "A": [
+      "200.130.24.9"
+     ],
+     "AAAA": "sem registro (-5)"
+    },
+    "tls": {
+     "ok": false,
+     "tipo": "reset",
+     "ms_conexao": 122,
+     "ms_tls": 121,
+     "passo": "tls"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 125,
+     "ms_resposta": 122,
+     "primeira_linha": "HTTP/1.0 302 Moved Temporarily"
+    }
+   },
+   "govbr": {
+    "host": "www.gov.br",
+    "dns": {
+     "A": [
+      "161.148.164.31"
+     ],
+     "AAAA": [
+      "2804:151:3:2:161:148:164:31"
+     ]
+    },
+    "tls": {
+     "ok": true,
+     "versao": "TLSv1.3",
+     "cifra": "TLS_CHACHA20_POLY1305_SHA256",
+     "ms_conexao": 139,
+     "ms_tls": 136,
+     "http": "HTTP/1.1 403 Forbidden"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 142,
+     "ms_resposta": 136,
+     "primeira_linha": "HTTP/1.1 302 Found"
+    }
+   },
+   "ibge_sidra": {
+    "host": "apisidra.ibge.gov.br",
+    "dns": {
+     "A": [
+      "104.18.2.213",
+      "104.18.3.213"
+     ],
+     "AAAA": [
+      "2606:4700::6812:2d5",
+      "2606:4700::6812:3d5"
+     ]
+    },
+    "tls": {
+     "ok": true,
+     "versao": "TLSv1.3",
+     "cifra": "TLS_AES_256_GCM_SHA384",
+     "ms_conexao": 6,
+     "ms_tls": 11,
+     "http": "HTTP/1.1 403 Forbidden"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 6,
+     "ms_resposta": 16,
+     "primeira_linha": "HTTP/1.1 403 Forbidden"
+    }
+   },
+   "ibge_servicodados": {
+    "host": "servicodados.ibge.gov.br",
+    "dns": {
+     "A": [
+      "104.18.2.213",
+      "104.18.3.213"
+     ],
+     "AAAA": [
+      "2606:4700::6812:2d5",
+      "2606:4700::6812:3d5"
+     ]
+    },
+    "tls": {
+     "ok": true,
+     "versao": "TLSv1.3",
+     "cifra": "TLS_AES_256_GCM_SHA384",
+     "ms_conexao": 6,
+     "ms_tls": 17,
+     "http": "HTTP/1.1 403 Forbidden"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 9,
+     "ms_resposta": 10,
+     "primeira_linha": "HTTP/1.1 403 Forbidden"
+    }
+   },
+   "controle_github": {
+    "host": "api.github.com",
+    "dns": {
+     "A": [
+      "140.82.112.6"
+     ],
+     "AAAA": "sem registro (-5)"
+    },
+    "tls": {
+     "ok": true,
+     "versao": "TLSv1.3",
+     "cifra": "TLS_AES_128_GCM_SHA256",
+     "ms_conexao": 6,
+     "ms_tls": 7,
+     "http": "HTTP/1.1 200 OK"
+    },
+    "http_80": {
+     "ok": true,
+     "tipo": "respondeu",
+     "ms_conexao": 18,
+     "ms_resposta": 7,
+     "primeira_linha": "HTTP/1.1 301 Moved Permanently"
+    }
+   }
+  },
+  "rotas": {
+   "arquivos": {
+    "microdados_2024": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "33829396",
+       "Last-Modified": "Wed, 08 Jul 2026 12:22:27 GMT",
+       "ETag": "\"2043214-656188f8006c0\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "dc63aaf497b53c37fc7d7bdb2bb9e934b7f7eac8f7f84adfe116c00d87c8898d"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "33829396",
+       "Last-Modified": "Wed, 08 Jul 2026 12:22:27 GMT",
+       "ETag": "\"2043214-656188f8006c0\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "dc63aaf497b53c37fc7d7bdb2bb9e934b7f7eac8f7f84adfe116c00d87c8898d"
+      }
+     }
+    },
+    "sinopse_2024": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "145089739",
+       "Last-Modified": "Tue, 14 Jul 2026 17:34:03 GMT",
+       "ETag": "\"8a5e4cb-656959cea98c0\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "4025023e4ccffbd6fa4dcfbdde5ea5981770fb54dcf95f800a8cc2ffb95fdaea"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "145089739",
+       "Last-Modified": "Tue, 14 Jul 2026 17:34:03 GMT",
+       "ETag": "\"8a5e4cb-656959cea98c0\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "4025023e4ccffbd6fa4dcfbdde5ea5981770fb54dcf95f800a8cc2ffb95fdaea"
+      }
+     }
+    },
+    "sinopse_2025": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "232142480",
+       "Last-Modified": "Thu, 30 Jul 2026 21:50:08 GMT",
+       "ETag": "\"dd63690-657db0e33e400\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "5eeffc7bf29db5d9af8c1f051d98f38c1b039b569fa308e20d7c0f61b1405835"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "232142480",
+       "Last-Modified": "Thu, 30 Jul 2026 21:50:08 GMT",
+       "ETag": "\"dd63690-657db0e33e400\"",
+       "Content-Type": "application/zip",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "5eeffc7bf29db5d9af8c1f051d98f38c1b039b569fa308e20d7c0f61b1405835"
+      }
+     }
+    },
+    "ideb_2023_anos_iniciais": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "11249038",
+       "Last-Modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+       "ETag": "\"aba58e-61f9777299300\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "11249038",
+       "Last-Modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+       "ETag": "\"aba58e-61f9777299300\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     }
+    },
+    "ideb_2023_anos_finais": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "10731967",
+       "Last-Modified": "Tue, 13 Aug 2024 21:40:00 GMT",
+       "ETag": "\"a3c1bf-61f9773960c00\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "10731967",
+       "Last-Modified": "Tue, 13 Aug 2024 21:40:00 GMT",
+       "ETag": "\"a3c1bf-61f9773960c00\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     }
+    },
+    "ideb_2023_ensino_medio": {
+     "https": {
+      "head": {
+       "status": 200,
+       "Content-Length": "3362082",
+       "Last-Modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+       "ETag": "\"334d22-61f9777299300\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     },
+     "http": {
+      "head": {
+       "status": 200,
+       "Content-Length": "3362082",
+       "Last-Modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+       "ETag": "\"334d22-61f9777299300\"",
+       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+       "Server": "Apache"
+      },
+      "primeiro_kb": {
+       "status": 206,
+       "bytes": 1024,
+       "sha256": "3a50d2615191ea0ba05f69bd53b200bd45f9c4872d3ce69e7e34007c004ea970"
+      }
+     }
+    }
+   },
+   "paginas": {
+    "govbr_inep_microdados": {
+     "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-escolar",
+     "status": 200,
+     "bytes": 233179,
+     "links_download_inep": 31
+    },
+    "govbr_inep_sinopses": {
+     "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/sinopses-estatisticas/educacao-basica",
+     "status": 200,
+     "bytes": 236296,
+     "links_download_inep": 40
+    },
+    "govbr_inep_ideb": {
+     "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados",
+     "status": 200,
+     "bytes": 223815,
+     "links_download_inep": 0
+    },
+    "dadosgov_microdados": {
+     "url": "https://dados.gov.br/dados/conjuntos-dados/inep-microdados-do-censo-escolar-da-educacao-basica",
+     "status": 200,
+     "bytes": 9632,
+     "links_download_inep": 0
+    },
+    "mec_pgi_ideb": {
+     "url": "http://api.pgi.gov.br/api/1/serie/240.json",
+     "tipo": "tempo esgotado"
+    },
+    "mec_dados_abertos": {
+     "url": "https://dadosabertos.mec.gov.br/",
+     "status": 403,
+     "bytes": 5389,
+     "links_download_inep": 0
+    }
+   }
+  },
+  "baixar": {
+   "microdados_2024": {
+    "http": {
+     "ok": true,
+     "bytes": 33829396,
+     "sha256": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+     "md5": "3677a83797d6d7b764411457d829fd6e",
+     "s": 38.8,
+     "etag": "\"2043214-656188f8006c0\"",
+     "last_modified": "Wed, 08 Jul 2026 12:22:27 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T16:55:47Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 33829396,
+       "s": 38.8
+      }
+     ]
+    },
+    "https": {
+     "ok": true,
+     "bytes": 33829396,
+     "sha256": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+     "md5": "3677a83797d6d7b764411457d829fd6e",
+     "s": 34.2,
+     "etag": "\"2043214-656188f8006c0\"",
+     "last_modified": "Wed, 08 Jul 2026 12:22:27 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T16:56:21Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 33829396,
+       "s": 34.2
+      }
+     ]
+    }
+   },
+   "sinopse_2024": {
+    "http": {
+     "ok": true,
+     "bytes": 145089739,
+     "sha256": "b1555ecc1df586e17a1f34f692fbf248927fba4dd00cb91bb98fd7fdfe1c65cb",
+     "md5": "7ac91b508db7cdd592865f831ada4ca8",
+     "s": 137.6,
+     "etag": "\"8a5e4cb-656959cea98c0\"",
+     "last_modified": "Tue, 14 Jul 2026 17:34:03 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T16:58:38Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 145089739,
+       "s": 137.6
+      }
+     ]
+    },
+    "https": {
+     "ok": true,
+     "bytes": 145089739,
+     "sha256": "b1555ecc1df586e17a1f34f692fbf248927fba4dd00cb91bb98fd7fdfe1c65cb",
+     "md5": "7ac91b508db7cdd592865f831ada4ca8",
+     "s": 137.3,
+     "etag": "\"8a5e4cb-656959cea98c0\"",
+     "last_modified": "Tue, 14 Jul 2026 17:34:03 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:00:56Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 145089739,
+       "s": 137.3
+      }
+     ]
+    }
+   },
+   "sinopse_2025": {
+    "http": {
+     "ok": true,
+     "bytes": 232142480,
+     "sha256": "a8a41fcd487e98dc26c9107dfd92f403641983b2737d50497bac3e47b4f051c8",
+     "md5": "d84cbdf81d16a68269e0c65b19b8671b",
+     "s": 225.8,
+     "etag": "\"dd63690-657db0e33e400\"",
+     "last_modified": "Thu, 30 Jul 2026 21:50:08 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:04:42Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 232142480,
+       "s": 225.8
+      }
+     ]
+    },
+    "https": {
+     "ok": true,
+     "bytes": 232142480,
+     "sha256": "a8a41fcd487e98dc26c9107dfd92f403641983b2737d50497bac3e47b4f051c8",
+     "md5": "d84cbdf81d16a68269e0c65b19b8671b",
+     "s": 219.6,
+     "etag": "\"dd63690-657db0e33e400\"",
+     "last_modified": "Thu, 30 Jul 2026 21:50:08 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:08:21Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 232142480,
+       "s": 219.6
+      }
+     ]
+    }
+   },
+   "ideb_2023_anos_iniciais": {
+    "http": {
+     "ok": true,
+     "bytes": 11249038,
+     "sha256": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+     "md5": "90e8cc044f133a6a3bb3377a4c7c4cf5",
+     "s": 12.4,
+     "etag": "\"aba58e-61f9777299300\"",
+     "last_modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:08:34Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 11249038,
+       "s": 12.4
+      }
+     ]
+    },
+    "https": {
+     "ok": true,
+     "bytes": 11249038,
+     "sha256": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+     "md5": "90e8cc044f133a6a3bb3377a4c7c4cf5",
+     "s": 13.7,
+     "etag": "\"aba58e-61f9777299300\"",
+     "last_modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:08:47Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 11249038,
+       "s": 13.7
+      }
+     ]
+    }
+   },
+   "ideb_2023_anos_finais": {
+    "http": {
+     "ok": true,
+     "bytes": 10731967,
+     "sha256": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+     "md5": "41f1b0408d04aa98a89cd3fdff11b88c",
+     "s": 12.0,
+     "etag": "\"a3c1bf-61f9773960c00\"",
+     "last_modified": "Tue, 13 Aug 2024 21:40:00 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:08:59Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 10731967,
+       "s": 12.0
+      }
+     ]
+    },
+    "https": {
+     "ok": true,
+     "bytes": 10731967,
+     "sha256": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+     "md5": "41f1b0408d04aa98a89cd3fdff11b88c",
+     "s": 12.4,
+     "etag": "\"a3c1bf-61f9773960c00\"",
+     "last_modified": "Tue, 13 Aug 2024 21:40:00 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:09:12Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 10731967,
+       "s": 12.4
+      }
+     ]
+    }
+   },
+   "ideb_2023_ensino_medio": {
+    "http": {
+     "ok": true,
+     "bytes": 3362082,
+     "sha256": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231",
+     "md5": "37fad73c76b54bce1c0b83be243622b0",
+     "s": 5.1,
+     "etag": "\"334d22-61f9777299300\"",
+     "last_modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:09:17Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 3362082,
+       "s": 5.1
+      }
+     ]
+    },
+    "https": {
+     "ok": true,
+     "bytes": 3362082,
+     "sha256": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231",
+     "md5": "37fad73c76b54bce1c0b83be243622b0",
+     "s": 6.0,
+     "etag": "\"334d22-61f9777299300\"",
+     "last_modified": "Tue, 13 Aug 2024 21:41:00 GMT",
+     "tentativas": [
+      {
+       "em": "2026-11-20T17:09:23Z",
+       "ok": true,
+       "tipo": null,
+       "bytes": 3362082,
+       "s": 6.0
+      }
+     ]
+    }
+   }
+  },
+  "ibge_servicodados": {
+   "ibge_localidades": true,
+   "ibge_agregados": true
+  }
+ },
+ "openssl_curl": {
+  "local": [
+   "- OpenSSL 3.5.9 29 Sep 2026 (Library: OpenSSL 3.5.9 29 Sep 2026)",
+   "- curl 8.23.0 (x86_64-w64-mingw32) libcurl/8.23.0 Schannel zlib/1.3.2 brotli/1.2.1 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.5 libssh2/1.11.1 WinLDAP",
+   "| openssl -tls1_2 -servername download.inep.gov.br | CONNECTED(000001C8) New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256  |",
+   "| openssl -tls1_3 -servername download.inep.gov.br | ECA90100:error:0A000410:SSL routines:ssl3_read_bytes:ssl/tls alert handshake failure:../openssl-3.5.9/ssl/record/rec_layer_s3.c:918:SSL alert number 40 CONNECTED(000001C8) New, (NONE), Cipher is (NONE)  |",
+   "| openssl -tls1_2 -noservername | CONNECTED(000001AC) New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256  |",
+   "| openssl -tls1_2 -cipher ECDHE-RSA-AES128-GCM-SHA256 -servername download.inep.gov.br | CONNECTED(000001D0) New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256  |",
+   "| curl -r 0-1023 --tlsv1.2 --tls-max 1.2 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip | 200.130.24.15 | 0.052852 | 0.123555 | 0.151818 | 206 | 0  |",
+   "| curl -r 0-1023 --tlsv1.3 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip | 200.130.24.15 | 0.041255 | 0.000000 | 0.071398 | 000 | 35 curl: (35) schannel: next InitializeSecurityContext failed: SEC_E_ILLEGAL_MESSAGE (0x80090326) - This error usually occurs when a fatal SSL/TLS alert is receive |",
+   "| curl -r 0-1023 http://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip | 200.130.24.15 | 0.026502 | 0.000000 | 0.050763 | 206 | 0  |",
+   "| curl -r 0-1023 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip | 200.130.24.15 | 0.058080 | 0.119117 | 0.148055 | 206 | 0  |",
+   "| cifra ECDHE-ECDSA-AES256-GCM-SHA384 | alerta do servidor |",
+   "| cifra ECDHE-RSA-AES256-GCM-SHA384 | aceita |",
+   "| cifra DHE-DSS-AES256-GCM-SHA384 | alerta do servidor |",
+   "| cifra DHE-RSA-AES256-GCM-SHA384 | alerta do servidor |",
+   "| cifra ECDHE-ECDSA-CHACHA20-POLY1305 | alerta do servidor |",
+   "| cifra ECDHE-RSA-CHACHA20-POLY1305 | aceita |",
+   "| cifra DHE-RSA-CHACHA20-POLY1305 | alerta do servidor |",
+   "| cifra ECDHE-ECDSA-AES256-CCM | alerta do servidor |",
+   "| cifra DHE-RSA-AES256-CCM | alerta do servidor |",
+   "| cifra ECDHE-ECDSA-ARIA256-GCM-SHA384 | alerta do servidor |",
+   "| cifra ECDHE-ARIA256-GCM-SHA384 | alerta do servidor |",
+   "| cifra DHE-DSS-ARIA256-GCM-SHA384 | alerta do servidor |",
+   "| cifra DHE-RSA-ARIA256-GCM-SHA384 | alerta do servidor |",
+   "| cifra ADH-AES256-GCM-SHA384 | este OpenSSL não oferece |",
+   "| cifra ECDHE-ECDSA-AES128-GCM-SHA256 | alerta do servidor |",
+   "| cifra ECDHE-RSA-AES128-GCM-SHA256 | aceita |",
+   "| cifra DHE-DSS-AES128-GCM-SHA256 | alerta do servidor |",
+   "| cifra DHE-RSA-AES128-GCM-SHA256 | alerta do servidor |",
+   "| cifra ECDHE-ECDSA-AES128-CCM | alerta do servidor |",
+   "| cifra DHE-RSA-AES128-CCM | alerta do servidor |",
+   "| cifra ECDHE-ECDSA-ARIA128-GCM-SHA256 | alerta do servidor |",
+   "| cifra ECDHE-ARIA128-GCM-SHA256 | alerta do servidor |",
+   "| cifra DHE-DSS-ARIA128-GCM-SHA256 | alerta do servidor |",
+   "| cifra DHE-RSA-ARIA128-GCM-SHA256 | alerta do servidor |",
+   "| cifra ADH-AES128-GCM-SHA256 | este OpenSSL não oferece |",
+   "| cifra ECDHE-ECDSA-AES256-CCM8 | este OpenSSL não oferece |",
+   "| cifra ECDHE-ECDSA-AES128-CCM8 | este OpenSSL não oferece |",
+   "| cifra DHE-RSA-AES256-CCM8 | este OpenSSL não oferece |",
+   "| cifra DHE-RSA-AES128-CCM8 | este OpenSSL não oferece |",
+   "| cifra ECDHE-ECDSA-AES256-SHA384 | alerta do servidor |",
+   "| cifra ECDHE-RSA-AES256-SHA384 | alerta do servidor |",
+   "| cifra DHE-RSA-AES256-SHA256 | alerta do servidor |",
+   "| cifra DHE-DSS-AES256-SHA256 | alerta do servidor |",
+   "| cifra ECDHE-ECDSA-CAMELLIA256-SHA384 | alerta do servidor |",
+   "| cifra ECDHE-RSA-CAMELLIA256-SHA384 | alerta do servidor |",
+   "| cifra DHE-RSA-CAMELLIA256-SHA256 | alerta do servidor |",
+   "| cifra DHE-DSS-CAMELLIA256-SHA256 | alerta do servidor |",
+   "| cifra ADH-AES256-SHA256 | este OpenSSL não oferece |",
+   "| cifra ADH-CAMELLIA256-SHA256 | este OpenSSL não oferece |",
+   "| cifra ECDHE-ECDSA-AES128-SHA256 | alerta do servidor |",
+   "| cifra ECDHE-RSA-AES128-SHA256 | alerta do servidor |",
+   "| cifra DHE-RSA-AES128-SHA256 | alerta do servidor |",
+   "| cifra DHE-DSS-AES128-SHA256 | alerta do servidor |",
+   "| cifra ECDHE-ECDSA-CAMELLIA128-SHA256 | alerta do servidor |",
+   "| cifra ECDHE-RSA-CAMELLIA128-SHA256 | alerta do servidor |",
+   "| cifra DHE-RSA-CAMELLIA128-SHA256 | alerta do servidor |",
+   "| cifra DHE-DSS-CAMELLIA128-SHA256 | alerta do servidor |",
+   "| cifra ADH-AES128-SHA256 | este OpenSSL não oferece |",
+   "| cifra ADH-CAMELLIA128-SHA256 | este OpenSSL não oferece |",
+   "| cifra ECDHE-ECDSA-AES256-SHA | alerta do servidor |",
+   "| cifra ECDHE-RSA-AES256-SHA | alerta do servidor |",
+   "| cifra DHE-RSA-AES256-SHA | alerta do servidor |",
+   "| cifra DHE-DSS-AES256-SHA | alerta do servidor |",
+   "| cifra DHE-RSA-CAMELLIA256-SHA | alerta do servidor |",
+   "| cifra DHE-DSS-CAMELLIA256-SHA | alerta do servidor |",
+   "| cifra AECDH-AES256-SHA | este OpenSSL não oferece |",
+   "| cifra ADH-AES256-SHA | este OpenSSL não oferece |",
+   "| cifra ADH-CAMELLIA256-SHA | este OpenSSL não oferece |",
+   "| cifra ECDHE-ECDSA-AES128-SHA | alerta do servidor |",
+   "| cifra ECDHE-RSA-AES128-SHA | alerta do servidor |",
+   "| cifra DHE-RSA-AES128-SHA | alerta do servidor |",
+   "| cifra DHE-DSS-AES128-SHA | alerta do servidor |",
+   "| cifra DHE-RSA-CAMELLIA128-SHA | alerta do servidor |",
+   "| cifra DHE-DSS-CAMELLIA128-SHA | alerta do servidor |",
+   "| cifra AECDH-AES128-SHA | este OpenSSL não oferece |",
+   "| cifra ADH-AES128-SHA | este OpenSSL não oferece |",
+   "| cifra ADH-CAMELLIA128-SHA | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-AES256-GCM-SHA384 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES256-GCM-SHA384 | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-CHACHA20-POLY1305 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-CHACHA20-POLY1305 | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-CHACHA20-POLY1305 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES256-CCM | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-ARIA256-GCM-SHA384 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-ARIA256-GCM-SHA384 | este OpenSSL não oferece |",
+   "| cifra AES256-GCM-SHA384 | alerta do servidor |",
+   "| cifra AES256-CCM | alerta do servidor |",
+   "| cifra ARIA256-GCM-SHA384 | alerta do servidor |",
+   "| cifra PSK-AES256-GCM-SHA384 | este OpenSSL não oferece |",
+   "| cifra PSK-CHACHA20-POLY1305 | este OpenSSL não oferece |",
+   "| cifra PSK-AES256-CCM | este OpenSSL não oferece |",
+   "| cifra PSK-ARIA256-GCM-SHA384 | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-AES128-GCM-SHA256 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES128-GCM-SHA256 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES128-CCM | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-ARIA128-GCM-SHA256 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-ARIA128-GCM-SHA256 | este OpenSSL não oferece |",
+   "| cifra AES128-GCM-SHA256 | alerta do servidor |",
+   "| cifra AES128-CCM | alerta do servidor |",
+   "| cifra ARIA128-GCM-SHA256 | alerta do servidor |",
+   "| cifra PSK-AES128-GCM-SHA256 | este OpenSSL não oferece |",
+   "| cifra PSK-AES128-CCM | este OpenSSL não oferece |",
+   "| cifra PSK-ARIA128-GCM-SHA256 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES256-CCM8 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES128-CCM8 | este OpenSSL não oferece |",
+   "| cifra AES256-CCM8 | este OpenSSL não oferece |",
+   "| cifra AES128-CCM8 | este OpenSSL não oferece |",
+   "| cifra PSK-AES256-CCM8 | este OpenSSL não oferece |",
+   "| cifra PSK-AES128-CCM8 | este OpenSSL não oferece |",
+   "| cifra AES256-SHA256 | alerta do servidor |",
+   "| cifra CAMELLIA256-SHA256 | alerta do servidor |",
+   "| cifra AES128-SHA256 | alerta do servidor |",
+   "| cifra CAMELLIA128-SHA256 | alerta do servidor |",
+   "| cifra ECDHE-PSK-AES256-CBC-SHA384 | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-AES256-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra SRP-DSS-AES-256-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra SRP-RSA-AES-256-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra SRP-AES-256-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-AES256-CBC-SHA384 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES256-CBC-SHA384 | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-AES256-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES256-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-CAMELLIA256-SHA384 | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-CAMELLIA256-SHA384 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-CAMELLIA256-SHA384 | este OpenSSL não oferece |",
+   "| cifra AES256-SHA | alerta do servidor |",
+   "| cifra CAMELLIA256-SHA | alerta do servidor |",
+   "| cifra PSK-AES256-CBC-SHA384 | este OpenSSL não oferece |",
+   "| cifra PSK-AES256-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra PSK-CAMELLIA256-SHA384 | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-AES128-CBC-SHA256 | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-AES128-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra SRP-DSS-AES-128-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra SRP-RSA-AES-128-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra SRP-AES-128-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-AES128-CBC-SHA256 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES128-CBC-SHA256 | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-AES128-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-AES128-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-CAMELLIA128-SHA256 | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-CAMELLIA128-SHA256 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-CAMELLIA128-SHA256 | este OpenSSL não oferece |",
+   "| cifra AES128-SHA | alerta do servidor |",
+   "| cifra CAMELLIA128-SHA | alerta do servidor |",
+   "| cifra PSK-AES128-CBC-SHA256 | este OpenSSL não oferece |",
+   "| cifra PSK-AES128-CBC-SHA | este OpenSSL não oferece |",
+   "| cifra PSK-CAMELLIA128-SHA256 | este OpenSSL não oferece |",
+   "| cifra ECDHE-ECDSA-NULL-SHA | este OpenSSL não oferece |",
+   "| cifra ECDHE-RSA-NULL-SHA | este OpenSSL não oferece |",
+   "| cifra AECDH-NULL-SHA | este OpenSSL não oferece |",
+   "| cifra NULL-SHA256 | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-NULL-SHA384 | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-NULL-SHA256 | este OpenSSL não oferece |",
+   "| cifra ECDHE-PSK-NULL-SHA | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-NULL-SHA384 | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-NULL-SHA256 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-NULL-SHA384 | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-NULL-SHA256 | este OpenSSL não oferece |",
+   "| cifra RSA-PSK-NULL-SHA | este OpenSSL não oferece |",
+   "| cifra DHE-PSK-NULL-SHA | este OpenSSL não oferece |",
+   "| cifra NULL-SHA | este OpenSSL não oferece |",
+   "| cifra NULL-MD5 | este OpenSSL não oferece |",
+   "| cifra PSK-NULL-SHA384 | este OpenSSL não oferece |",
+   "| cifra PSK-NULL-SHA256 | este OpenSSL não oferece |",
+   "| cifra PSK-NULL-SHA | este OpenSSL não oferece |"
+  ],
+  "runner": [
+   "- OpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)",
+   "- curl 8.18.0 (x86_64-pc-linux-gnu) libcurl/8.18.0 OpenSSL/3.5.5 zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.2 libssh2/1.11.1 nghttp2/1.68.0 librtmp/2.3 mit-krb5/1.22.1 OpenLDAP/2.6.10",
+   "- dig: A public.inep.gov.br. 200.130.24.15 / AAAA de download.inep.gov.br: public.inep.gov.br. / AAAA de public.inep.gov.br: ",
+   "| openssl -tls1_2 -servername download.inep.gov.br | CONNECTED(00000003) New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256  |",
+   "| openssl -tls1_3 -servername download.inep.gov.br | 40A78475AE780000:error:0A000410:SSL routines:ssl3_read_bytes:ssl/tls alert handshake failure:../ssl/record/rec_layer_s3.c:918:SSL alert number 40 CONNECTED(00000003) New, (NONE), Cipher is (NONE)  |",
+   "| openssl -tls1_2 -noservername | CONNECTED(00000003) New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256  |",
+   "| openssl -tls1_2 -cipher ECDHE-RSA-AES128-GCM-SHA256 -servername download.inep.gov.br | CONNECTED(00000003) New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256  |",
+   "| curl -r 0-1023 --tlsv1.2 --tls-max 1.2 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip |  | 0.366943 | 0.000000 | 0.616291 | 000 | 60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificate (20) More details here: https://curl.se/docs/sslcerts.html  curl failed |",
+   "| curl -r 0-1023 --tlsv1.3 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip |  | 0.922002 | 0.000000 | 1.045268 | 000 | 35 curl: (35) TLS connect error: error:0A000410:SSL routines::ssl/tls alert handshake failure  |",
+   "| curl -r 0-1023 http://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip | 200.130.24.15 | 0.368066 | 0.000000 | 0.493515 | 206 | 0  |",
+   "| curl -r 0-1023 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip |  | 0.359551 | 0.000000 | 0.607930 | 000 | 60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificate (20) More details here: https://curl.se/docs/sslcerts.html  curl failed |"
+  ]
+ },
+ "hashes": {
+  "ideb_2023_anos_finais": {
+   "sha256": {
+    "local_https": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+    "local_http": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+    "runner_http": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+    "runner_https": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f"
+   },
+   "iguais": true,
+   "rotas_com_hash": [
+    "local_http",
+    "local_https",
+    "runner_http",
+    "runner_https"
+   ]
+  },
+  "ideb_2023_anos_iniciais": {
+   "sha256": {
+    "local_https": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+    "local_http": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+    "runner_http": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+    "runner_https": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9"
+   },
+   "iguais": true,
+   "rotas_com_hash": [
+    "local_http",
+    "local_https",
+    "runner_http",
+    "runner_https"
+   ]
+  },
+  "ideb_2023_ensino_medio": {
+   "sha256": {
+    "local_https": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231",
+    "local_http": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231",
+    "runner_http": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231",
+    "runner_https": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231"
+   },
+   "iguais": true,
+   "rotas_com_hash": [
+    "local_http",
+    "local_https",
+    "runner_http",
+    "runner_https"
+   ]
+  },
+  "microdados_2024": {
+   "sha256": {
+    "local_https": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+    "local_http": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+    "runner_http": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+    "runner_https": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db"
+   },
+   "iguais": true,
+   "rotas_com_hash": [
+    "local_http",
+    "local_https",
+    "runner_http",
+    "runner_https"
+   ]
+  },
+  "sinopse_2024": {
+   "sha256": {
+    "local_https": "b1555ecc1df586e17a1f34f692fbf248927fba4dd00cb91bb98fd7fdfe1c65cb",
+    "local_http": "b1555ecc1df586e17a1f34f692fbf248927fba4dd00cb91bb98fd7fdfe1c65cb",
+    "runner_http": "b1555ecc1df586e17a1f34f692fbf248927fba4dd00cb91bb98fd7fdfe1c65cb",
+    "runner_https": "b1555ecc1df586e17a1f34f692fbf248927fba4dd00cb91bb98fd7fdfe1c65cb"
+   },
+   "iguais": true,
+   "rotas_com_hash": [
+    "local_http",
+    "local_https",
+    "runner_http",
+    "runner_https"
+   ]
+  },
+  "sinopse_2025": {
+   "sha256": {
+    "local_https": "a8a41fcd487e98dc26c9107dfd92f403641983b2737d50497bac3e47b4f051c8",
+    "local_http": "a8a41fcd487e98dc26c9107dfd92f403641983b2737d50497bac3e47b4f051c8",
+    "runner_http": "a8a41fcd487e98dc26c9107dfd92f403641983b2737d50497bac3e47b4f051c8",
+    "runner_https": "a8a41fcd487e98dc26c9107dfd92f403641983b2737d50497bac3e47b4f051c8"
+   },
+   "iguais": true,
+   "rotas_com_hash": [
+    "local_http",
+    "local_https",
+    "runner_http",
+    "runner_https"
+   ]
+  }
+ },
+ "segunda_execucao": {
+  "execucao_do_workflow": "44780896235",
+  "conferido_em": "2026-11-20T17:12:01Z",
+  "ambiente": {
+   "sistema": "Linux-7.0.0-1016-aws-x86_64-with-glibc2.43",
+   "python": "3.14.10",
+   "openssl": "OpenSSL 3.5.5 27 Jan 2026",
+   "github_actions": true
+  },
+  "inep": {
+   "url": "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip",
+   "host": "download.inep.gov.br",
+   "passos": {
+    "dns": {
+     "ok": true,
+     "ms": 563,
+     "enderecos": [
+      {
+       "endereco": "200.130.24.15",
+       "familia": "IPv4"
+      }
+     ]
+    },
+    "conexao": {
+     "ok": true,
+     "ms": 186,
+     "endereco": "200.130.24.15",
+     "tentativas": [
+      {
+       "endereco": "200.130.24.15",
+       "familia": "IPv4",
+       "ok": true,
+       "ms": 186
+      }
+     ]
+    },
+    "tls": {
+     "ok": false,
+     "ms": 185,
+     "erro": "ConnectionResetError: [Errno 104] Connection reset by peer"
+    }
+   },
+   "falhou_em": "tls",
+   "repeticoes": {
+    "so_x25519": {
+     "grupo": "X25519",
+     "passos": {
+      "conexao": {
+       "ok": true,
+       "ms": 185,
+       "endereco": "200.130.24.15",
+       "tentativas": [
+        {
+         "endereco": "200.130.24.15",
+         "familia": "IPv4",
+         "ok": true,
+         "ms": 185
+        }
+       ]
+      },
+      "tls": {
+       "ok": false,
+       "ms": 189,
+       "erro": "SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1085)"
+      }
+     },
+     "falhou_em": "tls"
+    }
+   },
+   "ok": false,
+   "ms_total": 1309
+  },
+  "curl_inep": [
+   "| -r 0-1023 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip |  | 0.000887 | 0.185231 | 0.000000 | 0.000000 | 0.555414 | 000 | 60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificate (20) More details here: https://curl.se/docs/sslcerts.html  curl failed |",
+   "| -r 0-1023 --curves X25519 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip |  | 0.000927 | 0.186803 | 0.000000 | 0.000000 | 0.559751 | 000 | 60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificate (20) More details here: https://curl.se/docs/sslcerts.html  curl failed |",
+   "| -r 0-1023 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip |  | 0.000909 | 0.186552 | 0.000000 | 0.000000 | 0.559969 | 000 | 60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificate (20) More details here: https://curl.se/docs/sslcerts.html  curl failed |",
+   "| -r 0-1023 --curves X25519 https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2024.zip |  | 0.001021 | 0.184897 | 0.000000 | 0.000000 | 0.554605 | 000 | 60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificate (20) More details here: https://curl.se/docs/sslcerts.html  curl failed |"
+  ],
+  "ibge_servicodados": {
+   "ibge_localidades": true,
+   "ibge_agregados": true
+  }
+ },
+ "pacotes_runner": {
+  "conexoes": [
+   {
+    "inicio": "16:50:01.061519",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     46
+    ],
+    "ttl_dos_dados_recebidos": [],
+    "bytes_recebidos": 0,
+    "fim": "reset",
+    "reset_ttl": [
+     46
+    ],
+    "ms_do_primeiro_envio_ao_reset": 120
+   },
+   {
+    "inicio": "16:50:03.305319",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [],
+    "bytes_recebidos": 0,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:11.434370",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [],
+    "bytes_recebidos": 0,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:13.678549",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 224,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:15.936848",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2626,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:18.436819",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     235
+    ],
+    "ttl_dos_dados_recebidos": [
+     235
+    ],
+    "bytes_recebidos": 7,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:20.698444",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 2626,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:23.197600",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2626,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:25.697423",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 2626,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:28.193629",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 2593,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:30.692467",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2361,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:32.951234",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2626,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:35.450224",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     232
+    ],
+    "ttl_dos_dados_recebidos": [
+     232
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:36.834367",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:39.222173",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:44.595840",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     232
+    ],
+    "ttl_dos_dados_recebidos": [
+     232
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:50:54.979322",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:51:25.351925",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:52:25.725610",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     47
+    ],
+    "ttl_dos_dados_recebidos": [],
+    "bytes_recebidos": 0,
+    "fim": "reset",
+    "reset_ttl": [
+     47
+    ],
+    "ms_do_primeiro_envio_ao_reset": 121
+   },
+   {
+    "inicio": "16:52:26.450718",
+    "servidor": "200.130.24.57:443",
+    "syn_ack_ttl": [
+     48
+    ],
+    "ttl_dos_dados_recebidos": [],
+    "bytes_recebidos": 0,
+    "fim": "reset",
+    "reset_ttl": [
+     48
+    ],
+    "ms_do_primeiro_envio_ao_reset": 120
+   },
+   {
+    "inicio": "16:52:28.700800",
+    "servidor": "200.130.24.57:80",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 128,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:52:31.444599",
+    "servidor": "200.130.24.213:443",
+    "syn_ack_ttl": [
+     47
+    ],
+    "ttl_dos_dados_recebidos": [],
+    "bytes_recebidos": 0,
+    "fim": "reset",
+    "reset_ttl": [
+     47
+    ],
+    "ms_do_primeiro_envio_ao_reset": 120
+   },
+   {
+    "inicio": "16:52:33.687841",
+    "servidor": "200.130.24.213:80",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 518,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:52:36.295099",
+    "servidor": "200.130.24.9:443",
+    "syn_ack_ttl": [
+     48
+    ],
+    "ttl_dos_dados_recebidos": [],
+    "bytes_recebidos": 0,
+    "fim": "reset",
+    "reset_ttl": [
+     48
+    ],
+    "ms_do_primeiro_envio_ao_reset": 121
+   },
+   {
+    "inicio": "16:52:38.538886",
+    "servidor": "200.130.24.9:80",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 124,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:52:58.912016",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2929,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:01.651864",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     232
+    ],
+    "ttl_dos_dados_recebidos": [
+     232
+    ],
+    "bytes_recebidos": 4000,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:04.404917",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 495,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:06.890303",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 1566,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:09.142288",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2930,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:11.644533",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 4001,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:14.395526",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 496,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:16.646824",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 1567,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:18.901077",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2930,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:21.664713",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 4001,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:24.430112",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 496,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:26.925632",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 1567,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:29.180428",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2978,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:31.931778",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 4049,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:34.669666",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 544,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:36.932017",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 1615,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:39.311271",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2978,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:41.952820",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 4049,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:44.710372",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 544,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:47.197499",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 1615,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:49.699617",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2977,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:52.459912",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 4048,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:55.194929",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 543,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:53:57.468184",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 1614,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:54:46.763980",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:54:49.277527",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 7,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:54:51.761291",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     235
+    ],
+    "ttl_dos_dados_recebidos": [
+     235
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:54:54.519040",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     236
+    ],
+    "ttl_dos_dados_recebidos": [
+     236
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:54:57.267383",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 2405,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:55:00.454684",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [
+     238
+    ],
+    "ttl_dos_dados_recebidos": [
+     238
+    ],
+    "bytes_recebidos": 7,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:55:02.959669",
+    "servidor": "200.130.24.15:80",
+    "syn_ack_ttl": [
+     237
+    ],
+    "ttl_dos_dados_recebidos": [
+     237
+    ],
+    "bytes_recebidos": 1566,
+    "fim": "fin",
+    "reset_ttl": []
+   },
+   {
+    "inicio": "16:55:05.457790",
+    "servidor": "200.130.24.15:443",
+    "syn_ack_ttl": [],
+    "ttl_dos_dados_recebidos": [],
+    "bytes_recebidos": 0,
+    "fim": "sem fim na captura",
+    "reset_ttl": []
+   }
+  ],
+  "por_servidor": {
+   "200.130.24.15:443": {
+    "reset": 2,
+    "fin": 34,
+    "sem fim na captura": 1
+   },
+   "200.130.24.15:80": {
+    "fin": 14
+   },
+   "200.130.24.57:443": {
+    "reset": 1
+   },
+   "200.130.24.57:80": {
+    "fin": 1
+   },
+   "200.130.24.213:443": {
+    "reset": 1
+   },
+   "200.130.24.213:80": {
+    "fin": 1
+   },
+   "200.130.24.9:443": {
+    "reset": 1
+   },
+   "200.130.24.9:80": {
+    "fin": 1
+   }
+  }
+ }
+}

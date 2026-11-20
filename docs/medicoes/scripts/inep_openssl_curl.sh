@@ -42,4 +42,22 @@ medir -r 0-1023 --tlsv1.2 --tls-max 1.2 "$url"; sleep 2
 medir -r 0-1023 --tlsv1.3 "$url"; sleep 2
 medir -r 0-1023 "${url/https:/http:}"; sleep 2
 medir -r 0-1023 "$url"
+
+# Com ENUMERAR_CIFRAS=1: cada cifra de TLS 1.2 do OpenSSL desta máquina, uma por conexão. Vem depois dos pedidos
+# acima para não cair no reset do primeiro contato, e a que não fechar nem receber alerta é tentada de novo uma vez.
+if [ "${ENUMERAR_CIFRAS:-0}" = 1 ]; then
+  echo ""
+  echo "| Cifra TLS 1.2 | Resultado |"
+  echo "|---|---|"
+  for c in $(openssl ciphers -tls1_2 'ALL:COMPLEMENTOFALL' | tr ':' '\n' | grep -v '^TLS_'); do
+    for tentativa in 1 2; do
+      r=$(timeout 10 openssl s_client -connect "$alvo:443" -servername "$alvo" -tls1_2 -cipher "$c" < /dev/null 2>&1)
+      if grep -q "Cipher is $c" <<< "$r"; then res=aceita; break
+      elif grep -q "alert" <<< "$r"; then res="alerta do servidor"; break
+      elif grep -q "no ciphers available" <<< "$r"; then res="este OpenSSL não oferece"; break
+      else res="outro: $(grep -m1 -iE 'error|errno' <<< "$r" | cut -c1-100 | tr '|' ' ')"; fi
+    done
+    echo "| cifra $c | $res |"
+  done
+fi
 rm -f "$erro"

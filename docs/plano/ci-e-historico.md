@@ -142,6 +142,63 @@ O mecanismo está reproduzido em teste, com AIHs inventadas (`test_subir_o_k_no_
 
 **O que esta medição não cobre.** As quatro fases usaram a mesma versão do FTP, como no ciclo. A virada de um mês para o outro com duas versões diferentes do FTP ainda não rodou no runner, e o fechamento de um ano foi medido uma vez, simulado, em 2024: passou, com 3 rodadas de reforço ([Comparação entre versões](privacidade-e-supressao.md#comparação-entre-versões)). Cada mudança de regra foi medida sozinha, não combinada com outra.
 
+### INEP no runner
+
+Medido em 20/11/2026, numa máquina local e em duas execuções do workflow `Alcance das fontes`: a [44777247301](https://github.com/MatheusCavalcanteF/explorador-de-dados-publicos/actions/runs/44777247301), com a opção `inep_tls` (variações de TLS, sequência de pedidos, hosts vizinhos, rotas https e http, download completo só para o hash e captura dos cabeçalhos TCP), num runner do Azure; e a [44780896235](https://github.com/MatheusCavalcanteF/explorador-de-dados-publicos/actions/runs/44780896235), com a opção `inep` (6 pedidos, sem download), num runner da AWS. Scripts `diagnosticar_inep.py`, `inep_openssl_curl.sh` e `reduzir_inep.py`; resultado em [`inep_tls_e_rotas.json`](../medicoes/resultados/inep_tls_e_rotas.json). Nenhum arquivo do INEP foi gravado: o download passou pelo SHA-256 e foi descartado.
+
+**O runner alcança o INEP.** A recusa dos 7 dias do `INEP diário` não era bloqueio do runner nem incompatibilidade de TLS. É o primeiro contato: depois de um tempo sem pedidos, a primeira conexão TLS a um servidor do INEP é atendida por outro equipamento, que aceita o TCP, lê o ClientHello e responde com reset. A conexão seguinte chega ao servidor e fecha normalmente. O teste diário fazia um pedido por dia, sem nova tentativa, e por isso caiu sempre no primeiro contato. A máquina local passa pelo mesmo reset, o que explica o "primeiro pedido com reset" registrado em [Riscos](escopo-e-riscos.md#riscos).
+
+| Teste | Máquina local | Runner |
+|---|---|---|
+| Primeira conexão TLS da rodada | Reset, 486 ms depois do início do handshake | Reset, 121 ms depois (um RTT, que era de 122 ms). Na segunda execução, também reset; a repetição imediata chegou ao servidor e só parou na verificação do certificado |
+| Conexões seguintes: TLS 1.2, uma cifra só, sem SNI, SNI de outro host, só X25519 | Todas fecham, em TLS 1.2 com ECDHE-RSA-AES128-GCM-SHA256 | Todas fecham, igual |
+| Só TLS 1.3 | Alerta 40 (`handshake_failure`): o servidor não tem TLS 1.3 | Igual |
+| Cifras aceitas em TLS 1.2, uma por conexão, entre as do OpenSSL 3.5.9 | 3 de 155: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384 e ECDHE-RSA-CHACHA20-POLY1305. Outras 62 recebem alerta do servidor, e 90 este OpenSSL não oferece | Não enumeradas |
+| ClientHello padrão repetido com pausas de 0, 1, 2, 5, 10, 30 e 60 s | 7 de 7 fecham. Pausas maiores, de um a dois minutos pelos horários registrados, levaram reset 3 vezes | 6 de 7: depois de 60 s parado, reset de novo |
+| Primeiro contato com os outros hosts do INEP na porta 443 (`www`, `inepdata` e `ideb`, na mesma faixa 200.130.24.0/24) | `ideb` com reset; `www` e `inepdata` sem resposta em 15 s | Reset nos 3 |
+| Porta 80 | Responde, e serve os arquivos | Igual |
+| Verificação do certificado | Passa: o Windows completa a cadeia | Falha no Python e no curl: `unable to get local issuer certificate` |
+
+**Quem manda o reset.** No runner, a captura dos cabeçalhos de 57 conexões com a faixa do INEP mostra dois remetentes. Nas 5 que terminaram em reset, o SYN-ACK e o reset chegaram com TTL de 46 a 48, ou seja, saíram com TTL 64. Nas 51 que funcionaram, o SYN-ACK e os dados chegaram com TTL de 232 a 238, ou seja, saíram com 255. A última ficou sem fim na captura, que parou antes. São pilhas de rede diferentes: o primeiro contato é atendido por um equipamento na frente do servidor, não pelo servidor. O reset sai entre 120 e 121 ms depois do ClientHello. O que é esse equipamento e quanto tempo ele lembra uma origem não está documentado: no runner, a janela ficou entre 30 e 60 s; na máquina local, passou de 60 s.
+
+**Cadeia incompleta.** O servidor manda só o certificado `*.inep.gov.br` (válido de 21/09/2026 a 08/04/2027), sem o intermediário `RNP ICPEdu GR46 OV TLS CA 2025`. O Windows completa a cadeia sozinho; o Python e o curl do Linux não. O intermediário está publicado pela GlobalSign no endereço do campo AIA do próprio certificado. Mesmo com o reset resolvido, um download por HTTPS com verificação falha no runner até a cadeia ser completada.
+
+**IPv4 e IPv6.** `download.inep.gov.br` é um CNAME de `public.inep.gov.br`, que só tem endereço IPv4 (200.130.24.15). Não há AAAA, conferido em dois resolvedores daqui e no runner, pelo `getaddrinfo` e pelo `dig`. Não existe rota IPv6 para testar.
+
+**Os arquivos são os mesmos.** Os 6 arquivos foram baixados inteiros por https e por http, na máquina local e no runner, e os 4 SHA-256 de cada um são iguais. No runner, os 12 downloads fecharam na primeira tentativa, porque o passo anterior tinha acabado de falar com o servidor, e levaram de 5 s a 226 s, cerca de 1 MB/s.
+
+| Arquivo | Tamanho | Last-Modified |
+|---|---:|---|
+| `dados_abertos/microdados_censo_escolar_2024.zip` | 33.829.396 bytes | 08/07/2026 |
+| `dados_abertos/sinopses_estatisticas/sinopse_estatistica_censo_escolar_2024.zip` | 145.089.739 bytes | 14/07/2026 |
+| `dados_abertos/sinopses_estatisticas/sinopse_estatistica_censo_escolar_2025.zip` | 232.142.480 bytes | 30/07/2026 |
+| `ideb/resultados/divulgacao_anos_iniciais_municipios_2023.xlsx` | 11.249.038 bytes | 13/08/2024 |
+| `ideb/resultados/divulgacao_anos_finais_municipios_2023.xlsx` | 10.731.967 bytes | 13/08/2024 |
+| `ideb/resultados/divulgacao_ensino_medio_municipios_2023.xlsx` | 3.362.082 bytes | 13/08/2024 |
+
+Os do microdados e do Ideb são os mesmos da coleta de 07/11/2026 em `fontes.json`, que não tinha as sinopses. A sinopse de 2025 já está publicada; os microdados de 2025 continuam respondendo 404.
+
+**Outras origens oficiais.** Nenhuma guarda cópia própria dos arquivos: todas levam ao `download.inep.gov.br`. Fonte não oficial ficou de fora, como pede o projeto.
+
+| Origem | O que tem | Runner alcança | Licença declarada |
+|---|---|---|---|
+| `http://download.inep.gov.br` (porta 80) | Os mesmos arquivos, com os mesmos bytes | Sim | A do INEP |
+| Páginas do INEP no `www.gov.br` (microdados, sinopses e resultados do Ideb) | Só links: o HTML das duas primeiras cita o `download.inep.gov.br` 31 e 40 vezes. No HTML da do Ideb não há link de planilha, e ela manda para o painel `ideb.inep.gov.br`, na faixa do INEP | Sim | CC BY-ND 3.0 (Atribuição-SemDerivações) |
+| `dados.gov.br`: os 3 conjuntos do INEP (microdados do Censo Escolar, Ideb e sinopses), lidos no navegador | Cada recurso aponta para a página do INEP no `www.gov.br` | A página, sim. A API pública responde 401 a pedido sem credencial | "Creative Commons Attribution", diferente da página do INEP |
+| MEC no `dados.gov.br`: Ideb por município, da antiga Plataforma de Gestão de Indicadores (`api.pgi.gov.br`) | Série que não é atualizada desde 12/2014; não é o mesmo dado | Não respondeu em 30 s, nem daqui | ODbL |
+| `dadosabertos.mec.gov.br` | Não conferido: responde 403 com o desafio do Cloudflare, daqui e do runner | Não | - |
+
+**O que não se explica.** Em 07/11/2026, duas das três execuções do diagnóstico tiveram a conexão TCP recusada, e não reset no TLS. Isso não se repetiu em 20/11, e a causa não foi achada. A medição de 20/11 são duas execuções num dia; o comportamento do equipamento pode mudar sem aviso. A porta 80 não foi testada como primeiro contato: em todas as medições, ela veio depois de um contato na 443.
+
+**Rotas para a F1c, sem decisão.**
+
+| Opção | A favor | Contra |
+|---|---|---|
+| **1. HTTPS no runner**, com nova tentativa poucos segundos depois do reset e a cadeia completada pelo intermediário da RNP (guardado no repositório, ou baixado do AIA e conferido) | Origem oficial, com TLS. Nas 2 execuções, a nova tentativa passou; os bytes são os mesmos | Depende de um comportamento não documentado do equipamento (janela de 30 a 60 s no runner). O intermediário muda quando o certificado for renovado, e a falha precisa ser clara. As recusas de TCP de 07/11 não têm explicação |
+| **2. HTTP na porta 80, no runner** | Sem problema de cadeia. Mesmos bytes nas duas máquinas | Sem autenticação: um arquivo trocado no caminho passaria. O MD5 de dentro do `.zip` viaja no mesmo canal e só pega corrupção. O INEP pode passar a redirecionar para HTTPS (o `www.inep.gov.br` já redireciona). É o mesmo risco dos FTPs do DATASUS e do PDET |
+| **3. Coleta anual feita aqui**, publicada como partição fechada na Release, como o Censo 2022 | Não depende do runner alcançar o INEP. O Censo Escolar é anual, e o Ideb, bienal | Passo manual, fora do CI. A máquina local também leva o reset do primeiro contato e tem antivírus no caminho (para este host, o certificado visto é o da RNP, sem interceptação). Uma republicação do INEP, como a de 08/07/2026, depende de alguém notar |
+| **4. Combinação:** o runner tenta a 1 (ou a 2) e, se falhar, mantém a partição da Release | Junta a coleta automática com o que o plano já prevê para o Censo na Release | Duas rotas para manter e testar |
+
 ### Trava de queda
 
 Medido entre as versões de setembro e outubro de 2026, só em SP, porque é a única UF com as duas versões guardadas. Queda de 30% ou mais, com pelo menos 100 internações:

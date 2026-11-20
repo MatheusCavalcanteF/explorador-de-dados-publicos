@@ -366,7 +366,7 @@ def main(argv=None) -> int:
         resultado["baixar"] = baixar(esquemas, arquivos, a.tentativas)
     resultado["terminado_em"] = agora()
     a.saida.parent.mkdir(parents=True, exist_ok=True)
-    a.saida.write_text(json.dumps(resultado, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    a.saida.write_bytes((json.dumps(resultado, ensure_ascii=False, indent=1) + "\n").encode("utf-8"))
     return 0
 
 

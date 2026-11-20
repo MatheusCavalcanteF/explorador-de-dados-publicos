@@ -4,6 +4,11 @@
 repositorio: https://github.com/MatheusCavalcanteF/explorador-de-dados-publicos
 site: https://matheuscavalcantef.github.io/explorador-de-dados-publicos/
 
+# Página de consulta (consulta/) e o link de cada página de município para a série dela. Com false, o
+# build não gera nenhum dos dois, e o site sai como antes. Só vai a true com o OK do dono do projeto; no
+# build local, `python -m pipeline construir --construtor` liga sem mudar este arquivo.
+construtor: false
+
 # Verificação do Google Search Console pelo arquivo HTML. Com o código que o Search Console mostra
 # (algo como google0123456789abcdef), o pipeline grava google0123456789abcdef.html na raiz do site,
 # com o conteúdo que o Google pede. Vazio: nenhum arquivo.

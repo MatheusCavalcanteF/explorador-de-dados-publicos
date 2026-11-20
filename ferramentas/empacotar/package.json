@@ -1,0 +1,9 @@
+{
+  "name": "empacotar-o-leitor",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "esbuild": "0.25.11",
+    "hyparquet": "1.32.0"
+  }
+}

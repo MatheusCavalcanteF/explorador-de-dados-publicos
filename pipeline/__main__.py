@@ -12,6 +12,7 @@
     python -m pipeline construir  --coleta build/coleta --saida build/site [--links manifesto/links.json] [--execucao ID]
                                   [--mantidos build/mantidos]  (grava build/coleta/publicado.json)
                                   [--sih-local PASTA]  (só local: SIH nas páginas sem mudar o catálogo; para no CI)
+                                  [--construtor]  (só local: página de consulta sem mudar projeto.yaml; para no CI)
     python -m pipeline hospedagem --coleta build/coleta --site build/site --url URL --execucao ID
     python -m pipeline links      --coleta build/coleta
     python -m pipeline manifesto  --coleta build/coleta --saida manifesto
@@ -101,6 +102,8 @@ def main(argv=None) -> int:
     # Partições de uma execução local do SIH (trabalho/particoes). Só para conferir no navegador: não muda o
     # catálogo, que segue com publicacao.site: false, e para com erro no CI.
     p.add_argument("--sih-local", type=Path)
+    # Página de consulta e link das páginas de município, com a chave de projeto.yaml desligada. Só local.
+    p.add_argument("--construtor", action="store_true")
     p = sub.add_parser("hospedagem")
     p.add_argument("--coleta", type=Path, required=True)
     p.add_argument("--site", type=Path, required=True)
@@ -206,8 +209,11 @@ def main(argv=None) -> int:
     elif args.comando == "construir":
         anteriores = _ler(args.links) if args.links and args.links.exists() else None
         coleta = _ler(args.coleta / "ibge.json")
+        if args.construtor:
+            site.exigir_build_local("--construtor")
         versao = site.construir(coleta, cat, args.saida, anteriores, args.execucao, sih_local=args.sih_local,
-                                reprovadas=isoladas.ler_reprovadas(args.coleta, cat), mantidos=args.mantidos)
+                                reprovadas=isoladas.ler_reprovadas(args.coleta, cat), mantidos=args.mantidos,
+                                construtor=True if args.construtor else None)
         tamanho = versao["tamanho"]
         print(f"Site: {versao['municipios']} páginas de município em {args.saida}. Maior página: "
               f"{tamanho['maior_pagina']}, {tamanho['maior_pagina_bytes']} bytes, limite {tamanho['limite_pagina_bytes']}")

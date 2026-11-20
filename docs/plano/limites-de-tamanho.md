@@ -10,7 +10,7 @@ Os limites valem para o que é publicado. O orçamento total deixa margem no 1 G
 | INEP, Censo Escolar e IDEB | 0,24 MB por ano + IDEB | 2019 em diante | ~5 MB | 20 MB |
 | IBGE | < 1 MB | Última + série de população | ~2 MB | 10 MB |
 | JSON por município | 113,8 MB (estimativa, 36 meses) | 36 meses | ~115 MB | 200 MB |
-| JavaScript do site | Leitor: 18,6 KB com gzip | | Até 2 MB | 5 MB |
+| JavaScript do site | Leitor: 18,6 KB com gzip. Página de consulta, em 18/11/2026: 49,0 KB em gzip -9, com o leitor (19,3 KB) | | Até 2 MB | 5 MB |
 | Novo CAGED, agregados Parquet | 7,0 MB por ano nas tabelas aprovadas, só `MOV`, nacional com zstd | 2020 em diante (fora da v1) | ~50 MB com zstd; sem compressão, cerca do dobro | 100 MB |
 | Siconfi | Não medido em escala | Fora da v1 | Não estimado | 60 MB |
 | **Total** | | | | **595 MB** |

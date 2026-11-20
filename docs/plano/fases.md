@@ -32,7 +32,8 @@ A divisão proposta (deploy e CI; SIH e catálogo; educação e IBGE) foi mantid
 - **Sem supressão**, com o motivo no catálogo: é um agregado oficial que o IBGE já publica por município, e o projeto não o cruza com outra dimensão. Uma base com `supressao.aplica: false` e sem motivo não valida.
 - **Conferido por dois outros caminhos** ([`conferencia_populacao_serie.json`](../medicoes/resultados/conferencia_populacao_serie.json)). Na SIDRA, pedindo um município com todos os anos, em vez de um ano com todos os municípios: 360 de 360 valores iguais, em 30 municípios de 13 UFs. Nas planilhas de estimativas do FTP do IBGE, com todos os municípios: em 2018, 2021 e 2025, a SIDRA é igual à planilha mais recente do ano. Em 2024, difere dela em 4 municípios de Mato Grosso, e a soma das diferenças é a população de Boa Esperança do Norte na planilha, município que a SIDRA só traz de 2025 em diante. Esses 4 municípios têm uma ressalva própria em 2024.
 - **Até onde a série vai, a validação sabe pela coleta.** O catálogo diz o primeiro ano e os sem estimativa; o último vem da ficha `.json` publicada com o arquivo. Pedido de 2030 é recusado, e a sugestão é 2026; pedido de 2025 a 2028 vale, com a ressalva de que 2027 e 2028 não têm dado.
-- **Não feito:** tela para a série, que é quem vai carregar a ficha e entregá-la à validação; a conferência semanal de links sortear também município e ano; o antes e depois por município quando o IBGE revisar um ano antigo; e a taxa de internação, que continua sem população em 2022 e 2023.
+- **Tela para a série, em 18/11/2026:** a [página de consulta](arquitetura.md#página-de-consulta), fora do ar até o OK do dono do projeto.
+- **Não feito:** a conferência semanal de links sortear também município e ano; o antes e depois por município quando o IBGE revisar um ano antigo; e a taxa de internação, que continua sem população em 2022 e 2023.
 
 **F1b. SIH do Brasil, com catálogo e supressão**
 - **As 27 UFs**, partições por ano no runner, janela aberta recalculada. **O público é só a superfície** que o site mostra, publicada com ele; nada do SIH em Releases (decidido em 10/11/2026).
@@ -57,6 +58,9 @@ A divisão proposta (deploy e CI; SIH e catálogo; educação e IBGE) foi mantid
 *Pronto quando:* a página de município mostra saúde, educação e IBGE, cada número com sua fonte. É aqui que o produto deixa de parecer só de saúde. O custo medido é baixo (0,24 MB por ano e 4,7% das células ocultas), então esta etapa pode vir junto da F1b se houver folga.
 
 ### F2. Construtor de dashboards
+
+**Primeira tela, em 18/11/2026, fora do ar:** a [página de consulta](arquitetura.md#página-de-consulta), com a população por município e ano como única consulta publicada, desligada pela chave `construtor` de `projeto.yaml`. Não feito: acrescentar painel pela tela (um link com vários painéis já abre, cada um com a sua interpretação e a sua recusa), os caminhos estáveis dos dados abertos, o teste em aparelho físico e no Safari do iOS.
+
 - Especificação na URL, exportação, **leitor em JavaScript sobre arquivos por UF**.
 - **Teste de igualdade entre leitor e motor no CI.** O motor só entra na v1 se uma função provar que precisa dele.
 - **Publicar os arquivos como dados abertos e documentar os caminhos estáveis**: já são públicos, então isso custa só documentação. Do SIH, só a superfície (decidido em 10/11/2026): um cruzamento a mais no construtor amplia a superfície e passa antes pelo teste de dedução e pelos dois motores.

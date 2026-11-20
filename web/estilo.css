@@ -188,6 +188,11 @@ a:hover { text-decoration-thickness: 2px; }
 
 .nota { font-weight: 600; }
 
+/* Link da página do município para a consulta da série dele (só com a página de consulta no build). */
+.serie-link { margin: 0.25rem 0 1.25rem; }
+.serie-link a { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 1.1rem; font-weight: 700; }
+.serie-link .seta { width: 1em; height: 1em; }
+
 /* Fonte e método: fechado, a um clique; aberto, uma ficha por métrica. */
 .fonte { margin-top: 0.5rem; border-top: 2px solid var(--tinta); border-bottom: 1px solid var(--linha); }
 .fonte summary {

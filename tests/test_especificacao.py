@@ -17,7 +17,7 @@ def test_especificacao_valida_no_catalogo_e_vai_e_volta_da_url(tmp_path):
     if node is None:
         # Nos runners do GitHub o Node já vem instalado: lá, faltar é erro, para o teste não ser pulado sem aviso.
         if os.environ.get("CI") or os.environ.get("EXIGIR_SIH") == "1":
-            pytest.fail("Node não encontrado: os testes de consulta/especificacao.js não rodaram")
+            pytest.fail("Node não encontrado: os testes de web/especificacao.js não rodaram")
         pytest.skip("Node não instalado nesta máquina")
     arquivo = tmp_path / "catalogo.json"
     arquivo.write_text(json.dumps(catalogo.carregar(), ensure_ascii=False), encoding="utf-8")

@@ -1,8 +1,8 @@
-// Testes da especificação de consulta (consulta/especificacao.js), fora do navegador e sem rede.
+// Testes da especificação de consulta (web/especificacao.js), fora do navegador e sem rede.
 // Roda pelo pytest (tests/test_especificacao.py), que entrega o catálogo real em JSON no primeiro argumento.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const E = require('../consulta/especificacao.js');
+const E = require('../web/especificacao.js');
 
 const copia = (x) => JSON.parse(JSON.stringify(x));
 // O catálogo como está no repositório não sabe até que ano a população foi coletada: isso vem da ficha que

@@ -31,8 +31,12 @@ def carregar(caminho: Path = CAMINHO) -> dict:
         if not CODIGO_GOOGLE.fullmatch(codigo):
             raise ErroDeConfiguracao(f"{caminho.name}: google_search_console deve ser o nome do arquivo que o "
                                      f"Search Console mostra, como google0123456789abcdef; veio {codigo!r}")
+    construtor = dados.get("construtor", False)
+    if not isinstance(construtor, bool):
+        raise ErroDeConfiguracao(f"{caminho.name}: construtor deve ser true ou false, veio {construtor!r}")
     return {"repositorio": repositorio, "site": site, "caminho_do_site": partes.path,
-            "nome_curto": repositorio.rsplit("/", 1)[1], "google_search_console": codigo or None}
+            "nome_curto": repositorio.rsplit("/", 1)[1], "google_search_console": codigo or None,
+            "construtor": construtor}
 
 
 _CONFIGURACAO = carregar()
@@ -42,3 +46,5 @@ SITE = _CONFIGURACAO["site"]
 CAMINHO_DO_SITE = _CONFIGURACAO["caminho_do_site"]
 NOME_CURTO = _CONFIGURACAO["nome_curto"]
 GOOGLE_SEARCH_CONSOLE = _CONFIGURACAO["google_search_console"]
+# A página de consulta e o link das páginas de município para ela só entram no build com esta chave.
+CONSTRUTOR = _CONFIGURACAO["construtor"]

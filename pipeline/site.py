@@ -72,11 +72,13 @@ def rodape(coleta: dict) -> str:
 
 
 def pagina(titulo: str, descricao: str, raiz: str, corpo: str, nota: str, script: bool = False,
-           endereco: str | None = None, dados: dict | None = None, outro_script: str | None = None) -> str:
+           endereco: str | None = None, dados: dict | None = None, outro_script: str | None = None,
+           cabeca_extra: str = "") -> str:
     """`endereco` é o caminho da página dentro do site; sem ele, a página não tem link canônico nem Open Graph."""
     cabeca = f'\n<script src="{raiz}busca.js" defer></script>' if script else ""
     if outro_script:
         cabeca += f'\n<script src="{raiz}{outro_script}" defer></script>'
+    cabeca += cabeca_extra
     if endereco is not None:
         url = escape(projeto.SITE + endereco)
         cabeca += (f'\n<link rel="canonical" href="{url}">'
@@ -274,9 +276,11 @@ def _dados_municipio(m: dict, coleta: dict, catalogo: dict, alterado_em: str) ->
 
 
 def pagina_municipio(m: dict, coleta: dict, catalogo: dict, links: dict | None,
-                     revisao: dict | None = None, alterado_em: str | None = None, sih: dict | None = None) -> str:
+                     revisao: dict | None = None, alterado_em: str | None = None, sih: dict | None = None,
+                     serie: dict | None = None) -> str:
     """`links` é o resultado de conferencias(), já comparado com o que a página mostra. `sih` são os dados do
-    build local com --sih-local (site_sih.carregar); sem eles, a página não tem SIH."""
+    build local com --sih-local (site_sih.carregar); sem eles, a página não tem SIH. `serie` é o link para a
+    consulta da série do município (site_consulta.links_da_serie); sem ele, a página fica como era."""
     fontes, metricas = coleta["fontes"], catalogo["metricas"]
     est, censo = fontes["estimativa"], fontes["censo"]
     linhas = [_linha(f"Estimativa {est['periodo']}", m["populacao_estimada"], " placa__linha--principal"),
@@ -292,6 +296,9 @@ def pagina_municipio(m: dict, coleta: dict, catalogo: dict, links: dict | None,
                    f'<a href="{MANIFESTO_IBGE}">Ver no manifesto</a>.</p>')
         extras.append(f"Revisado pelo IBGE: a mudança foi detectada na coleta de {dia(revisao['detectada_em'])}.")
     secao_sih = fonte_sih = ""
+    if serie is not None:
+        from . import site_consulta
+        avisos += site_consulta.link_do_municipio(serie)
     if sih is not None:
         from . import site_sih
         secao_sih, fonte_sih = "\n" + site_sih.secao(m, sih, coleta), "\n" + site_sih.fonte(sih, coleta)
@@ -489,12 +496,15 @@ class ErroBuildLocal(RuntimeError):
     """Uma opção só para build local foi usada no CI."""
 
 
-def exigir_build_local() -> None:
+def exigir_build_local(opcao: str = "--sih-local") -> None:
     """O SIH não vai para o site enquanto o catálogo disser publicacao.site: false. A opção --sih-local serve para
-    conferir no navegador, na máquina de quem desenvolve; no GitHub Actions, ou em qualquer CI, ela para."""
+    conferir no navegador, na máquina de quem desenvolve; no GitHub Actions, ou em qualquer CI, ela para. O mesmo
+    vale para --construtor, que no CI só segue a chave de projeto.yaml."""
     import os
     if os.environ.get("GITHUB_ACTIONS") or os.environ.get("CI"):
-        raise ErroBuildLocal("--sih-local é só para build local: no CI, o SIH segue publicacao.site do catálogo")
+        regra = ("o SIH segue publicacao.site do catálogo" if opcao == "--sih-local"
+                 else "a página de consulta segue a chave construtor de projeto.yaml")
+        raise ErroBuildLocal(f"{opcao} é só para build local: no CI, {regra}")
 
 
 class ErroDeLimite(ValueError):
@@ -528,12 +538,18 @@ def conferir_limites(saida: Path, limites: dict) -> dict:
 
 def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = None, execucao: str = "local",
               google: str | None = projeto.GOOGLE_SEARCH_CONSOLE, sih_local: Path | None = None,
-              reprovadas: dict | None = None, mantidos: Path | None = None) -> dict:
+              reprovadas: dict | None = None, mantidos: Path | None = None, construtor: bool | None = None) -> dict:
     """O site inteiro. `sih_local` é a pasta de partições de uma execução local do SIH, só para conferir no
     navegador enquanto o catálogo não manda publicar: não muda o catálogo e para com erro no CI.
 
     `reprovadas` são as bases isoladas que reprovaram nesta execução, e `mantidos`, a pasta com a versão no
-    ar delas (isoladas.manter). O resultado traz, em `isoladas`, o que foi ao ar de cada uma."""
+    ar delas (isoladas.manter). O resultado traz, em `isoladas`, o que foi ao ar de cada uma.
+
+    `construtor` liga a página de consulta e o link de cada página de município para a série dela; sem valor,
+    vale a chave de projeto.yaml. O link só sai para quem tem valor na série que de fato foi ao ar, e por isso
+    a série e as bases isoladas são resolvidas antes das páginas."""
+    from . import site_consulta
+    construtor = projeto.CONSTRUTOR if construtor is None else construtor
     sih = None
     if sih_local is not None:
         exigir_build_local()
@@ -541,7 +557,8 @@ def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = No
         sih = site_sih.carregar(sih_local, catalogo)
     if saida.exists():
         shutil.rmtree(saida)
-    shutil.copytree(WEB, saida, ignore=None if sih else shutil.ignore_patterns("sih.js"))
+    fora = ([] if sih else ["sih.js"]) + ([] if construtor else list(site_consulta.ARQUIVOS_WEB))
+    shutil.copytree(WEB, saida, ignore=shutil.ignore_patterns(*fora) if fora else None)
     municipios, fontes = coleta["municipios"], coleta["fontes"]
 
     def gravar(caminho: str, texto: str) -> None:
@@ -549,6 +566,13 @@ def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = No
         destino.parent.mkdir(parents=True, exist_ok=True)
         destino.write_text(texto, encoding="utf-8", newline="\n")
 
+    gravar("dados/municipios.json", json.dumps([[m["codigo"], m["nome"], m["uf"]] for m in municipios],
+                                               ensure_ascii=False, separators=(",", ":")))
+    parquet(municipios, saida / PARQUET)
+    populacao_por_ano(coleta, catalogo, saida)
+    # A base que reprovou entra com a versão no ar, conferida, ou fica de fora.
+    publicado = isoladas.aplicar(saida, catalogo, coleta["coletado_em"], execucao, reprovadas or {}, mantidos)
+    series = site_consulta.links_da_serie(saida, catalogo) if construtor else {}
     gravar("index.html", pagina_inicial(coleta, catalogo))
     gravar("404.html", pagina_404(rodape(coleta)))
     enderecos = [("", max(buscadores.desde(f) for f in fontes.values()))]
@@ -561,7 +585,8 @@ def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = No
         # Sem condição sobre o valor atual: uma estimativa retirada também é revisão, e muda o lastmod.
         revisao = revisao_do_municipio(m["codigo"], por_codigo, geral)
         alterado_em = alteracao_municipio(fontes, revisao)
-        gravar(f"municipio/{m['codigo']}/index.html", pagina_municipio(m, coleta, catalogo, links, revisao, alterado_em, sih))
+        gravar(f"municipio/{m['codigo']}/index.html",
+               pagina_municipio(m, coleta, catalogo, links, revisao, alterado_em, sih, series.get(m["codigo"])))
         paginas_municipio.append((f"municipio/{m['codigo']}/", alterado_em))
     for uf, lista in sorted(por_uf.items()):
         gravar(f"uf/{uf.lower()}/index.html", pagina_uf(uf, lista[0]["uf_nome"], lista, coleta, catalogo))
@@ -570,12 +595,8 @@ def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = No
     if google:
         nome, conteudo = buscadores.verificacao_google(google)
         gravar(nome, conteudo)
-    gravar("dados/municipios.json", json.dumps([[m["codigo"], m["nome"], m["uf"]] for m in municipios],
-                                               ensure_ascii=False, separators=(",", ":")))
-    parquet(municipios, saida / PARQUET)
-    populacao_por_ano(coleta, catalogo, saida)
-    # Depois de tudo construído: a base que reprovou entra com a versão no ar, conferida, ou fica de fora.
-    publicado = isoladas.aplicar(saida, catalogo, coleta["coletado_em"], execucao, reprovadas or {}, mantidos)
+    if construtor:
+        gravar(site_consulta.CAMINHO + "index.html", site_consulta.pagina(catalogo, coleta))
     versao = {"execucao": execucao, "coletado_em": coleta["coletado_em"], "municipios": len(municipios)}
     if sih is not None:
         versao["sih"] = "build local, fora do catálogo publicado"

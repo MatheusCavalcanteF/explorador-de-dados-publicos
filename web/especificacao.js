@@ -3,7 +3,7 @@
 // texto da URL (serializar, ler, abrir). Nada aqui lê dado nem calcula número: o que sai de uma validação
 // aceita são os parâmetros de uma consulta de modelo sobre um cruzamento pré-calculado.
 //
-// Fica fora de web/ enquanto não estiver ligada às páginas: o build publica tudo o que está lá.
+// A página de consulta (web/consulta.js) é quem a usa no navegador; fora dela, só os testes.
 const Especificacao = (() => {
   const VERSAO = 1;
   // Versões antigas que ainda sabemos converter: { 0: (estado) => estadoNaVersao1 }. Nenhuma, por enquanto.

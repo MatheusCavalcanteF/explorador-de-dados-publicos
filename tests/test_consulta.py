@@ -1,6 +1,7 @@
 """Página de consulta: só entra com a chave, a página de município ganha só o link, o catálogo embutido não leva
 o SIH, e o caminho do endereço até a consulta de modelo roda no Node, sem rede (tests/consulta.test.cjs)."""
 import copy
+import hashlib
 import json
 import os
 import re
@@ -20,6 +21,51 @@ TESTE = Path(__file__).with_name("consulta.test.cjs")
 SORRISO = {"codigo": "5107925", "nome": "Sorriso", "uf": "MT", "uf_nome": "Mato Grosso",
            "populacao_estimada": 110635, "populacao_censo": 110635}
 LINK = re.compile(r'<p class="serie-link">.*?</p>')
+
+# O site da versão anterior à consulta (746c0f4), construído com coleta_da_consulta() e o catálogo daquela
+# versão, por quem extraiu a árvore com `git archive 746c0f4`: um SHA-256 por arquivo. Com a chave desligada, o
+# build de agora precisa dar exatamente estes arquivos, com estes bytes. Uma mudança que altere o site de
+# propósito refaz o gabarito, com a chave desligada, e diz no commit o que mudou.
+SITE_SEM_A_CONSULTA = {
+    "404.html":
+        "ded936396a90fdd5e9ba418e8f0b931380aa4a72cbfa2703df74d4af89add29b",
+    "busca.js":
+        "bb21b1560d408a674b5d7e6a3371ea7a426bb8bf46aface8ef652c2b9f9cf81d",
+    "dados/ibge/populacao.parquet":
+        "dcf4194ff2b107ff2d3bd34d174eeeae944ef799552978c9b2366e5e5bf8cd6c",
+    "dados/ibge/populacao_por_ano.json":
+        "a069f8875187f098ea43709629800371e0b88c6f54d0b26937ac473f4c51d545",
+    "dados/ibge/populacao_por_ano.parquet":
+        "f191d41e03beb25d8bc50dc17452ccd8e86f40062a182e724a4bf5db68a8665b",
+    "dados/municipios.json":
+        "2c931403d139530de1f119baf5033ccb66cbd4e4cc5ef408ac2d947b5cb15f8a",
+    "estilo.css":
+        "26d613b1841bfb832ae0e2cda91f1110e6d31fe9331b3f2b1aa2dfb4880b1743",
+    "fontes/OFL.txt":
+        "948fc2278ccbc7e24c598095e3723d97b53666c02446b683e9cc6745e3760f6a",
+    "fontes/overpass-latin-wght-normal.woff2":
+        "29217ef8adef5f6c059feb461bdb029348205fc233dc9b6ca8604b0d068ac086",
+    "index.html":
+        "0a2ec8354fe866549b8b22d09cf47d48cf5d39f6ddd6b9a0445d848926d901c3",
+    "municipio/3548500/index.html":
+        "124dd3e8f5691b1dba68c40cdac844fe6a82781a0e068d9f7990a145650b052f",
+    "municipio/4206504/index.html":
+        "17e7509059ed586e920b82eef9eba4c51b854521511f8426288c78d3ade16926",
+    "municipio/5101837/index.html":
+        "9e692f1d49f0f7c7a2eba073620829cf79d24961926486347edbc7f1488d5eb8",
+    "municipio/5107925/index.html":
+        "c8b8e61548802af904267064fc01137d5161c197d8b0bdd2e1c0c8536be900b7",
+    "sitemap.xml":
+        "590155b9d3874382b14e71691f5eb731cb405ea706faac79c8b56e7ed10f7740",
+    "uf/mt/index.html":
+        "52c04acb6e1fe041ef07665fc29ad1121a2d4b0332241bc482ecaa04b3f95655",
+    "uf/sc/index.html":
+        "f965a684e775717c6ec721fc4109049a7b4baf14ace11ae2eb353347e496a607",
+    "uf/sp/index.html":
+        "c62b3bfc5ce27e9bc9d2ef6bfd6d0f603cbe1f50a6fdc7a07ad3a30c883f988d",
+    "versao.json":
+        "b965e98cf3ba1d71729a11094423a2b38f307986b8628abc28ad2f4bf968021a",
+}
 
 
 def coleta_da_consulta():
@@ -56,6 +102,12 @@ def test_chave_do_projeto_fica_desligada_e_recusa_valor_que_nao_e_booleano(tmp_p
         projeto.carregar(arquivo)
 
 
+def test_chave_desligada_da_o_site_anterior_igual_byte_a_byte_sem_excecao(sites):
+    _, sem, _, _ = sites
+    agora = {p.relative_to(sem).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(sem.rglob("*")) if p.is_file()}
+    assert agora == SITE_SEM_A_CONSULTA
+
+
 def test_sem_a_chave_nada_da_consulta_vai_para_o_site(sites):
     _, sem, coleta, _ = sites
     assert not any(a.startswith(site_consulta.CAMINHO) for a in arquivos(sem))
@@ -68,10 +120,15 @@ def test_com_a_chave_entram_a_pagina_os_scripts_e_o_link_e_mais_nada(sites):
     com, sem, coleta, _ = sites
     assert arquivos(com) - arquivos(sem) == {"consulta/index.html", *site_consulta.ARQUIVOS_WEB}
     assert arquivos(sem) <= arquivos(com)
+    assert site_consulta.ESTILO_DO_LINK not in arquivos(com) | arquivos(sem)
     paginas = {f"municipio/{m['codigo']}/index.html" for m in coleta["municipios"]}
     for nome in sorted(arquivos(sem)):
         antes, depois = (sem / nome).read_bytes(), (com / nome).read_bytes()
-        if nome in paginas:
+        if nome == "estilo.css":
+            # Com a chave, a regra do link vai ao fim de estilo.css, e só ela.
+            assert depois == antes + (RAIZ / "web" / site_consulta.ESTILO_DO_LINK).read_bytes()
+            assert b".serie-link" not in antes
+        elif nome in paginas:
             # A página de município muda só no parágrafo do link, um por página.
             texto = depois.decode("utf-8")
             assert len(LINK.findall(texto)) == 1, nome

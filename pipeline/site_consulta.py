@@ -22,6 +22,9 @@ CAMINHO = "consulta/"
 # Os arquivos de web/ que só a página de consulta usa: com a chave desligada, ficam fora do build.
 ARQUIVOS_WEB = ("especificacao.js", "leitor.js", "consulta.js", "consulta.css")
 SCRIPTS = ("busca.js", "especificacao.js", "leitor.js", "consulta.js")
+# A regra do link da página de município. Nunca vai para o site como arquivo: com a chave ligada, o build a
+# acrescenta ao fim de estilo.css; com ela desligada, estilo.css sai igual ao de antes da consulta.
+ESTILO_DO_LINK = "serie-link.css"
 
 CAMPOS_DA_BASE = ("nome", "orgao", "licenca", "publicacao", "superficie", "supressao")
 CAMPOS_DA_METRICA = ("tema", "etiquetas", "base", "rotulo", "unidade", "formula", "fontes", "cruzamentos", "fonte", "ressalvas")

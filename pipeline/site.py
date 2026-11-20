@@ -569,8 +569,11 @@ def construir(coleta: dict, catalogo: dict, saida: Path, links: dict | None = No
         sih = site_sih.carregar(sih_local, catalogo)
     if saida.exists():
         shutil.rmtree(saida)
-    fora = ([] if sih else ["sih.js"]) + ([] if construtor else list(site_consulta.ARQUIVOS_WEB))
-    shutil.copytree(WEB, saida, ignore=shutil.ignore_patterns(*fora) if fora else None)
+    fora = ([] if sih else ["sih.js"]) + ([] if construtor else list(site_consulta.ARQUIVOS_WEB)) + [site_consulta.ESTILO_DO_LINK]
+    shutil.copytree(WEB, saida, ignore=shutil.ignore_patterns(*fora))
+    if construtor:
+        with open(saida / "estilo.css", "ab") as estilo:
+            estilo.write((WEB / site_consulta.ESTILO_DO_LINK).read_bytes())
     municipios, fontes = coleta["municipios"], coleta["fontes"]
 
     def gravar(caminho: str, texto: str) -> None:

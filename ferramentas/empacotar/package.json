@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "esbuild": "0.25.11",
+    "esbuild": "0.28.2",
     "hyparquet": "1.32.0"
   }
 }

@@ -192,7 +192,9 @@ metricas:
         url: "https://apisidra.ibge.gov.br/values/t/6579/n6/{municipio}/v/9324/p/{periodo}"
       tabela: "https://sidra.ibge.gov.br/tabela/6579"
     ressalvas:
-      - "É estimativa do IBGE, não contagem. A contagem mais recente é a do Censo 2022, logo abaixo."
+      # Sem dizer onde fica o Censo: cada tela põe os números num lugar. A página de município completa a
+      # frase (site.NA_PAGINA_DO_MUNICIPIO), e a consulta a mostra como está.
+      - "É estimativa do IBGE, não contagem. A contagem mais recente é a do Censo 2022."
   populacao_censo:
     tema: populacao
     etiquetas: []

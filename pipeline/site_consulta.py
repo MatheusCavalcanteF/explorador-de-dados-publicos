@@ -24,7 +24,7 @@ ARQUIVOS_WEB = ("especificacao.js", "leitor.js", "consulta.js", "consulta.css")
 SCRIPTS = ("busca.js", "especificacao.js", "leitor.js", "consulta.js")
 
 CAMPOS_DA_BASE = ("nome", "orgao", "licenca", "publicacao", "superficie", "supressao")
-CAMPOS_DA_METRICA = ("tema", "etiquetas", "base", "rotulo", "unidade", "formula", "fontes", "cruzamentos", "fonte")
+CAMPOS_DA_METRICA = ("tema", "etiquetas", "base", "rotulo", "unidade", "formula", "fontes", "cruzamentos", "fonte", "ressalvas")
 CAMPOS_DO_CRUZAMENTO = ("id", "base", "mae", "dimensoes", "tempo", "metricas", "arquivo", "anos", "quebras", "notas")
 
 
@@ -118,6 +118,15 @@ def _json_no_html(valor) -> str:
     return json.dumps(valor, ensure_ascii=False, separators=(",", ":"), sort_keys=True).replace("<", "\\u003c")
 
 
+def rodape(coleta: dict) -> str:
+    """O rodapé das outras páginas diz que a fonte fica logo abaixo de cada número; aqui ela fica em "Fonte e
+    método", abaixo da tabela, com a coleta de cada ano. A data do rodapé é a da lista de municípios."""
+    d = coleta["fontes"]["dtb"]
+    return (f"Municípios da Divisão Territorial Brasileira {d['periodo']} do IBGE, com data-base em {site.data(d['data_base'])}, "
+            f"coletada em {site.data_hora(d['coletado_em'])}. A fonte, o método e a data da coleta de cada consulta "
+            f"ficam em “Fonte e método”, abaixo da tabela.")
+
+
 def pagina(catalogo: dict, coleta: dict) -> str:
     publicado = catalogo_publicado(catalogo)
     cruzamento = _serie(publicado)
@@ -139,5 +148,5 @@ def pagina(catalogo: dict, coleta: dict) -> str:
 </main>
 <p class="sr-only" id="anuncio" aria-live="polite"></p>
 <script type="application/json" id="catalogo">{_json_no_html(publicado)}</script>"""
-    return site.pagina(f"Consulta · {site.NOME}", descricao, "../", corpo, site.rodape(coleta),
+    return site.pagina(f"Consulta · {site.NOME}", descricao, "../", corpo, rodape(coleta),
                        endereco=CAMINHO, cabeca_extra=cabeca)

@@ -161,6 +161,18 @@ def _conferencia(conferidas: dict | None, metrica: str, codigo: str) -> str:
     return f'<p class="estado estado--{estado}">{MARCAS[estado]}{escape(texto)}</p>'
 
 
+# O catálogo escreve as ressalvas sem dizer onde fica cada número na tela; a página de município diz onde.
+# Na placa dela, o Censo 2022 vem logo abaixo da estimativa.
+NA_PAGINA_DO_MUNICIPIO = {"A contagem mais recente é a do Censo 2022.": "A contagem mais recente é a do Censo 2022, logo abaixo."}
+
+
+def na_pagina_do_municipio(ressalva: str) -> str:
+    for frase, completa in NA_PAGINA_DO_MUNICIPIO.items():
+        if ressalva.endswith(frase):
+            return ressalva[: -len(frase)] + completa
+    return ressalva
+
+
 def _fonte(metrica: dict, nome: str, fonte: dict, m: dict, links: dict | None, extras: list[str] = ()) -> str:
     f = metrica["fonte"]
     url = f["acesso"]["url"].format(municipio=m["codigo"], periodo=fonte["periodo"])
@@ -172,7 +184,7 @@ def _fonte(metrica: dict, nome: str, fonte: dict, m: dict, links: dict | None, e
         coleta += "."
     else:
         coleta = f"{escape(data_hora(fonte['coletado_em']))}."
-    ressalvas = "".join(f"<li>{escape(r)}</li>" for r in [*extras, *metrica["ressalvas"]])
+    ressalvas = "".join(f"<li>{escape(na_pagina_do_municipio(r))}</li>" for r in [*extras, *metrica["ressalvas"]])
     return f"""<section class="fonte__bloco" aria-labelledby="f-{nome}">
 <h3 id="f-{nome}">{escape(metrica['rotulo'])}</h3>
 <dl class="ficha">

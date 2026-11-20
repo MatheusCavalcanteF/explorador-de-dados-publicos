@@ -109,6 +109,18 @@ def test_pagina_de_consulta_cabe_no_limite_e_o_catalogo_embutido_nao_leva_o_sih(
     assert scripts == list(site_consulta.SCRIPTS)
 
 
+def test_ressalva_neutra_no_catalogo_e_completa_so_na_pagina_de_municipio(sites):
+    com, sem, _, cat = sites
+    neutra = "É estimativa do IBGE, não contagem. A contagem mais recente é a do Censo 2022."
+    assert cat["metricas"]["populacao_estimada"]["ressalvas"] == [neutra]
+    for pasta in (com, sem):
+        pagina = (pasta / "municipio/3548500/index.html").read_text(encoding="utf-8")
+        assert "<li>É estimativa do IBGE, não contagem. A contagem mais recente é a do Censo 2022, logo abaixo.</li>" in pagina
+    consulta = (com / "consulta/index.html").read_text(encoding="utf-8")
+    assert neutra in consulta and "logo abaixo" not in consulta
+    assert "ficam em “Fonte e método”, abaixo da tabela." in consulta
+
+
 def test_json_embutido_nao_fecha_o_script():
     texto = site_consulta._json_no_html({"x": "</script><!-- y"})
     assert "</" not in texto and "<!--" not in texto and json.loads(texto) == {"x": "</script><!-- y"}

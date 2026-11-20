@@ -854,6 +854,7 @@ if (typeof module !== 'undefined') module.exports = Consulta;
           linha('Arquivo usado', h('a', { href: arquivo }, c.arquivo.split('/').pop()), ', lido neste navegador, e a ',
             h('a', { href: ficheiro }, 'ficha da série'), ', com o endereço, a data, o tamanho e o SHA-256 da resposta de cada ano.'),
           linha('Como a consulta foi feita', 'Cada número é uma linha do arquivo, do município e do ano pedidos, sem soma nem cálculo.'),
+          (metrica.ressalvas || []).length ? linha('Ressalvas', h('ul', null, metrica.ressalvas.map((r) => h('li', null, r)))) : null,
           linha('Privacidade', supressao),
           linha('Licença', licenca))));
   };

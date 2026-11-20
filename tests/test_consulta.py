@@ -197,16 +197,51 @@ def test_construtor_na_linha_de_comando_para_no_ci(monkeypatch):
         site.exigir_build_local("--construtor")
 
 
-def test_leitor_do_site_e_o_mesmo_que_confere_o_site_publicado():
-    """web/leitor.js é gerado por ferramentas/empacotar e vai para o git: a versão do cabeçalho é a das duas
-    instalações, e quem confere o Parquet publicado no CI lê com o mesmo leitor que o navegador."""
-    cabecalho = (RAIZ / "web/leitor.js").read_text(encoding="utf-8").splitlines()[0]
-    versao = re.match(r"/\* hyparquet (\d+\.\d+\.\d+), empacotado por ferramentas/empacotar/empacotar\.mjs\.", cabecalho).group(1)
-    for pasta in ("ferramentas/leitor", "ferramentas/empacotar"):
-        trava = json.loads((RAIZ / pasta / "package-lock.json").read_text(encoding="utf-8"))
-        assert trava["packages"]["node_modules/hyparquet"]["version"] == versao, pasta
+PASTAS_DO_LEITOR = ("ferramentas/leitor", "ferramentas/empacotar")
+MESMA_VERSAO = ("O hyparquet do site (web/leitor.js) e o da conferência do site publicado no CI (ferramentas/leitor) "
+                "precisam ser a mesma versão. Suba ferramentas/leitor e ferramentas/empacotar juntas e gere web/leitor.js "
+                "de novo: npm ci --prefix ferramentas/empacotar && node ferramentas/empacotar/empacotar.mjs.")
+
+
+def versoes_do_hyparquet(raiz: Path) -> dict[str, str]:
+    """Cada lugar que fixa a versão do hyparquet: o cabeçalho de web/leitor.js e, nas duas pastas, o package.json,
+    o que o package-lock.json declara e o que ele instalou."""
+    cabecalho = (raiz / "web/leitor.js").read_text(encoding="utf-8").splitlines()[0]
+    achado = re.match(r"/\* hyparquet (\S+), empacotado por ferramentas/empacotar/empacotar\.mjs\.", cabecalho)
+    versoes = {"web/leitor.js": achado.group(1) if achado else "sem cabeçalho"}
+    for pasta in PASTAS_DO_LEITOR:
+        pacote = json.loads((raiz / pasta / "package.json").read_text(encoding="utf-8"))
+        trava = json.loads((raiz / pasta / "package-lock.json").read_text(encoding="utf-8"))
+        versoes[f"{pasta}/package.json"] = pacote["dependencies"]["hyparquet"]
+        versoes[f"{pasta}/package-lock.json, declarada"] = trava["packages"][""]["dependencies"]["hyparquet"]
+        versoes[f"{pasta}/package-lock.json, instalada"] = trava["packages"]["node_modules/hyparquet"]["version"]
+    return versoes
+
+
+def test_hyparquet_do_site_e_da_conferencia_na_mesma_versao():
+    """web/leitor.js é gerado por ferramentas/empacotar e vai para o git; ferramentas/leitor confere no CI o Parquet
+    publicado. Os dois leem com a mesma versão, fixa, sem faixa: quem confere lê como o navegador."""
+    versoes = versoes_do_hyparquet(RAIZ)
+    assert len(set(versoes.values())) == 1, f"{MESMA_VERSAO} Versões: {versoes}"
+    assert re.fullmatch(r"\d+\.\d+\.\d+", versoes["web/leitor.js"])
     pacote = json.loads((RAIZ / "ferramentas/empacotar/package.json").read_text(encoding="utf-8"))
     assert all(re.fullmatch(r"\d+\.\d+\.\d+", v) for v in pacote["dependencies"].values())
+
+
+def test_subir_so_a_conferencia_e_barrado(tmp_path):
+    """O que o Dependabot propõe para ferramentas/leitor (1.32.0 para 1.33.0, no package.json e no lock), sem gerar
+    web/leitor.js de novo: o teste de cima reprova."""
+    for nome in ["web/leitor.js", *(f"{p}/{a}" for p in PASTAS_DO_LEITOR for a in ("package.json", "package-lock.json"))]:
+        (tmp_path / nome).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / nome).write_bytes((RAIZ / nome).read_bytes())
+    atual = versoes_do_hyparquet(tmp_path)["web/leitor.js"]
+    for nome in ("ferramentas/leitor/package.json", "ferramentas/leitor/package-lock.json"):
+        texto = (tmp_path / nome).read_text(encoding="utf-8")
+        (tmp_path / nome).write_text(texto.replace(f"hyparquet-{atual}", "hyparquet-1.33.0")
+                                     .replace(f'"{atual}"', '"1.33.0"'), encoding="utf-8")
+    versoes = versoes_do_hyparquet(tmp_path)
+    assert versoes["ferramentas/leitor/package.json"] == versoes["ferramentas/leitor/package-lock.json, instalada"] == "1.33.0"
+    assert versoes["web/leitor.js"] == atual and len(set(versoes.values())) == 2
 
 
 def test_do_endereco_ate_a_consulta_de_modelo_no_node(sites, tmp_path):

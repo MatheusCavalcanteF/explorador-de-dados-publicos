@@ -51,7 +51,7 @@ A divisão proposta (deploy e CI; SIH e catálogo; educação e IBGE) foi mantid
 - Contrato: nos 76,1 milhões de AIHs das competências 2101 a 2608, nenhuma linha violou as regras (competência, IDENT, UF do hospital, municípios na DTB, datas, defasagem de até 5 meses, CID, dicionários, chave única). O sexo 4, novo e sem definição em documento oficial, vai para "Ignorado", como no TabWin.
 
 **F1c. Educação e o restante do IBGE**
-- **Antes de tudo, uma rota do runner até o INEP**, que recusou o runner em 07/11/2026 e nos 7 dias do teste diário, de 08 a 14/11/2026. Medido em 20/11/2026: o runner alcança o INEP com uma nova tentativa depois do reset do primeiro contato, e nenhuma outra origem oficial guarda os mesmos arquivos. A rota sai das opções em [INEP no runner](ci-e-historico.md#inep-no-runner), ainda sem decisão. Sem rota, a educação não entra.
+- **Antes de tudo, uma rota do runner até o INEP**, que recusou o runner em 07/11/2026 e nos 7 dias do teste diário, de 08 a 14/11/2026. Medido em 20/11/2026: o runner alcança o INEP com uma nova tentativa depois do reset do primeiro contato, e nenhuma outra origem oficial guarda os mesmos arquivos. **Decidido em 20/11/2026: rota 1**, HTTPS no runner com o intermediário da RNP versionado, e nada do INEP em Release antes da supressão. A coleta, com o contrato e o cache, está feita e foi medida no runner; ver [INEP no runner](ci-e-historico.md#inep-no-runner). Faltam as tabelas, a supressão e o site.
 - **Censo Escolar e IDEB**, PIB, amostra conferida com as ferramentas do INEP e do SIDRA.
 - O teste de dedução passa a cobrir as tabelas novas.
 

@@ -1,0 +1,576 @@
+{
+ "execucoes": [
+  {
+   "execucao": "44788399385",
+   "inicio": "2026-11-20T17:58:53Z",
+   "sem_cache": false,
+   "cache_hit": null,
+   "chave_restaurada": null,
+   "chave": "inep-v1-0da1750d770ee931d004a1b1b3d89dcfde17f329696a0ef1b78a619654e2a1ec",
+   "consulta": {
+    "s_total": 9.6,
+    "pico_rss_mb": 31,
+    "tentativas": {
+     "microdados_censo_escolar_2019.zip": [
+      {
+       "passo": "tls",
+       "erro": "reset",
+       "ms": 969,
+       "espera_s": 2
+      }
+     ]
+    },
+    "pedidos_sem_falha": 8
+   },
+   "coleta": {
+    "s_total": 272.26,
+    "pico_rss_mb": 60,
+    "cache": {
+     "do_cache": 0,
+     "baixados": 9,
+     "bytes_baixados": 195857511,
+     "bytes_no_cache": 195857511,
+     "removidos": []
+    },
+    "avisos": [],
+    "arquivos": {
+     "microdados_censo_escolar_2019.zip": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 29.252,
+      "tentativas": [],
+      "s_contrato": 4.79,
+      "bytes": 26219731
+     },
+     "microdados_censo_escolar_2020.zip": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 30.103,
+      "tentativas": [],
+      "s_contrato": 4.7,
+      "bytes": 26033386
+     },
+     "microdados_censo_escolar_2021.zip": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 31.853,
+      "tentativas": [],
+      "s_contrato": 4.67,
+      "bytes": 25942916
+     },
+     "microdados_censo_escolar_2022.zip": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 30.468,
+      "tentativas": [],
+      "s_contrato": 4.47,
+      "bytes": 26394408
+     },
+     "microdados_censo_escolar_2023.zip": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 35.839,
+      "tentativas": [],
+      "s_contrato": 4.92,
+      "bytes": 32094587
+     },
+     "microdados_censo_escolar_2024.zip": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 39.209,
+      "tentativas": [],
+      "s_contrato": 5.02,
+      "bytes": 33829396
+     },
+     "divulgacao_anos_iniciais_municipios_2023.xlsx": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 14.04,
+      "tentativas": [],
+      "s_contrato": 5.37,
+      "bytes": 11249038
+     },
+     "divulgacao_anos_finais_municipios_2023.xlsx": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 14.909,
+      "tentativas": [],
+      "s_contrato": 4.9,
+      "bytes": 10731967
+     },
+     "divulgacao_ensino_medio_municipios_2023.xlsx": {
+      "origem": "download",
+      "motivo": "sem cópia no cache",
+      "s_download": 6.032,
+      "tentativas": [],
+      "s_contrato": 1.7,
+      "bytes": 3362082
+     }
+    }
+   },
+   "cache_bytes": {
+    "antes": 0,
+    "depois": 195859925
+   },
+   "pico_memoria_maquina_mb": 1172,
+   "total_s": 308,
+   "passos": {
+    "Set up job": {
+     "s": 1,
+     "conclusao": "success"
+    },
+    "Run actions/checkout@v7": {
+     "s": 1,
+     "conclusao": "success"
+    },
+    "Início, máquina e memória amostrada a cada 5 s": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "Run actions/setup-python@v7": {
+     "s": 1,
+     "conclusao": "success"
+    },
+    "Instalar dependências": {
+     "s": 4,
+     "conclusao": "success"
+    },
+    "Lista de municípios": {
+     "s": 18,
+     "conclusao": "success"
+    },
+    "INEP: consulta": {
+     "s": 10,
+     "conclusao": "success"
+    },
+    "Chave do cache": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "INEP: cache": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "INEP: coleta e contrato": {
+     "s": 273,
+     "conclusao": "success"
+    },
+    "INEP: guardar no cache": {
+     "s": 2,
+     "conclusao": "success"
+    },
+    "Resumo": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "Run actions/upload-artifact@v7": {
+     "s": 1,
+     "conclusao": "success"
+    },
+    "Post Run actions/setup-python@v7": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "Post Run actions/checkout@v7": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "Complete job": {
+     "s": 0,
+     "conclusao": "success"
+    }
+   },
+   "maquina": {
+    "sistema": "Linux-7.0.0-1020-azure-x86_64-with-glibc2.43",
+    "python": "3.14.10",
+    "openssl": "OpenSSL 3.5.5 27 Jan 2026"
+   },
+   "tls": {
+    "intermediario_versionado_na_cadeia": true,
+    "raizes": [
+     "GlobalSign Root R46"
+    ]
+   },
+   "cadeia": [
+    "*.inep.gov.br",
+    "RNP ICPEdu GR46 OV TLS CA 2025",
+    "GlobalSign Root R46"
+   ],
+   "sha256": {
+    "microdados_censo_escolar_2019.zip": "ff023a2fccab4402772a1e1d87426cf5d35e10fcf2d13749a8bcb862d86894e7",
+    "microdados_censo_escolar_2020.zip": "1e4bd258c08906908438bbc0fbcf7e6a378919c467f11afb4785e3fd4b098f04",
+    "microdados_censo_escolar_2021.zip": "b4083b55058ba19d7e45982239e5d6f3e843786da210b657e77c653e5558b1f2",
+    "microdados_censo_escolar_2022.zip": "450d6f60d3447a8ca926b58d64eb5a0c4da823da07f045e129c3c8f154253a39",
+    "microdados_censo_escolar_2023.zip": "8ed0db8c557137593727b0574d5c99d0abb52491cd7c5769f8cefa98e1fa9e66",
+    "microdados_censo_escolar_2024.zip": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+    "divulgacao_anos_iniciais_municipios_2023.xlsx": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+    "divulgacao_anos_finais_municipios_2023.xlsx": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+    "divulgacao_ensino_medio_municipios_2023.xlsx": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231"
+   },
+   "em_relacao_a_coleta_anterior": {
+    "microdados_censo_escolar_2019.zip": "primeira_coleta",
+    "microdados_censo_escolar_2020.zip": "primeira_coleta",
+    "microdados_censo_escolar_2021.zip": "primeira_coleta",
+    "microdados_censo_escolar_2022.zip": "primeira_coleta",
+    "microdados_censo_escolar_2023.zip": "primeira_coleta",
+    "microdados_censo_escolar_2024.zip": "primeira_coleta",
+    "divulgacao_anos_iniciais_municipios_2023.xlsx": "primeira_coleta",
+    "divulgacao_anos_finais_municipios_2023.xlsx": "primeira_coleta",
+    "divulgacao_ensino_medio_municipios_2023.xlsx": "primeira_coleta"
+   },
+   "contrato": {
+    "microdados_censo_escolar_2019.zip": {
+     "colunas": 370,
+     "linhas": 228521,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47874246
+    },
+    "microdados_censo_escolar_2020.zip": {
+     "colunas": 370,
+     "linhas": 224229,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47295294
+    },
+    "microdados_censo_escolar_2021.zip": {
+     "colunas": 370,
+     "linhas": 221140,
+     "municipios": 5570,
+     "total_qt_mat_bas": 46668401
+    },
+    "microdados_censo_escolar_2022.zip": {
+     "colunas": 385,
+     "linhas": 224649,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47382074
+    },
+    "microdados_censo_escolar_2023.zip": {
+     "colunas": 408,
+     "linhas": 217625,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47304632
+    },
+    "microdados_censo_escolar_2024.zip": {
+     "colunas": 426,
+     "linhas": 215545,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47088922
+    },
+    "divulgacao_anos_iniciais_municipios_2023.xlsx": {
+     "colunas": 122,
+     "linhas": 14497,
+     "municipios": 5567
+    },
+    "divulgacao_anos_finais_municipios_2023.xlsx": {
+     "colunas": 112,
+     "linhas": 14401,
+     "municipios": 5568
+    },
+    "divulgacao_ensino_medio_municipios_2023.xlsx": {
+     "colunas": 46,
+     "linhas": 11721,
+     "municipios": 5559
+    }
+   }
+  },
+  {
+   "execucao": "44789302447",
+   "inicio": "2026-11-20T18:04:32Z",
+   "sem_cache": false,
+   "cache_hit": "true",
+   "chave_restaurada": "inep-v1-0da1750d770ee931d004a1b1b3d89dcfde17f329696a0ef1b78a619654e2a1ec",
+   "chave": "inep-v1-0da1750d770ee931d004a1b1b3d89dcfde17f329696a0ef1b78a619654e2a1ec",
+   "consulta": {
+    "s_total": 9.88,
+    "pico_rss_mb": 31,
+    "tentativas": {
+     "microdados_censo_escolar_2019.zip": [
+      {
+       "passo": "tls",
+       "erro": "reset",
+       "ms": 982,
+       "espera_s": 2
+      }
+     ]
+    },
+    "pedidos_sem_falha": 8
+   },
+   "coleta": {
+    "s_total": 34.42,
+    "pico_rss_mb": 58,
+    "cache": {
+     "do_cache": 9,
+     "baixados": 0,
+     "bytes_baixados": 0,
+     "bytes_no_cache": 195857511,
+     "removidos": []
+    },
+    "avisos": [],
+    "arquivos": {
+     "microdados_censo_escolar_2019.zip": {
+      "s_sha256_da_copia": 0.02,
+      "origem": "cache",
+      "s_contrato": 3.99,
+      "bytes": 26219731
+     },
+     "microdados_censo_escolar_2020.zip": {
+      "s_sha256_da_copia": 0.02,
+      "origem": "cache",
+      "s_contrato": 3.92,
+      "bytes": 26033386
+     },
+     "microdados_censo_escolar_2021.zip": {
+      "s_sha256_da_copia": 0.02,
+      "origem": "cache",
+      "s_contrato": 3.8,
+      "bytes": 25942916
+     },
+     "microdados_censo_escolar_2022.zip": {
+      "s_sha256_da_copia": 0.02,
+      "origem": "cache",
+      "s_contrato": 3.64,
+      "bytes": 26394408
+     },
+     "microdados_censo_escolar_2023.zip": {
+      "s_sha256_da_copia": 0.02,
+      "origem": "cache",
+      "s_contrato": 4.08,
+      "bytes": 32094587
+     },
+     "microdados_censo_escolar_2024.zip": {
+      "s_sha256_da_copia": 0.02,
+      "origem": "cache",
+      "s_contrato": 4.09,
+      "bytes": 33829396
+     },
+     "divulgacao_anos_iniciais_municipios_2023.xlsx": {
+      "s_sha256_da_copia": 0.01,
+      "origem": "cache",
+      "s_contrato": 4.85,
+      "bytes": 11249038
+     },
+     "divulgacao_anos_finais_municipios_2023.xlsx": {
+      "s_sha256_da_copia": 0.01,
+      "origem": "cache",
+      "s_contrato": 4.38,
+      "bytes": 10731967
+     },
+     "divulgacao_ensino_medio_municipios_2023.xlsx": {
+      "s_sha256_da_copia": 0.0,
+      "origem": "cache",
+      "s_contrato": 1.51,
+      "bytes": 3362082
+     }
+    }
+   },
+   "cache_bytes": {
+    "antes": 195859925,
+    "depois": 195859925
+   },
+   "pico_memoria_maquina_mb": 1135,
+   "total_s": 76,
+   "passos": {
+    "Set up job": {
+     "s": 1,
+     "conclusao": "success"
+    },
+    "Run actions/checkout@v7": {
+     "s": 1,
+     "conclusao": "success"
+    },
+    "Início, máquina e memória amostrada a cada 5 s": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "Run actions/setup-python@v7": {
+     "s": 2,
+     "conclusao": "success"
+    },
+    "Instalar dependências": {
+     "s": 4,
+     "conclusao": "success"
+    },
+    "Lista de municípios": {
+     "s": 22,
+     "conclusao": "success"
+    },
+    "INEP: consulta": {
+     "s": 10,
+     "conclusao": "success"
+    },
+    "Chave do cache": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "INEP: cache": {
+     "s": 3,
+     "conclusao": "success"
+    },
+    "INEP: coleta e contrato": {
+     "s": 35,
+     "conclusao": "success"
+    },
+    "INEP: guardar no cache": {
+     "s": 0,
+     "conclusao": "skipped"
+    },
+    "Resumo": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "Run actions/upload-artifact@v7": {
+     "s": 1,
+     "conclusao": "success"
+    },
+    "Post Run actions/setup-python@v7": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "Post Run actions/checkout@v7": {
+     "s": 0,
+     "conclusao": "success"
+    },
+    "Complete job": {
+     "s": 0,
+     "conclusao": "success"
+    }
+   },
+   "maquina": {
+    "sistema": "Linux-7.0.0-1020-azure-x86_64-with-glibc2.43",
+    "python": "3.14.10",
+    "openssl": "OpenSSL 3.5.5 27 Jan 2026"
+   },
+   "tls": {
+    "intermediario_versionado_na_cadeia": true,
+    "raizes": [
+     "GlobalSign Root R46"
+    ]
+   },
+   "cadeia": [
+    "*.inep.gov.br",
+    "RNP ICPEdu GR46 OV TLS CA 2025",
+    "GlobalSign Root R46"
+   ],
+   "sha256": {
+    "microdados_censo_escolar_2019.zip": "ff023a2fccab4402772a1e1d87426cf5d35e10fcf2d13749a8bcb862d86894e7",
+    "microdados_censo_escolar_2020.zip": "1e4bd258c08906908438bbc0fbcf7e6a378919c467f11afb4785e3fd4b098f04",
+    "microdados_censo_escolar_2021.zip": "b4083b55058ba19d7e45982239e5d6f3e843786da210b657e77c653e5558b1f2",
+    "microdados_censo_escolar_2022.zip": "450d6f60d3447a8ca926b58d64eb5a0c4da823da07f045e129c3c8f154253a39",
+    "microdados_censo_escolar_2023.zip": "8ed0db8c557137593727b0574d5c99d0abb52491cd7c5769f8cefa98e1fa9e66",
+    "microdados_censo_escolar_2024.zip": "ae29d81d45ddecef59e11eda39788cbfd30dfa1cc71be9d29f23051fc2d640db",
+    "divulgacao_anos_iniciais_municipios_2023.xlsx": "674122a2dcd2a71e526000a2994ade4fb7ab611b66f86ced80e1f56e547b75d9",
+    "divulgacao_anos_finais_municipios_2023.xlsx": "f10199d6b45a385c5ff3cab9fc42aa7e0e7c83cf77d809c8568a97b0e61e169f",
+    "divulgacao_ensino_medio_municipios_2023.xlsx": "fd3df9f06bf8c2ee3fb61e7512688b6f359e33a01d8f31ce95d7b5e3b297a231"
+   },
+   "em_relacao_a_coleta_anterior": {
+    "microdados_censo_escolar_2019.zip": "primeira_coleta",
+    "microdados_censo_escolar_2020.zip": "primeira_coleta",
+    "microdados_censo_escolar_2021.zip": "primeira_coleta",
+    "microdados_censo_escolar_2022.zip": "primeira_coleta",
+    "microdados_censo_escolar_2023.zip": "primeira_coleta",
+    "microdados_censo_escolar_2024.zip": "primeira_coleta",
+    "divulgacao_anos_iniciais_municipios_2023.xlsx": "primeira_coleta",
+    "divulgacao_anos_finais_municipios_2023.xlsx": "primeira_coleta",
+    "divulgacao_ensino_medio_municipios_2023.xlsx": "primeira_coleta"
+   },
+   "contrato": {
+    "microdados_censo_escolar_2019.zip": {
+     "colunas": 370,
+     "linhas": 228521,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47874246
+    },
+    "microdados_censo_escolar_2020.zip": {
+     "colunas": 370,
+     "linhas": 224229,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47295294
+    },
+    "microdados_censo_escolar_2021.zip": {
+     "colunas": 370,
+     "linhas": 221140,
+     "municipios": 5570,
+     "total_qt_mat_bas": 46668401
+    },
+    "microdados_censo_escolar_2022.zip": {
+     "colunas": 385,
+     "linhas": 224649,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47382074
+    },
+    "microdados_censo_escolar_2023.zip": {
+     "colunas": 408,
+     "linhas": 217625,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47304632
+    },
+    "microdados_censo_escolar_2024.zip": {
+     "colunas": 426,
+     "linhas": 215545,
+     "municipios": 5570,
+     "total_qt_mat_bas": 47088922
+    },
+    "divulgacao_anos_iniciais_municipios_2023.xlsx": {
+     "colunas": 122,
+     "linhas": 14497,
+     "municipios": 5567
+    },
+    "divulgacao_anos_finais_municipios_2023.xlsx": {
+     "colunas": 112,
+     "linhas": 14401,
+     "municipios": 5568
+    },
+    "divulgacao_ensino_medio_municipios_2023.xlsx": {
+     "colunas": 46,
+     "linhas": 11721,
+     "municipios": 5559
+    }
+   }
+  }
+ ],
+ "sha256_iguais_entre_execucoes": true,
+ "sha256_iguais_aos_da_maquina_local": true,
+ "alcance_leve": [
+  {
+   "execucao": "44789582772",
+   "ok": false,
+   "falhou_em": "tls",
+   "passos": {
+    "dns": {
+     "ok": true,
+     "ms": 674
+    },
+    "conexao": {
+     "ok": true,
+     "ms": 137
+    },
+    "tls": {
+     "ok": false,
+     "ms": 136,
+     "erro": "ConnectionResetError: [Errno 104] Connection reset by peer"
+    }
+   },
+   "repeticoes": {
+    "so_x25519": {
+     "falhou_em": "tls",
+     "passos": {
+      "conexao": {
+       "ok": true,
+       "ms": 140
+      },
+      "tls": {
+       "ok": false,
+       "ms": 141,
+       "erro": "SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1085)"
+      }
+     }
+    }
+   },
+   "curl": [
+    "60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificat",
+    "60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificat",
+    "60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificat",
+    "60 curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificat"
+   ]
+  }
+ ]
+}

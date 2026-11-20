@@ -250,6 +250,22 @@ const principal = async () => {
   assert.deepEqual(vs.map((v) => [v.de, v.ate]), [[2013, 2017], [2018, 2021], [2024, 2026]]);
   assert.ok(Math.abs(vs[2].pct - (429528 / 429508 - 1) * 100) < 1e-9);
   assert.deepEqual(C.variacoes(pontos(boa.m, BOA)).map((v) => [v.de, v.ate]), [[2025, 2026]]);
+  // Um ano sem estimativa no meio de um trecho comparável interrompe a linha, e a variação também: nada de
+  // 2018 a 2021 por cima do buraco de 2019, só o segmento de 2020 a 2021.
+  const comBuraco = [
+    { ano: 2018, valor: 100, situacao: 'valor', comparavel: 2018 },
+    { ano: 2019, valor: null, situacao: 'sem_estimativa', comparavel: 2018 },
+    { ano: 2020, valor: 110, situacao: 'valor', comparavel: 2018 },
+    { ano: 2021, valor: 121, situacao: 'valor', comparavel: 2018 },
+  ];
+  assert.deepEqual(C.variacoes(comBuraco).map((v) => [v.de, v.ate]), [[2020, 2021]]);
+  assert.ok(Math.abs(C.variacoes(comBuraco)[0].pct - 10) < 1e-9);
+  assert.equal(C.textoDasVariacoes(comBuraco), '+10,0% de 2020 a 2021');
+  // A variação é sempre um dos segmentos que a linha desenha.
+  for (const p of [comBuraco, pontos(santos.m, SANTOS), pontos(boa.m, BOA)]) {
+    assert.deepEqual(C.variacoes(p).map((v) => [v.de, v.ate]),
+      C.segmentos(p).filter((s) => s.length > 1).map((s) => [s[0].ano, s[s.length - 1].ano]));
+  }
   assert.equal(C.porcentagem(1.234), '+1,2%');
   assert.equal(C.porcentagem(-0.96), '\u22121,0%');
   assert.equal(C.porcentagem(0.004), '0,0%');

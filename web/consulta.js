@@ -229,18 +229,11 @@ const Consulta = (() => {
     return { lo, hi: lo + faixa };
   };
 
-  // Variação percentual dentro de cada trecho comparável, do primeiro ao último ano com valor dele. Nunca
-  // através de uma quebra: de um trecho a outro, a série muda de base.
-  const variacoes = (pontos) => {
-    const trechos = new Map();
-    for (const p of pontos) {
-      if (p.valor === null) continue;
-      if (!trechos.has(p.comparavel)) trechos.set(p.comparavel, []);
-      trechos.get(p.comparavel).push(p);
-    }
-    return [...trechos.values()].filter((t) => t.length > 1).map((t) => ({
-      de: t[0].ano, ate: t[t.length - 1].ano, pct: (t[t.length - 1].valor / t[0].valor - 1) * 100 }));
-  };
+  // Variação percentual em cada trecho contínuo da linha, os mesmos segmentos que o gráfico desenha: anos
+  // seguidos, com valor, no mesmo trecho comparável. Nunca através de uma quebra, que muda a base da série,
+  // nem de um ano sem estimativa, onde a linha se interrompe.
+  const variacoes = (pontos) => segmentos(pontos).filter((t) => t.length > 1).map((t) => ({
+    de: t[0].ano, ate: t[t.length - 1].ano, pct: (t[t.length - 1].valor / t[0].valor - 1) * 100 }));
   const porcentagem = (pct) => {
     const texto = Math.abs(pct).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     return `${texto === '0,0' ? '' : pct > 0 ? '+' : '\u2212'}${texto}%`;
@@ -780,7 +773,7 @@ if (typeof module !== 'undefined') module.exports = Consulta;
     if (!varios) {
       const codigo = modelo.municipios[0];
       const variacao = C.textoDasVariacoes(pontosDe(codigo));
-      if (variacao) elementos.push(h('p', { class: 'variacao' }, h('span', { class: 'variacao__rotulo' }, 'Variação em cada trecho comparável: '), variacao));
+      if (variacao) elementos.push(h('p', { class: 'variacao' }, h('span', { class: 'variacao__rotulo' }, 'Variação em cada trecho contínuo da linha: '), variacao));
       const { caixa, depois: d } = novaCaixa((cx) => serie(cx, { anos: modelo.anos, pontos: pontosDe(codigo), tipo, quebras, altura: 260,
         dica: dicaDoPonto(metrica, null, ressalvas) }), `${rotuloDoGrafico}: ${C.titulo(catalogo, painel, nomes)}.`);
       depois.push(d);
@@ -792,8 +785,8 @@ if (typeof module !== 'undefined') module.exports = Consulta;
       elementos.push(h('p', { class: 'nota-grafico' }, tipo === 'linha'
         ? `Um gráfico por município. Cada eixo cobre pelo menos ${Math.round(C.FAIXA_MINIMA * 100)}% do maior valor do município no período, `
           + 'para que uma variação pequena não pareça grande; quando os valores cabem nessa faixa, a mesma variação percentual tem a mesma '
-          + 'altura em todos os gráficos. A porcentagem é medida dentro de cada trecho comparável, nunca através de uma quebra.'
-        : 'Um gráfico por município, cada um na própria escala, a partir do zero. A porcentagem é medida dentro de cada trecho comparável, nunca através de uma quebra.'));
+          + 'altura em todos os gráficos. A porcentagem é medida em cada trecho contínuo, nunca através de uma quebra ou de um ano sem estimativa.'
+        : 'Um gráfico por município, cada um na própria escala, a partir do zero. A porcentagem é medida em cada trecho contínuo, nunca através de uma quebra ou de um ano sem estimativa.'));
       elementos.push(h('div', { class: 'multiplos' }, modelo.municipios.map((codigo) => {
         const nome = C.nomeDe(nomes, codigo);
         const { caixa, depois: d } = novaCaixa((cx) => serie(cx, { anos: modelo.anos, pontos: pontosDe(codigo), tipo, quebras, altura: 200,

@@ -1,5 +1,5 @@
 {
- "coletado_em": "2026-11-15T07:13:44Z",
+ "coletado_em": "2026-11-22T07:29:38Z",
  "fontes": {
   "dtb": {
    "base": "ibge_dtb",
@@ -7,7 +7,7 @@
    "periodo": "2025",
    "data_base": "2025-12-31",
    "planilha": "RELATORIO_DTB_BRASIL_2025_MUNICIPIOS.ods",
-   "coletado_em": "2026-11-15T07:13:44Z",
+   "coletado_em": "2026-11-22T07:29:38Z",
    "bytes": 1635600,
    "sha256": "d077a0e48c36cf18bcc96268b4a436200c014c6b8522c1a62d894acaf39dad27",
    "last_modified": "Thu, 26 Mar 2026 21:07:36 GMT",
@@ -19,7 +19,7 @@
   },
   "estimativa": {
    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/last%201",
-   "coletado_em": "2026-11-15T07:13:44Z",
+   "coletado_em": "2026-11-22T07:29:38Z",
    "bytes": 1508656,
    "sha256": "2af3c54c40389e6aa25a347ae4ac023e9b1c0b5d7da7eccf76ccd85fd6716a73",
    "base": "ibge_estimativa",
@@ -42,7 +42,7 @@
    "sha256_valores": "0d8985b36b749500f5e8cd0c546b0eb6edc0a2067f0a9bd9936977bab3aed4cb",
    "origem": "release",
    "sha256_release": "2993aea87e42b2066e8c8a873dc87bfeafef285b9cec30c2c18bfd29341b081d",
-   "conferido_com_a_fonte_em": "2026-11-15T07:13:44Z",
+   "conferido_com_a_fonte_em": "2026-11-22T07:29:38Z",
    "ausentes": [
     "5101837"
    ],
@@ -186,6 +186,265 @@
    "municipios": 139,
    "populacao_estimada": 1595994,
    "populacao_censo_2022": 1511460
+  }
+ },
+ "populacao_por_ano": {
+  "base": "ibge_estimativa",
+  "cruzamento": "ibge_pop_ano",
+  "coletado_em": "2026-11-22T07:29:38Z",
+  "periodos": {
+   "url": "https://apisidra.ibge.gov.br/values/t/6579/n1/all/v/9324/p/all",
+   "coletado_em": "2026-11-22T07:29:38Z",
+   "bytes": 5932,
+   "sha256": "653dd360119f5e0ea1634babdee172193b07e05ac1e21653191af51d55fa943f",
+   "na_tabela": [
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2008,
+    2009,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2024,
+    2025,
+    2026
+   ]
+  },
+  "anos": {
+   "2013": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2013",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508611,
+    "sha256": "e75232444432aeedad651f6f5f926badf6e079bf2708fe6285e7e3844915ead8",
+    "sha256_valores": "375f5b08afb102e56d5f7974d51f671a97c16249dc5d2bc105c0c29e104b6929",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 201032714,
+    "comparavel_desde": 2013,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2014": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2014",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508628,
+    "sha256": "c6f947001bfb0a30699799db27e6758a4afe2e0f72fe4cf35bc604624111e28b",
+    "sha256_valores": "b1ab84c58609d78d74fc848ef0b48fd8144d643a0fd65868f06941a08bd5d9cf",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 202768562,
+    "comparavel_desde": 2013,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2015": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2015",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508639,
+    "sha256": "de8827be20796ed33e56329507b938a03725a742f3339209957a336eb3f64f55",
+    "sha256_valores": "4fe18374424a2c51f7d585b4b18c5ec998df41c63ae6cf045e2ad2c4da8e9d54",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 204450049,
+    "comparavel_desde": 2013,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2016": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2016",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508649,
+    "sha256": "fa484dc099fef2c3105db99002552d83d92ea8f18104444498b8d037429f3f3a",
+    "sha256_valores": "7ebd56a8d5a6d290cbd3bf970f3ee03eea9f39e5609779dda7127bf23bb30f47",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 206081432,
+    "comparavel_desde": 2013,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2017": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2017",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508646,
+    "sha256": "0afa9c65290fc18ab57dfdf723f8abe8cf581c8111b29b80e3fc9510bbe0044d",
+    "sha256_valores": "56dc855436839bd5539033def17d0d485addf096608d0f99ec3ce72aa133563a",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 207660929,
+    "comparavel_desde": 2013,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2018": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2018",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508643,
+    "sha256": "89a4599c4a4591050c605d5825a5a90f7397d4dcf8ff1d87384a3cd7572b5ffb",
+    "sha256_valores": "4207baf15d1244d08d0e7dfc24de6c4e14e480cd49fdff5d0e46315c70c4e876",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 208494900,
+    "comparavel_desde": 2018,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2019": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2019",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508658,
+    "sha256": "313a958cba93409fbff6ff050ba8af7746314dc2219281881fb104ac00ca1ea6",
+    "sha256_valores": "37f1baf302f8ee8b329974d49b99067aef44278e2085937f2e7a200fa13dfb9f",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 210147125,
+    "comparavel_desde": 2018,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2020": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2020",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508662,
+    "sha256": "c1155cfe1217a6b2f6d7fca8d1b25974ffe63fc1434aa0a455de5ae652931b26",
+    "sha256_valores": "510811e02e31aee470a12332e6b182dc3fca7c11eef148fa50985765dfccee2b",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 211755692,
+    "comparavel_desde": 2018,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2021": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2021",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508660,
+    "sha256": "38cd175e7f345de65baec455672bf7204115e2bc9f863f0740628b1e813900d7",
+    "sha256_valores": "29e1fc6732264cde9d341876cb0d6a86c22df7189753df2792f07e1597ea3783",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 213317639,
+    "comparavel_desde": 2018,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2024": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2024",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508654,
+    "sha256": "b0dd3ad00824c6718c8298b690243d0f7fe6a6f48eb140af631e7412065b4c01",
+    "sha256_valores": "fdeaa9ab2385890280c0cbbf164a855cc1fb176a932143722811625617e81359",
+    "municipios": 5570,
+    "ausentes": [
+     "5101837"
+    ],
+    "soma": 212583750,
+    "comparavel_desde": 2024,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2025": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2025",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508654,
+    "sha256": "3a2be712c79be2c8c50bd16527cd5cfcf14a58b0ab4c80bef379dc0f7c7e262d",
+    "sha256_valores": "2ee624d0a8df789182c41f1f66a8d3425f04a2fe5ddcf2a2a1c87210e1e9ce39",
+    "municipios": 5571,
+    "ausentes": [],
+    "soma": 213421037,
+    "comparavel_desde": 2024,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   },
+   "2026": {
+    "url": "https://apisidra.ibge.gov.br/values/t/6579/n6/all/v/9324/p/2026",
+    "coletado_em": "2026-11-22T07:29:38Z",
+    "bytes": 1508656,
+    "sha256": "2af3c54c40389e6aa25a347ae4ac023e9b1c0b5d7da7eccf76ccd85fd6716a73",
+    "sha256_valores": "ad1d9bb6dc006e7d71872e82b40a57b7adb2aca9c0ca241667d719e36fc39360",
+    "municipios": 5571,
+    "ausentes": [],
+    "soma": 214211951,
+    "comparavel_desde": 2024,
+    "em_relacao_a_coleta_anterior": "sem_coleta_anterior",
+    "valores_desde": "2026-11-22T07:29:38Z"
+   }
+  },
+  "passagens": {
+   "2013-2014": {
+    "municipios_acima_do_limite": 31,
+    "quebra_declarada": false
+   },
+   "2014-2015": {
+    "municipios_acima_do_limite": 19,
+    "quebra_declarada": false
+   },
+   "2015-2016": {
+    "municipios_acima_do_limite": 29,
+    "quebra_declarada": false
+   },
+   "2016-2017": {
+    "municipios_acima_do_limite": 15,
+    "quebra_declarada": false
+   },
+   "2017-2018": {
+    "municipios_acima_do_limite": 374,
+    "quebra_declarada": true
+   },
+   "2018-2019": {
+    "municipios_acima_do_limite": 35,
+    "quebra_declarada": false
+   },
+   "2019-2020": {
+    "municipios_acima_do_limite": 23,
+    "quebra_declarada": false
+   },
+   "2020-2021": {
+    "municipios_acima_do_limite": 16,
+    "quebra_declarada": false
+   },
+   "2021-2024": {
+    "municipios_acima_do_limite": 952,
+    "quebra_declarada": true
+   },
+   "2024-2025": {
+    "municipios_acima_do_limite": 5,
+    "quebra_declarada": false
+   },
+   "2025-2026": {
+    "municipios_acima_do_limite": 15,
+    "quebra_declarada": false
+   }
   }
  }
 }

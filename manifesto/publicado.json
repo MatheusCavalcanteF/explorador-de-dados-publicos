@@ -1,0 +1,23 @@
+{
+ "execucao": "44998435252-1",
+ "coletado_em": "2026-11-22T07:29:38Z",
+ "bases": {
+  "ibge_pop_ano": {
+   "rotulo": "População por município e ano",
+   "situacao": "publicada",
+   "coletado_em": "2026-11-22T07:29:38Z",
+   "execucao": "44998435252-1",
+   "arquivos": {
+    "dados/ibge/populacao_por_ano.parquet": {
+     "sha256": "50afcaca03632f196c5530d11043fede02b321bf70d138a7807ea628f0fe2a2a",
+     "bytes": 389389
+    },
+    "dados/ibge/populacao_por_ano.json": {
+     "sha256": "54a947fe3d85c37c049e24e1f36718788f0172d90edec7607715d63b8cd8ca61",
+     "bytes": 8529
+    }
+   },
+   "reprovada": null
+  }
+ }
+}
